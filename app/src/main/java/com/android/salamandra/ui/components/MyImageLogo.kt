@@ -13,9 +13,9 @@ import com.android.salamandra.ui.theme.salamandraColor
 @Composable
 fun MyImageLogo(modifier: Modifier = Modifier) {
     Image(
-        painter = painterResource(id = R.drawable.ic_launcher_foreground),
+        painter = painterResource(id = R.drawable.salamander),
         contentDescription = "App Logo",
-        modifier = modifier.size(120.dp),
-        colorFilter = ColorFilter.tint(salamandraColor)
+        modifier = modifier.size(200.dp),
+//        colorFilter = ColorFilter.tint(salamandraColor)
     )
 }

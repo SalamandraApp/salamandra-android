@@ -75,7 +75,7 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun SalamandraTheme(
-  useDarkTheme: Boolean = isSystemInDarkTheme(),
+  useDarkTheme: Boolean = true,//isSystemInDarkTheme(),
   content: @Composable() () -> Unit
 ) {
   val colors = if (!useDarkTheme) {
