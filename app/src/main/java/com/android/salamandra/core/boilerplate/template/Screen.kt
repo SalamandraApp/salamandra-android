@@ -39,10 +39,10 @@ fun LightPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun DarkPreview() {
-    SalamandraTheme {
-        ScreenBody()
-    }
-}
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun DarkPreview() {
+//    SalamandraTheme {
+//        ScreenBody()
+//    }
+//}
