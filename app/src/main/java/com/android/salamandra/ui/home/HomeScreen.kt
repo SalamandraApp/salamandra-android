@@ -81,7 +81,7 @@ private fun ScreenBody() {
                     )
                     MyExerciseCardView(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                        exName = "Deadlift"
+                        exName = "Squat"
                     )
                 }
             }
