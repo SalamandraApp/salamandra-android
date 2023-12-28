@@ -12,7 +12,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
 import com.android.salamandra.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyGenericTextField(
     outlined: Boolean = true,
@@ -89,7 +87,6 @@ fun MyGenericTextField(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyEmailTextField(
     modifier: Modifier,
@@ -114,7 +111,6 @@ fun MyEmailTextField(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyPasswordTextField(
     modifier: Modifier,

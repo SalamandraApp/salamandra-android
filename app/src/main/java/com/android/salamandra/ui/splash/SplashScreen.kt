@@ -39,7 +39,7 @@ fun SplashScreen(navigator: DestinationsNavigator) {
 
 @Composable
 private fun Navigate(onNavigate: () -> Unit){
-    var timeLeft by remember { mutableIntStateOf(3) }
+    var timeLeft by remember { mutableIntStateOf(1) }
 
     LaunchedEffect(key1 = timeLeft) {
         while (timeLeft > 0) {

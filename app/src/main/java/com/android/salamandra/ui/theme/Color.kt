@@ -1,7 +1,7 @@
 package com.android.salamandra.ui.theme
 import androidx.compose.ui.graphics.Color
 
-val md_theme_light_primary = Color(0xFF6F5D00)
+val md_theme_light_primary = Color(0xFFFF6000)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFFFE165)
 val md_theme_light_onPrimaryContainer = Color(0xFF221B00)
@@ -32,7 +32,7 @@ val md_theme_light_surfaceTint = Color(0xFF6F5D00)
 val md_theme_light_outlineVariant = Color(0xFFCDC6B4)
 val md_theme_light_scrim = Color(0xFF000000)
 
-val md_theme_dark_primary = Color(0xFFE7C400)
+val md_theme_dark_primary = Color(0xFFFF6000)
 val md_theme_dark_onPrimary = Color(0xFF3A3000)
 val md_theme_dark_primaryContainer = Color(0xFF544600)
 val md_theme_dark_onPrimaryContainer = Color(0xFFFFE165)

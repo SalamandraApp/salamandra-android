@@ -2,4 +2,14 @@
     <string name="app_name">Salamandra</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="nickname_shouldn_t_be_empty">Nickname shouldn\'t be empty</string>
+    <string name="user_name">User name</string>
+    <string name="passwords_must_coincide">Passwords must coincide</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="invalid_password_capital_required">Invalid password (Capital required)</string>
+    <string name="email_must_have_a_valid_format">email must have a valid format</string>
+    <string name="search_by_name">Search by name</string>
 </resources>
