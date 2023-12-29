@@ -2,6 +2,7 @@ package com.android.salamandra.data.di
 
 import com.android.salamandra.BuildConfig.BASE_URL
 import com.android.salamandra.data.RepositoryImpl
+import com.android.salamandra.data.network.AuthApiService
 import com.android.salamandra.data.network.interceptor.AuthInterceptor
 import com.android.salamandra.domain.Repository
 import dagger.Module
@@ -19,8 +20,10 @@ import javax.inject.Singleton
 object NetworkModule {
     @Singleton
     @Provides
-    fun provideRepository(): Repository {
-        return RepositoryImpl()
+    fun provideRepository(
+        authApiService: AuthApiService,
+    ): Repository {
+        return RepositoryImpl(authApiService)
     }
 
     //Retrofit
@@ -43,5 +46,10 @@ object NetworkModule {
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor(authInterceptor)
             .build()
+    }
+
+    @Provides
+    fun provideLoginApiService(retrofit: Retrofit): AuthApiService {
+        return retrofit.create(AuthApiService::class.java)
     }
 }

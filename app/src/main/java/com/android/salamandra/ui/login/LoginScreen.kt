@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyEmailTextField
@@ -41,9 +42,12 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun LoginScreen(navigator: DestinationsNavigator) {
+fun LoginScreen(navigator: DestinationsNavigator, loginViewModel: LoginViewModel = hiltViewModel()) {
     ScreenBody(
-        onLogin = {navigator.navigate(HomeScreenDestination)},
+        onLogin = {
+            loginViewModel.onLogin("userDummy", "1234")
+            navigator.navigate(HomeScreenDestination)
+        },
         onRegister = { navigator.navigate(RegisterScreenDestination) }
     )
 }

@@ -41,7 +41,7 @@ android {
             isMinifyEnabled = false
             isDebuggable = true
             android.buildFeatures.buildConfig = true
-            buildConfigField("String", "BASE_URL", "\"https://api.api-ninjas.com/v1/exercises/\"") //This would be the url used in debug
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5000\"") //This would be the url used in debug
         }
     }
     compileOptions {

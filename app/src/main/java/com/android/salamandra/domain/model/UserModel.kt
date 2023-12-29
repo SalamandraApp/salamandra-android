@@ -1,6 +1,6 @@
 package com.android.salamandra.domain.model
 
 data class UserModel(
-    val email: String,
+    val authToken: String,
     val username: String
 )
