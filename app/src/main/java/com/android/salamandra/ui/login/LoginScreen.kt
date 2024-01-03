@@ -42,10 +42,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun LoginScreen(navigator: DestinationsNavigator, loginViewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    navigator: DestinationsNavigator,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
     ScreenBody(
         onLogin = {
-            loginViewModel.onLogin("userDummy", "1234")
+            loginViewModel.onLogin(username = "user", password = "1234")
             navigator.navigate(HomeScreenDestination)
         },
         onRegister = { navigator.navigate(RegisterScreenDestination) }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -23,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyEmailTextField
@@ -40,15 +40,20 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun RegisterScreen(navigator: DestinationsNavigator) {
+fun RegisterScreen(
+    navigator: DestinationsNavigator,
+    registerViewModel: RegisterViewModel = hiltViewModel()
+) {
     ScreenBody(
-        onSignInClicked = { navigator.navigate(LoginScreenDestination) }
+        onRegister = { registerViewModel.onRegister(username = "user", password = "1234") },
+        onSignIn = { navigator.navigate(LoginScreenDestination) }
     )
 }
 
 @Composable
 private fun ScreenBody(
-    onSignInClicked: () -> Unit
+    onSignIn: () -> Unit,
+    onRegister: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -142,7 +147,7 @@ private fun ScreenBody(
             Text(
                 text = stringResource(R.string.login),
                 modifier = Modifier
-                    .clickable { onSignInClicked() }
+                    .clickable { onSignIn() }
                     .align(Alignment.End)
                     .padding(4.dp),
                 fontSize = 14.sp,
@@ -151,9 +156,11 @@ private fun ScreenBody(
         }
         OutlinedButton(
             onClick = {
-                if (isEmailValid && isPasswordValid && isSamePassword && isNicknameValid) {
-                    //TODO
-                }
+
+//                if (isEmailValid && isPasswordValid && isSamePassword && isNicknameValid) {
+//                    //TODO
+//                }
+                onRegister()
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -178,7 +185,8 @@ private fun ScreenBody(
 fun LightPreview() {
     SalamandraTheme {
         ScreenBody(
-            onSignInClicked = {}
+            onRegister = {},
+            onSignIn = {}
         )
     }
 }

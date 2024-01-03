@@ -22,13 +22,21 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             is LoginIntent.Loading -> state.copy(
                 loading = true
             )
+
+            is LoginIntent.Success ->state.copy(
+                loading = false,
+                success = true
+            )
         }
     }
+
     //Observe events from UI and dispatch them, this are the methods called from the UI
-    fun onLogin(email: String, password: String){ //Example fun
-        viewModelScope.launch(Dispatchers.IO) { loginUseCase(email, password) }
+    fun onLogin(username: String, password: String){
         dispatch(LoginIntent.Loading)
+        viewModelScope.launch(Dispatchers.IO) {
+            loginUseCase(username, password) {
+                dispatch(LoginIntent.Success)
+            }
+        }
     }
-
-
 }

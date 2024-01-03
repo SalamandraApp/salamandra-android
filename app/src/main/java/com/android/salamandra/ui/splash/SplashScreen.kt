@@ -30,25 +30,11 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navigator: DestinationsNavigator) {
     ScreenBody()
 
-    Navigate {
-        navigator.navigate(LoginScreenDestination)
-    }
+    navigator.navigate(LoginScreenDestination)
 
 
 }
 
-@Composable
-private fun Navigate(onNavigate: () -> Unit){
-    var timeLeft by remember { mutableIntStateOf(1) }
-
-    LaunchedEffect(key1 = timeLeft) {
-        while (timeLeft > 0) {
-            delay(1000L)
-            timeLeft--
-            if (timeLeft == 0) onNavigate()
-        }
-    }
-}
 
 @Composable
 private fun ScreenBody() {
