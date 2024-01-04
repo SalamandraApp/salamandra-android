@@ -2,7 +2,7 @@ package com.android.salamandra.data.di
 
 import com.android.salamandra.BuildConfig.BASE_URL
 import com.android.salamandra.data.RepositoryImpl
-import com.android.salamandra.data.network.AuthApiService
+import com.android.salamandra.data.network.SalamandraApiService
 import com.android.salamandra.data.network.interceptor.AuthInterceptor
 import com.android.salamandra.domain.Repository
 import dagger.Module
@@ -21,9 +21,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRepository(
-        authApiService: AuthApiService,
+        salamandraApiService: SalamandraApiService,
     ): Repository {
-        return RepositoryImpl(authApiService)
+        return RepositoryImpl(salamandraApiService)
     }
 
     //Retrofit
@@ -49,7 +49,7 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideLoginApiService(retrofit: Retrofit): AuthApiService {
-        return retrofit.create(AuthApiService::class.java)
+    fun provideLoginApiService(retrofit: Retrofit): SalamandraApiService {
+        return retrofit.create(SalamandraApiService::class.java)
     }
 }

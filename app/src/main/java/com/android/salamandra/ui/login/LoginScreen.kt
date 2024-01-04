@@ -48,7 +48,7 @@ fun LoginScreen(
 ) {
     ScreenBody(
         onLogin = {
-            loginViewModel.onLogin(username = "user", password = "1234")
+            loginViewModel.onLogin(username = "user1", password = "1234")
             navigator.navigate(HomeScreenDestination)
         },
         onRegister = { navigator.navigate(RegisterScreenDestination) }
