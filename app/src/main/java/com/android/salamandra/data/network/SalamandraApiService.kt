@@ -1,6 +1,8 @@
 package com.android.salamandra.data.network
 
+import com.android.salamandra.data.network.request.AccessTokenRequest
 import com.android.salamandra.data.network.request.AuthRequest
+import com.android.salamandra.data.network.response.AccessTokenResponse
 import com.android.salamandra.data.network.response.AuthResponse
 import com.android.salamandra.data.network.response.ExerciseResponse
 import retrofit2.Call
@@ -22,5 +24,12 @@ interface SalamandraApiService {
 
     @GET("exercises/search/{term}")
     suspend fun searchExercise(@Path("term") term: String): ExerciseResponse
+
+
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @POST("protocol/openid-connect/token")
+    fun getAccessToken(@Body requestBody: AccessTokenRequest): Call<AccessTokenResponse>
+
 
 }

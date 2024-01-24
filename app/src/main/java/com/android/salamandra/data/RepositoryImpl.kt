@@ -1,8 +1,10 @@
 package com.android.salamandra.data
 
 import android.util.Log
+import com.android.salamandra.core.ACCESSTOKENREQUEST
 import com.android.salamandra.data.network.SalamandraApiService
 import com.android.salamandra.data.network.request.AuthRequest
+import com.android.salamandra.data.network.response.AccessTokenResponse
 import com.android.salamandra.data.network.response.AuthResponse
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.model.ExerciseModel
@@ -17,6 +19,27 @@ class RepositoryImpl @Inject constructor(
 
     //Auth
     override suspend fun login(email: String, password: String, onResponse: (Pair<Boolean, String>) -> Unit){ //Pair: Exit/Failure + msg
+
+        val response = salamandraApiService.getAccessToken(ACCESSTOKENREQUEST).enqueue(
+            object : Callback<AccessTokenResponse> {
+                override fun onResponse(
+                    call: Call<AccessTokenResponse>,
+                    response: Response<AccessTokenResponse>
+                ) {
+                    Log.i("Jaime", "dummy")
+                }
+
+                override fun onFailure(call: Call<AccessTokenResponse>, t: Throwable) {
+                    Log.i("Jaime", "dummy")
+                }
+
+            }
+        )
+
+
+
+
+        /*
         salamandraApiService.login(AuthRequest(username = email, password = password)).enqueue(
             object : Callback<AuthResponse> {
                 override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
@@ -27,6 +50,7 @@ class RepositoryImpl @Inject constructor(
                 }
             }
         )
+        */
     }
 
     override suspend fun register(email: String, password: String, onResponse: (Pair<Boolean, String>) -> Unit) {
