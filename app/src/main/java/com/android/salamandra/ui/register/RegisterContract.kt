@@ -10,13 +10,15 @@ import com.vzkz.fitjournal.core.boilerplate.State
 data class RegisterState(
     val loading: Boolean,
     val error: Error,
-    val success: Boolean
+    val success: Boolean,
+    val confirmScreen: Boolean
 ) : State {
     companion object {
         val initial: RegisterState = RegisterState(
             loading = false,
             error = Error(false, null),
-            success = false
+            success = false,
+            confirmScreen = false
         )
     }
 }
@@ -27,4 +29,5 @@ sealed class RegisterIntent: Intent {
     data object Loading: RegisterIntent()
     data class Error(val errorMsg: String): RegisterIntent()
     data object Success: RegisterIntent()
+    data object ConfirmCode: RegisterIntent()
 }

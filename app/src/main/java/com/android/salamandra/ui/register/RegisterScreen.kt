@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -44,16 +45,32 @@ fun RegisterScreen(
     navigator: DestinationsNavigator,
     registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
-    ScreenBody(
-        onRegister = { registerViewModel.onRegister(username = "user", password = "1234") },
-        onSignIn = { navigator.navigate(LoginScreenDestination) }
-    )
+    var confirmScreen by remember { mutableStateOf(false) }
+    confirmScreen = registerViewModel.state.confirmScreen
+    var emailOfUser by remember { mutableStateOf("")    }
+    if (!confirmScreen) {
+        ScreenBody(
+            onRegister = {nickname, email, password ->
+                emailOfUser = email
+                registerViewModel.onRegister(
+                    username = nickname,
+                    email = email,
+                    password = password
+                )
+            },
+            onSignIn = { navigator.navigate(LoginScreenDestination) }
+        )
+    } else {
+        ConfirmCodeScreen(
+            onVerifyCode = { registerViewModel.onVerifyCode(username = emailOfUser, code = it) }
+        )
+    }
 }
 
 @Composable
 private fun ScreenBody(
     onSignIn: () -> Unit,
-    onRegister: () -> Unit
+    onRegister: (String, String, String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -61,10 +78,10 @@ private fun ScreenBody(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var repeatPassword by remember { mutableStateOf("") }
-        var nickname by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("jaimevzkz1@gmail.com") }
+        var password by remember { mutableStateOf("1234Qwerty") }
+        var repeatPassword by remember { mutableStateOf("1234Qwerty") }
+        var username by remember { mutableStateOf("jaimee") }
         //Validation
         var isEmailValid by remember { mutableStateOf(true) }
         var isPasswordValid by remember { mutableStateOf(true) }
@@ -126,11 +143,11 @@ private fun ScreenBody(
             } else MySpacer(size = 8)
             MyGenericTextField(
                 modifier = Modifier,
-                text = nickname,
+                text = username,
                 hint = stringResource(R.string.user_name),
                 onTextChanged = {
-                    nickname = it
-                    isNicknameValid = (nickname != "")
+                    username = it
+                    isNicknameValid = (username != "")
                 }
             )
             if (!isNicknameValid) {
@@ -160,7 +177,7 @@ private fun ScreenBody(
 //                if (isEmailValid && isPasswordValid && isSamePassword && isNicknameValid) {
 //                    //TODO
 //                }
-                onRegister()
+                onRegister(username, email, password)
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -180,13 +197,67 @@ private fun ScreenBody(
     }
 }
 
+@Composable
+private fun ConfirmCodeScreen(
+    onVerifyCode: (String) -> Unit
+) {
+    var code by remember { mutableStateOf("") }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        MyColumn(
+            modifier = Modifier
+                .offset(y = (-32).dp)
+                .padding(12.dp)
+        ) {
+            MyImageLogo()
+            MyGenericTextField(
+                modifier = Modifier,
+                text = code,
+                hint = "Confirmation code",
+                onTextChanged = {
+                    code = it
+
+                }
+            )
+            MySpacer(size = 8)
+            Text(
+                text = "Check your email for confirmation code",
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+        }
+
+        OutlinedButton(
+            onClick = {
+                onVerifyCode(code)
+            },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(32.dp)
+                .padding(bottom = 12.dp)
+                .fillMaxWidth(),
+            border = BorderStroke(1.dp, salamandraColor),
+            shape = RoundedCornerShape(42)
+        ) {
+            Text(
+                text = "Confirm",
+                fontSize = 16.sp,
+                color = salamandraColor,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun LightPreview() {
     SalamandraTheme {
-        ScreenBody(
-            onRegister = {},
-            onSignIn = {}
+//        ScreenBody(
+//            onRegister = {},
+//            onSignIn = {}
+//        )
+        ConfirmCodeScreen(
+            onVerifyCode = {}
         )
     }
 }

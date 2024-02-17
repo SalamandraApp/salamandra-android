@@ -33,15 +33,33 @@ class RegisterViewModel @Inject constructor(
                 loading = false,
                 success = true
             )
+
+            RegisterIntent.ConfirmCode -> state.copy(loading = false, confirmScreen = true)
         }
     }
 
     //Observe events from UI and dispatch them, this are the methods called from the UI
-    fun onRegister(username: String, password: String){
+    fun onRegister(username: String, email: String, password: String){
         dispatch(RegisterIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            registerUseCase(username, password) {
-                dispatch(RegisterIntent.Success)
+            try{
+                registerUseCase.register(username = username, email = email, password = password)
+                dispatch(RegisterIntent.ConfirmCode)
+
+            } catch(e: Exception){
+                dispatch(RegisterIntent.Error(e.message.orEmpty()))
+            }
+        }
+    }
+
+    fun onVerifyCode(username: String, code: String){
+        dispatch(RegisterIntent.Loading)
+        viewModelScope.launch(Dispatchers.IO) {
+            try{
+                registerUseCase.confirmRegister(username = username, code = code)
+
+            } catch(e: Exception){
+                dispatch(RegisterIntent.Error(e.message.orEmpty()))
             }
         }
     }
