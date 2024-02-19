@@ -47,8 +47,8 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     ScreenBody(
-        onLogin = {
-            loginViewModel.onLogin(username = "user1", password = "1234")
+        onLogin = {email, password ->
+            loginViewModel.onLogin(username = email, password = password)
             navigator.navigate(HomeScreenDestination)
         },
         onRegister = { navigator.navigate(RegisterScreenDestination) }
@@ -57,7 +57,7 @@ fun LoginScreen(
 
 @Composable
 private fun ScreenBody(
-    onLogin: () -> Unit,
+    onLogin: (String, String) -> Unit,
     onRegister: () -> Unit
 ) {
     Box(
@@ -66,8 +66,8 @@ private fun ScreenBody(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("jaimevzkz1@gmail.com") }
+        var password by remember { mutableStateOf("1234Qwerty") }
 
 
         MyColumn(modifier = Modifier.offset(y = (-30).dp)) {
@@ -90,7 +90,7 @@ private fun ScreenBody(
             )
         }
         OutlinedButton(
-            onClick = { onLogin() },
+            onClick = { onLogin(email, password) },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(32.dp)
@@ -114,7 +114,7 @@ private fun ScreenBody(
 fun LightPreview() {
     SalamandraTheme {
         ScreenBody(
-            onLogin = {},
+            onLogin = {_,_ ->},
             onRegister = {}
         )
     }

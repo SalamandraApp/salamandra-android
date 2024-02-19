@@ -34,9 +34,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     fun onLogin(username: String, password: String){
         dispatch(LoginIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            loginUseCase(username, password) {
-                dispatch(LoginIntent.Success)
-            }
+            loginUseCase(username, password)
         }
     }
 }

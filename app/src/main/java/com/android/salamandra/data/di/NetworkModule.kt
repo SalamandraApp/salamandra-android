@@ -1,7 +1,9 @@
 package com.android.salamandra.data.di
 
+import com.amplifyframework.core.Amplify
 import com.android.salamandra.BuildConfig.BASE_URL
 import com.android.salamandra.data.RepositoryImpl
+import com.android.salamandra.data.cognito.CognitoService
 import com.android.salamandra.data.network.SalamandraApiService
 import com.android.salamandra.data.network.interceptor.AuthInterceptor
 import com.android.salamandra.domain.Repository
@@ -22,8 +24,9 @@ object NetworkModule {
     @Provides
     fun provideRepository(
         salamandraApiService: SalamandraApiService,
+        cognitoService: CognitoService
     ): Repository {
-        return RepositoryImpl(salamandraApiService)
+        return RepositoryImpl(salamandraApiService, cognitoService)
     }
 
     //Retrofit
@@ -52,4 +55,5 @@ object NetworkModule {
     fun provideLoginApiService(retrofit: Retrofit): SalamandraApiService {
         return retrofit.create(SalamandraApiService::class.java)
     }
+
 }
