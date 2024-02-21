@@ -122,8 +122,8 @@ dependencies {
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation("com.amplifyframework:aws-auth-cognito:2.14.10")
 
-//    implementation("com.amazonaws:aws-android-sdk-cognito:2.20.0")
-//    implementation ("com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.75.0")
+    //DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
 

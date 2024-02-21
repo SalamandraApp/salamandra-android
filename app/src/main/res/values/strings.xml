@@ -12,4 +12,7 @@
     <string name="invalid_password_capital_required">Invalid password (Capital required)</string>
     <string name="email_must_have_a_valid_format">email must have a valid format</string>
     <string name="search_by_name">Search by name</string>
+    <string name="ok">OK</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

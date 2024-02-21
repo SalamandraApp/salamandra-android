@@ -1,8 +1,9 @@
 package com.android.salamandra.ui.register
 
 import androidx.lifecycle.viewModelScope
+import com.android.salamandra.domain.model.UiError
 import com.android.salamandra.domain.usecases.RegisterUseCase
-import com.android.salamandra.ui.login.Error
+import com.android.salamandra.ui.login.LoginIntent
 import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,7 @@ class RegisterViewModel @Inject constructor(
     ): RegisterState { //This function reduces each intent with a when
         return when(intent){
             is RegisterIntent.Error -> state.copy(
-                error = Error(isError = true, errorMsg = intent.errorMsg),
+                error = UiError(isError = true, errorMsg = intent.errorMsg),
                 loading = false
             )
 
@@ -34,7 +35,13 @@ class RegisterViewModel @Inject constructor(
                 success = true
             )
 
-            RegisterIntent.ConfirmCode -> state.copy(loading = false, confirmScreen = true)
+            is RegisterIntent.ConfirmCode -> state.copy(loading = false, confirmScreen = true)
+
+            is RegisterIntent.CloseError -> state.copy(
+                error = UiError(false, null),
+                loading = false,
+                success = false
+            )
         }
     }
 
@@ -45,7 +52,6 @@ class RegisterViewModel @Inject constructor(
             try{
                 registerUseCase.register(username = username, email = email, password = password)
                 dispatch(RegisterIntent.ConfirmCode)
-
             } catch(e: Exception){
                 dispatch(RegisterIntent.Error(e.message.orEmpty()))
             }
@@ -57,12 +63,14 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try{
                 registerUseCase.confirmRegister(username = username, code = code)
-
+                dispatch(RegisterIntent.Success)
             } catch(e: Exception){
                 dispatch(RegisterIntent.Error(e.message.orEmpty()))
             }
         }
     }
+
+    fun onCloseDialog() = dispatch(RegisterIntent.CloseError)
 
 
 }

@@ -25,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
+import com.android.salamandra.domain.model.UiError
+import com.android.salamandra.ui.components.MyAlertDialog
+import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyEmailTextField
 import com.android.salamandra.ui.components.MyGenericTextField
@@ -35,6 +38,7 @@ import com.android.salamandra.ui.components.validateEmail
 import com.android.salamandra.ui.components.validatePassword
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
+import com.destinations.HomeScreenDestination
 import com.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -47,10 +51,17 @@ fun RegisterScreen(
 ) {
     var confirmScreen by remember { mutableStateOf(false) }
     confirmScreen = registerViewModel.state.confirmScreen
-    var emailOfUser by remember { mutableStateOf("")    }
-    if (!confirmScreen) {
+    var emailOfUser by remember { mutableStateOf("") }
+    val error = registerViewModel.state.error
+    if (registerViewModel.state.success) {
+        navigator.navigate(HomeScreenDestination)
+    } else if (registerViewModel.state.loading) {
+        MyCircularProgressbar()
+    } else if (!confirmScreen) {
         ScreenBody(
-            onRegister = {nickname, email, password ->
+            onCloseDialog = { registerViewModel.onCloseDialog() },
+            error = error,
+            onRegister = { nickname, email, password ->
                 emailOfUser = email
                 registerViewModel.onRegister(
                     username = nickname,
@@ -62,6 +73,8 @@ fun RegisterScreen(
         )
     } else {
         ConfirmCodeScreen(
+            onCloseDialog = { registerViewModel.onCloseDialog() },
+            error = error,
             onVerifyCode = { registerViewModel.onVerifyCode(username = emailOfUser, code = it) }
         )
     }
@@ -69,6 +82,8 @@ fun RegisterScreen(
 
 @Composable
 private fun ScreenBody(
+    error: UiError,
+    onCloseDialog: () -> Unit,
     onSignIn: () -> Unit,
     onRegister: (String, String, String) -> Unit
 ) {
@@ -194,11 +209,21 @@ private fun ScreenBody(
                 modifier = Modifier.padding(4.dp)
             )
         }
+
+        MyAlertDialog(
+            title = "Error during log in",
+            text = error.errorMsg ?: "Invalid credentials",
+            onDismiss = { onCloseDialog() },
+            onConfirm = { onCloseDialog() },
+            showDialog = error.isError
+        )
     }
 }
 
 @Composable
 private fun ConfirmCodeScreen(
+    error: UiError,
+    onCloseDialog: () -> Unit,
     onVerifyCode: (String) -> Unit
 ) {
     var code by remember { mutableStateOf("") }
@@ -245,6 +270,13 @@ private fun ConfirmCodeScreen(
                 modifier = Modifier.padding(4.dp)
             )
         }
+        MyAlertDialog(
+            title = "Error during log in",
+            text = error.errorMsg ?: "Invalid credentials",
+            onDismiss = { onCloseDialog() },
+            onConfirm = { onCloseDialog() },
+            showDialog = error.isError
+        )
     }
 }
 
@@ -257,6 +289,8 @@ fun LightPreview() {
 //            onSignIn = {}
 //        )
         ConfirmCodeScreen(
+            error = UiError(false, null),
+            onCloseDialog = {},
             onVerifyCode = {}
         )
     }

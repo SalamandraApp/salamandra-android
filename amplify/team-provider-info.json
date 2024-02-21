@@ -10,11 +10,6 @@
       "StackName": "amplify-salamandraandroid-dev-191202",
       "StackId": "arn:aws:cloudformation:eu-central-1:106219933233:stack/amplify-salamandraandroid-dev-191202/0e3519c0-cdc0-11ee-aba0-0a490793435f",
       "AmplifyAppId": "d3t6rl7wtppk1u"
-    },
-    "categories": {
-      "auth": {
-        "salamandraandroid62ff212a": {}
-      }
     }
   }
 }

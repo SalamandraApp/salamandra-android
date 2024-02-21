@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -22,13 +21,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
+import com.android.salamandra.domain.model.UiError
+import com.android.salamandra.ui.components.MyAlertDialog
+import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyEmailTextField
 import com.android.salamandra.ui.components.MyImageLogo
@@ -46,17 +47,27 @@ fun LoginScreen(
     navigator: DestinationsNavigator,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-    ScreenBody(
-        onLogin = {email, password ->
-            loginViewModel.onLogin(username = email, password = password)
-            navigator.navigate(HomeScreenDestination)
-        },
-        onRegister = { navigator.navigate(RegisterScreenDestination) }
-    )
+    if (loginViewModel.state.success) {
+        navigator.navigate(HomeScreenDestination)
+    }else if (loginViewModel.state.loading) {
+        MyCircularProgressbar()
+    }  else {
+        val error = loginViewModel.state.error
+        ScreenBody(
+            onCloseDialog = { loginViewModel.onCloseDialog() },
+            error = error,
+            onLogin = { email, password ->
+                loginViewModel.onLogin(username = email, password = password)
+            },
+            onRegister = { navigator.navigate(RegisterScreenDestination) }
+        )
+    }
 }
 
 @Composable
 private fun ScreenBody(
+    error: UiError,
+    onCloseDialog: () -> Unit,
     onLogin: (String, String) -> Unit,
     onRegister: () -> Unit
 ) {
@@ -68,8 +79,6 @@ private fun ScreenBody(
     ) {
         var email by remember { mutableStateOf("jaimevzkz1@gmail.com") }
         var password by remember { mutableStateOf("1234Qwerty") }
-
-
         MyColumn(modifier = Modifier.offset(y = (-30).dp)) {
             MyImageLogo()
             MyEmailTextField(modifier = Modifier, text = email, onTextChanged = { email = it })
@@ -106,6 +115,14 @@ private fun ScreenBody(
                 modifier = Modifier.padding(4.dp)
             )
         }
+        MyAlertDialog(
+            title = "Error during log in",
+            text = error.errorMsg ?: "Invalid credentials",
+            onDismiss = { onCloseDialog() },
+            onConfirm = { onCloseDialog() },
+            showDialog = error.isError
+        )
+
     }
 }
 
@@ -114,16 +131,10 @@ private fun ScreenBody(
 fun LightPreview() {
     SalamandraTheme {
         ScreenBody(
-            onLogin = {_,_ ->},
+            error = UiError(false, null),
+            onCloseDialog = {},
+            onLogin = { _, _ -> },
             onRegister = {}
         )
     }
 }
-
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun DarkPreview() {
-//    SalamandraTheme {
-//        ScreenBody()
-//    }
-//}

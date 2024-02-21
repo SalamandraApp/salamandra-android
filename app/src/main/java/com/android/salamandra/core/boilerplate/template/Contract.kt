@@ -1,24 +1,26 @@
 package com.android.salamandra.core.boilerplate.template
 
+import com.android.salamandra.domain.model.UiError
 import com.vzkz.fitjournal.core.boilerplate.Intent
 import com.vzkz.fitjournal.core.boilerplate.State
 
 
 data class tState(
     val loading: Boolean,
-    val error: Error
+    val error: UiError
+//    val counter: Int,
 ) : State {
     companion object {
         val initial: tState = tState(
             loading = false,
-            error = Error(false, null)
+            error = UiError(false, null)
+//            counter = 0,
         )
     }
 }
 
-data class Error(val isError: Boolean, val errorMsg: String?)
-
 sealed class tIntent: Intent {
-    data object Loading: tIntent()
+    data class Loading(val isLoading: Boolean): tIntent()
     data class Error(val errorMsg: String): tIntent()
+    data object CloseError: tIntent()
 }

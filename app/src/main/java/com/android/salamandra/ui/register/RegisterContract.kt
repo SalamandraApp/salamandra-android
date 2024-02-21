@@ -1,33 +1,31 @@
 package com.android.salamandra.ui.register
 
-import com.android.salamandra.ui.login.Error
-import com.android.salamandra.ui.login.LoginIntent
-import com.android.salamandra.ui.login.LoginState
+import com.android.salamandra.domain.model.UiError
 import com.vzkz.fitjournal.core.boilerplate.Intent
 import com.vzkz.fitjournal.core.boilerplate.State
 
 
 data class RegisterState(
     val loading: Boolean,
-    val error: Error,
+    val error: UiError,
     val success: Boolean,
     val confirmScreen: Boolean
 ) : State {
     companion object {
         val initial: RegisterState = RegisterState(
             loading = false,
-            error = Error(false, null),
+            error = UiError(false, null),
             success = false,
             confirmScreen = false
         )
     }
 }
 
-data class Error(val isError: Boolean, val errorMsg: String?)
 
 sealed class RegisterIntent: Intent {
     data object Loading: RegisterIntent()
     data class Error(val errorMsg: String): RegisterIntent()
     data object Success: RegisterIntent()
     data object ConfirmCode: RegisterIntent()
+    data object CloseError: RegisterIntent()
 }

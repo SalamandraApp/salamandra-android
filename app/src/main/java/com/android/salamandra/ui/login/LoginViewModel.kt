@@ -1,6 +1,8 @@
 package com.android.salamandra.ui.login
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.android.salamandra.domain.model.UiError
 import com.android.salamandra.domain.usecases.LoginUseCase
 import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +17,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     override fun reduce(state: LoginState, intent: LoginIntent): LoginState { //This function reduces each intent with a when
         return when(intent){
             is LoginIntent.Error -> state.copy(
-                error = Error(isError = true, errorMsg = intent.errorMsg),
+                error = UiError(isError = true, errorMsg = intent.errorMsg),
                 loading = false
             )
 
@@ -23,9 +25,15 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
                 loading = true
             )
 
-            is LoginIntent.Success ->state.copy(
+            is LoginIntent.Login -> state.copy(
                 loading = false,
                 success = true
+            )
+
+            is LoginIntent.CloseError -> state.copy(
+                error = UiError(false, null),
+                loading = false,
+                success = false
             )
         }
     }
@@ -34,7 +42,15 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     fun onLogin(username: String, password: String){
         dispatch(LoginIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            loginUseCase(username, password)
+            loginUseCase(username, password).onSuccess { actor ->
+                //todo
+                dispatch(LoginIntent.Login)
+            }.onFailure { e ->
+                Log.e("Jaime", e.message.orEmpty())
+                dispatch(LoginIntent.Error(e.message.orEmpty()))
+            }
         }
     }
+
+    fun onCloseDialog() = dispatch(LoginIntent.CloseError)
 }

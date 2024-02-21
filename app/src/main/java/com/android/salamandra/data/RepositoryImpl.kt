@@ -1,13 +1,11 @@
 package com.android.salamandra.data
 
 import android.util.Log
-import com.amplifyframework.auth.AuthException
-import com.amplifyframework.auth.options.AuthSignUpOptions
-import com.amplifyframework.core.Amplify
 import com.android.salamandra.data.cognito.CognitoService
 import com.android.salamandra.data.network.SalamandraApiService
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.model.ExerciseModel
+import com.android.salamandra.domain.model.UserModel
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -16,8 +14,14 @@ class RepositoryImpl @Inject constructor(
 ) : Repository {
 
     //Auth
-    override suspend fun login(email: String, password: String) =
-        cognitoService.login(email, password)
+    override suspend fun login(email: String, password: String): Result<UserModel> {
+        return if(cognitoService.login(email, password)){
+            //todo fetch user data from db
+            Result.success(UserModel())
+        } else{
+            Result.failure(Exception("Login failed"))
+        }
+    }
 
     override suspend fun register(email: String, password: String, username: String) =
         cognitoService.register(email, password, username)
@@ -40,3 +44,4 @@ class RepositoryImpl @Inject constructor(
         return null
     }
 }
+
