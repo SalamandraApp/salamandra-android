@@ -2,16 +2,19 @@ package com.android.salamandra.data.cognito
 
 import android.util.Log
 import com.amplifyframework.auth.AuthException
+import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
+import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult
 import com.amplifyframework.auth.options.AuthSignUpOptions
 import com.amplifyframework.core.Amplify
-import com.android.salamandra.data.model.TokenManager
+import com.android.salamandra.domain.DataStoreRepository
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class CognitoService @Inject constructor(
-    private val tokenManager: TokenManager
+    private val dataStore: DataStoreRepository
 ) {
-    fun login(email: String, password: String): Boolean {
+    suspend fun login(email: String, password: String): Boolean {
         var loginResult = false
         Amplify.Auth.signIn(
             email,
@@ -23,7 +26,9 @@ class CognitoService @Inject constructor(
                         { result ->
                             val cognitoAuthSession: AWSCognitoAuthSession =
                                 result as AWSCognitoAuthSession
-                            tokenManager.saveToken(cognitoAuthSession.accessToken!!)
+                            runBlocking {
+                                dataStore.saveToken(cognitoAuthSession.accessToken!!)
+                            }
                             loginResult = true
                         },
                         { fetchError ->
@@ -43,10 +48,12 @@ class CognitoService @Inject constructor(
 
     fun register(email: String, password: String, username: String): Boolean { //throws exception
         val options = AuthSignUpOptions.builder()
+            .userAttribute(AuthUserAttributeKey.email(), email)
+            .userAttribute(AuthUserAttributeKey.nickname(), username)
             .build()
         var registerWorked = false
         Amplify.Auth.signUp(
-            email,
+            username,
             password,
             options,
             {//onSuccess
@@ -55,13 +62,13 @@ class CognitoService @Inject constructor(
             },
             {//onError
                 Log.e("SLM", "Sign up failed: ${it.message}")
-                throw (it)
+                throw (Exception(it.message))
             }
         )
         return registerWorked
     }
 
-    fun confirmRegister(username: String, code: String): Boolean {
+    suspend fun confirmRegister(username: String, code: String): Boolean {
         var confirmResult = false
         try {
             Amplify.Auth.confirmSignUp(
@@ -73,7 +80,9 @@ class CognitoService @Inject constructor(
                         { result ->
                             val cognitoAuthSession: AWSCognitoAuthSession =
                                 result as AWSCognitoAuthSession
-                            tokenManager.saveToken(cognitoAuthSession.accessToken!!)
+                            runBlocking {
+                                dataStore.saveToken(cognitoAuthSession.accessToken!!)
+                            }
                             confirmResult = true
                         },
                         { fetchError ->
@@ -92,16 +101,20 @@ class CognitoService @Inject constructor(
         return confirmResult
     }
 
-    fun isUserLoged(): Boolean {
+    suspend fun isUserLoged(): Boolean {
         var isLogged = false
         Amplify.Auth.fetchAuthSession(
             { result ->
                 val cognitoAuthSession: AWSCognitoAuthSession = result as AWSCognitoAuthSession
                 isLogged = cognitoAuthSession.isSignedIn
                 if(!isLogged) {
-                    tokenManager.deleteToken()
+                    runBlocking {
+                        dataStore.deleteToken()
+                    }
                 } else {
-                    tokenManager.saveToken(cognitoAuthSession.accessToken!!)
+                    runBlocking {
+                        dataStore.saveToken(cognitoAuthSession.accessToken!!)
+                    }
                 }
             },
             { fetchError ->
@@ -110,5 +123,22 @@ class CognitoService @Inject constructor(
             }
         )
         return isLogged
+    }
+
+    fun logout() {
+        Amplify.Auth.signOut { signOutResult ->
+            when(signOutResult) {
+                is AWSCognitoAuthSignOutResult.CompleteSignOut -> {
+                    Log.i("SLM", "Sign out complete")
+                }
+                is AWSCognitoAuthSignOutResult.PartialSignOut -> {
+                    Log.e("SLM", "Partial sign out, some data may still be on the device")
+                }
+                is AWSCognitoAuthSignOutResult.FailedSignOut -> {
+                    Log.e("SLM", "Sign out failed")
+                }
+            }
+        }
+
     }
 }

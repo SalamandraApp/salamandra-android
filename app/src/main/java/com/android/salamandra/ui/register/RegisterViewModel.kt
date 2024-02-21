@@ -2,8 +2,7 @@ package com.android.salamandra.ui.register
 
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra.domain.model.UiError
-import com.android.salamandra.domain.usecases.RegisterUseCase
-import com.android.salamandra.ui.login.LoginIntent
+import com.android.salamandra.domain.usecases.auth.RegisterUseCase
 import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

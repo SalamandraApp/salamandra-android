@@ -1,15 +1,19 @@
 package com.android.salamandra.data.di
 
+import android.content.Context
 import com.amplifyframework.core.Amplify
 import com.android.salamandra.BuildConfig.BASE_URL
+import com.android.salamandra.data.DataStoreRepositoryImpl
 import com.android.salamandra.data.RepositoryImpl
 import com.android.salamandra.data.cognito.CognitoService
 import com.android.salamandra.data.network.SalamandraApiService
 import com.android.salamandra.data.network.interceptor.AuthInterceptor
+import com.android.salamandra.domain.DataStoreRepository
 import com.android.salamandra.domain.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -55,5 +59,12 @@ object NetworkModule {
     fun provideLoginApiService(retrofit: Retrofit): SalamandraApiService {
         return retrofit.create(SalamandraApiService::class.java)
     }
+
+    //Datastore
+    @Singleton
+    @Provides
+    fun provideDataStoreRepository(
+        @ApplicationContext app: Context
+    ): DataStoreRepository = DataStoreRepositoryImpl(app)
 
 }

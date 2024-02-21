@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
+import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.domain.model.ExerciseModel
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyExerciseCardView
@@ -41,14 +43,19 @@ fun HomeScreen(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = 
     val exList = homeViewModel.state.exList
     ScreenBody(
         exList = exList,
-        onSearch = { homeViewModel.onSearchExercise(it) }
+        onSearch = { homeViewModel.onSearchExercise(it) },
+        onLogout = {
+            homeViewModel.onLogout()
+            navigator.navigate(LoginScreenDestination)
+        }
     )
 }
 
 @Composable
 private fun ScreenBody(
     exList: List<ExerciseModel>?,
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
+    onLogout: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -57,7 +64,6 @@ private fun ScreenBody(
         contentAlignment = Alignment.TopCenter
     ) {
         var term by remember { mutableStateOf("") }
-
 
         MyColumn(modifier = Modifier.padding(16.dp)) {
             OutlinedTextField(
@@ -80,9 +86,9 @@ private fun ScreenBody(
                     }
                 }
             )
-            if(exList != null){
+            if (exList != null) {
                 LazyColumn {
-                    items(exList){
+                    items(exList) {
                         MyExerciseCardView(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -94,6 +100,10 @@ private fun ScreenBody(
 
             }
         }
+
+        Button(onClick = { onLogout() }, modifier = Modifier.align(Alignment.BottomEnd)) {
+            Text(text = "Log out")
+        }
     }
 }
 
@@ -102,6 +112,6 @@ private fun ScreenBody(
 @Composable
 fun LightPreview() {
     SalamandraTheme {
-        ScreenBody(exList = null, onSearch = {})
+        ScreenBody(exList = null, onSearch = {}, onLogout = {})
     }
 }

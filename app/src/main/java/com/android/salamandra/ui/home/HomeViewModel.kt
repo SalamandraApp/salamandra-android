@@ -2,6 +2,7 @@ package com.android.salamandra.ui.home
 
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra.domain.usecases.SearchExerciseUseCase
+import com.android.salamandra.domain.usecases.auth.LogoutUseCase
 import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +12,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(val searchExerciseUseCase: SearchExerciseUseCase) :
+class HomeViewModel @Inject constructor(
+    val searchExerciseUseCase: SearchExerciseUseCase,
+    val logoutUseCase: LogoutUseCase
+) :
     BaseViewModel<HomeState, HomeIntent>(HomeState.initial) {
 
     override fun reduce(
@@ -36,13 +40,19 @@ class HomeViewModel @Inject constructor(val searchExerciseUseCase: SearchExercis
 
     //Observe events from UI and dispatch them, this are the methods called from the UI
     fun onSearchExercise(term: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val result = withContext(Dispatchers.IO) { searchExerciseUseCase(term) }
-            if(result != null){
+            if (result != null) {
                 dispatch(HomeIntent.SetExList(result))
-            }else{
+            } else {
                 dispatch(HomeIntent.Error("Error while calling Search exercise API"))
             }
+        }
+    }
+
+    fun onLogout() {
+        viewModelScope.launch {
+            onLogout()
         }
     }
 

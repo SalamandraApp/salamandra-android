@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
+import com.android.salamandra.destinations.HomeScreenDestination
+import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.domain.model.UiError
 import com.android.salamandra.ui.components.MyAlertDialog
 import com.android.salamandra.ui.components.MyCircularProgressbar
@@ -38,8 +40,6 @@ import com.android.salamandra.ui.components.validateEmail
 import com.android.salamandra.ui.components.validatePassword
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
-import com.destinations.HomeScreenDestination
-import com.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 

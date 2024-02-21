@@ -1,9 +1,7 @@
-package com.vzkz.profinder.core.boilerplate.template
+package com.android.salamandra.core.boilerplate.template
 
-import com.android.salamandra.core.boilerplate.template.tIntent
-import com.android.salamandra.core.boilerplate.template.tState
-import com.vzkz.profinder.core.boilerplate.BaseViewModel
-import com.vzkz.profinder.domain.model.UiError
+import com.android.salamandra.domain.model.UiError
+import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

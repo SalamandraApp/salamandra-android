@@ -1,4 +1,4 @@
-package com.vzkz.profinder.core.boilerplate.template
+package com.android.salamandra.core.boilerplate.template
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -8,15 +8,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.salamandra.domain.model.UiError
+import com.android.salamandra.ui.components.MyAlertDialog
+import com.android.salamandra.ui.theme.SalamandraTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.vzkz.profinder.R
-import com.vzkz.profinder.domain.model.UiError
-import com.vzkz.profinder.ui.components.dialogs.MyAlertDialog
-import com.vzkz.profinder.ui.theme.ProFinderTheme
 
 @Destination
 @Composable
@@ -45,7 +43,7 @@ private fun ScreenBody(
 
 
         MyAlertDialog(
-            title = stringResource(R.string.error),
+            title = "Error",
             text = error.errorMsg.orEmpty(),
             onDismiss = { onCloseDialog() },
             onConfirm = { onCloseDialog() },
@@ -57,7 +55,7 @@ private fun ScreenBody(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun LightPreview() {
-    ProFinderTheme {
+    SalamandraTheme {
         ScreenBody(
             error = UiError(false, "Account wasn't created"),
             onCloseDialog = {},

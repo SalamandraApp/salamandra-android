@@ -1,4 +1,4 @@
-package com.android.salamandra.domain.usecases
+package com.android.salamandra.domain.usecases.auth
 
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.model.UserModel

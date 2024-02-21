@@ -11,4 +11,6 @@ interface Repository {
     suspend fun confirmRegister(username: String, code: String): Boolean
 
     suspend fun getExercise(term: String): List<ExerciseModel>?
+
+    suspend fun logout()
 }

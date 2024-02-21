@@ -3,7 +3,7 @@ package com.android.salamandra.ui.login
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra.domain.model.UiError
-import com.android.salamandra.domain.usecases.LoginUseCase
+import com.android.salamandra.domain.usecases.auth.LoginUseCase
 import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

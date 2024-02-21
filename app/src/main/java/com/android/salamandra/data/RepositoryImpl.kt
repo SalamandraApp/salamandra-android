@@ -23,12 +23,19 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun register(email: String, password: String, username: String) =
-        cognitoService.register(email, password, username)
+    override suspend fun register(email: String, password: String, username: String): Boolean {
+        return try{
+            cognitoService.register(email, password, username)
+        } catch (e: Exception){
+            Log.e("Jaime", "An error ocurred while using cognitoService, ${e.message}")
+            throw e
+        }
+    }
 
     override suspend fun confirmRegister(username: String, code: String) =
         cognitoService.confirmRegister(username, code)
 
+    override suspend fun logout() = cognitoService.logout()
 
     //Ex query
     override suspend fun getExercise(term: String): List<ExerciseModel>? {
@@ -44,4 +51,5 @@ class RepositoryImpl @Inject constructor(
         return null
     }
 }
+
 
