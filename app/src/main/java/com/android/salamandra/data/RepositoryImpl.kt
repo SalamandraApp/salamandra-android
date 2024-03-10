@@ -14,26 +14,54 @@ class RepositoryImpl @Inject constructor(
 ) : Repository {
 
     //Auth
-    override suspend fun login(email: String, password: String): Result<UserModel> {
-        return if(cognitoService.login(email, password)){
-            //todo fetch user data from db
-            Result.success(UserModel())
-        } else{
-            Result.failure(Exception("Login failed"))
-        }
+    override suspend fun login(email: String, password: String, onSuccess: () -> Unit) {
+        cognitoService.login(
+            email,
+            password,
+            onSuccess = {
+                Log.i("SLM", "Login success")
+                onSuccess()
+            },
+            onError = {
+                Log.e("SLM", "An error occurred while using cognitoService, ${it.message}")
+                throw Exception(it.message)
+            }
+        )
     }
 
-    override suspend fun register(email: String, password: String, username: String): Boolean {
-        return try{
-            cognitoService.register(email, password, username)
-        } catch (e: Exception){
-            Log.e("Jaime", "An error ocurred while using cognitoService, ${e.message}")
-            throw e
-        }
+    override suspend fun register(
+        email: String,
+        password: String,
+        username: String,
+        onSuccess: () -> Unit
+    ) {
+        cognitoService.register(
+            email,
+            password,
+            username,
+            onSuccess = {
+                onSuccess()
+            },
+            onError = {
+                Log.e("SLM", "An error ocurred while using cognitoService, ${it.message}")
+                throw Exception(it.message)
+            }
+        )
     }
 
-    override suspend fun confirmRegister(username: String, code: String) =
-        cognitoService.confirmRegister(username, code)
+    override suspend fun confirmRegister(username: String, code: String, onSuccess: () -> Unit) {
+        cognitoService.confirmRegister(
+            username,
+            code,
+            onSuccess = {
+                Log.i("SLM", "Register confirmed")
+                onSuccess()
+            },
+            onError = {
+                Log.e("SLM", "An error ocurred while using cognitoService, ${it.message}")
+                throw Exception(it.message)
+            })
+    }
 
     override suspend fun logout() = cognitoService.logout()
 

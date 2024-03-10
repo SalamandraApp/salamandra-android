@@ -13,7 +13,12 @@
     },
     "categories": {
       "auth": {
-        "dummy": {}
+        "salamandraandroid654600e2": {
+          "userPoolId": "eu-central-1_Vu4DPBYFD",
+          "userPoolName": "dummyDev2",
+          "webClientId": "5i1gug0bavsn9an0c2q6h3038m",
+          "nativeClientId": "5i1gug0bavsn9an0c2q6h3038m"
+        }
       }
     }
   }

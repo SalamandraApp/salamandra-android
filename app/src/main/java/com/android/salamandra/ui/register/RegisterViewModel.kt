@@ -49,8 +49,9 @@ class RegisterViewModel @Inject constructor(
         dispatch(RegisterIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                registerUseCase.register(username = username, email = email, password = password)
-                dispatch(RegisterIntent.ConfirmCode)
+                registerUseCase.register(username = username, email = email, password = password){
+                    dispatch(RegisterIntent.ConfirmCode)
+                }
             } catch(e: Exception){
                 dispatch(RegisterIntent.Error(e.message.orEmpty()))
             }
@@ -61,8 +62,9 @@ class RegisterViewModel @Inject constructor(
         dispatch(RegisterIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                registerUseCase.confirmRegister(username = username, code = code)
-                dispatch(RegisterIntent.Success)
+                registerUseCase.confirmRegister(username = username, code = code){
+                    dispatch(RegisterIntent.Success)
+                }
             } catch(e: Exception){
                 dispatch(RegisterIntent.Error(e.message.orEmpty()))
             }

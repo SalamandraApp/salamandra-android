@@ -1,29 +1,45 @@
 {
   "auth": {
-    "dummy": {
+    "salamandraandroid654600e2": {
       "customAuth": false,
       "dependsOn": [],
-      "frontendAuthConfig": {
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 8
-        },
-        "signupAttributes": [
-          "EMAIL",
-          "NICKNAME"
-        ],
-        "socialProviders": [],
-        "usernameAttributes": [],
-        "verificationMechanisms": [
-          "EMAIL"
-        ]
-      },
       "providerPlugin": "awscloudformation",
-      "service": "Cognito"
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_salamandraandroid654600e2_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "salamandraandroid654600e2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_salamandraandroid654600e2_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "salamandraandroid654600e2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_salamandraandroid654600e2_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "salamandraandroid654600e2"
+        }
+      ]
+    },
+    "AMPLIFY_auth_salamandraandroid654600e2_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "salamandraandroid654600e2"
+        }
+      ]
     }
   }
 }

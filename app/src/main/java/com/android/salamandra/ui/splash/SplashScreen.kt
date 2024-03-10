@@ -24,8 +24,6 @@ fun SplashScreen(navigator: DestinationsNavigator) {
     ScreenBody()
 
     navigator.navigate(LoginScreenDestination)
-
-
 }
 
 

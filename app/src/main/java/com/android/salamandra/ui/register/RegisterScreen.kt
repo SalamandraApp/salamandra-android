@@ -51,7 +51,7 @@ fun RegisterScreen(
 ) {
     var confirmScreen by remember { mutableStateOf(false) }
     confirmScreen = registerViewModel.state.confirmScreen
-    var emailOfUser by remember { mutableStateOf("") }
+    var nicknameOfUser by remember { mutableStateOf("") }
     val error = registerViewModel.state.error
     if (registerViewModel.state.success) {
         navigator.navigate(HomeScreenDestination)
@@ -62,7 +62,7 @@ fun RegisterScreen(
             onCloseDialog = { registerViewModel.onCloseDialog() },
             error = error,
             onRegister = { nickname, email, password ->
-                emailOfUser = email
+                nicknameOfUser = nickname
                 registerViewModel.onRegister(
                     username = nickname,
                     email = email,
@@ -75,7 +75,7 @@ fun RegisterScreen(
         ConfirmCodeScreen(
             onCloseDialog = { registerViewModel.onCloseDialog() },
             error = error,
-            onVerifyCode = { registerViewModel.onVerifyCode(username = emailOfUser, code = it) }
+            onVerifyCode = { registerViewModel.onVerifyCode(username = nicknameOfUser, code = it) }
         )
     }
 }
@@ -94,8 +94,8 @@ private fun ScreenBody(
         contentAlignment = Alignment.Center
     ) {
         var email by remember { mutableStateOf("jaimevzkz1@gmail.com") }
-        var password by remember { mutableStateOf("1234Qwerty") }
-        var repeatPassword by remember { mutableStateOf("1234Qwerty") }
+        var password by remember { mutableStateOf("1234Qwerty$") }
+        var repeatPassword by remember { mutableStateOf("1234Qwerty$") }
         var username by remember { mutableStateOf("jaimee") }
         //Validation
         var isEmailValid by remember { mutableStateOf(true) }

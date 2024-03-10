@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra.domain.model.UiError
 import com.android.salamandra.domain.usecases.auth.LoginUseCase
+import com.android.salamandra.ui.register.RegisterIntent
 import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -12,10 +13,14 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase): BaseViewModel<LoginState, LoginIntent>(LoginState.initial) {
+class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase) :
+    BaseViewModel<LoginState, LoginIntent>(LoginState.initial) {
 
-    override fun reduce(state: LoginState, intent: LoginIntent): LoginState { //This function reduces each intent with a when
-        return when(intent){
+    override fun reduce(
+        state: LoginState,
+        intent: LoginIntent
+    ): LoginState { //This function reduces each intent with a when
+        return when (intent) {
             is LoginIntent.Error -> state.copy(
                 error = UiError(isError = true, errorMsg = intent.errorMsg),
                 loading = false
@@ -39,14 +44,14 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     }
 
     //Observe events from UI and dispatch them, this are the methods called from the UI
-    fun onLogin(username: String, password: String){
+    fun onLogin(username: String, password: String) {
         dispatch(LoginIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            loginUseCase(username, password).onSuccess { actor ->
-                //todo
-                dispatch(LoginIntent.Login)
-            }.onFailure { e ->
-                Log.e("Jaime", e.message.orEmpty())
+            try {
+                loginUseCase(username, password, onSuccess = {
+                    dispatch(LoginIntent.Login)
+                })
+            } catch (e: Exception) {
                 dispatch(LoginIntent.Error(e.message.orEmpty()))
             }
         }

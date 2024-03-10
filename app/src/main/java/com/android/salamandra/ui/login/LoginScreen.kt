@@ -78,7 +78,7 @@ private fun ScreenBody(
         contentAlignment = Alignment.Center
     ) {
         var email by remember { mutableStateOf("jaimevzkz1@gmail.com") }
-        var password by remember { mutableStateOf("1234Qwerty") }
+        var password by remember { mutableStateOf("1234Qwerty$") }
         MyColumn(modifier = Modifier.offset(y = (-30).dp)) {
             MyImageLogo()
             MyEmailTextField(modifier = Modifier, text = email, onTextChanged = { email = it })
