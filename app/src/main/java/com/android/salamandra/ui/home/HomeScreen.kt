@@ -2,6 +2,7 @@ package com.android.salamandra.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -99,11 +100,12 @@ private fun ScreenBody(
                 }
 
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Button(onClick = { onLogout() }, modifier = Modifier.padding(8.dp)) {
+                Text(text = "Log out")
+            }
         }
 
-        Button(onClick = { onLogout() }, modifier = Modifier.align(Alignment.BottomEnd)) {
-            Text(text = "Log out")
-        }
     }
 }
 

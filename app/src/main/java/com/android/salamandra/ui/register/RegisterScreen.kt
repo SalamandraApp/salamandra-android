@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
-import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.domain.model.UiError
 import com.android.salamandra.ui.components.MyAlertDialog
@@ -54,7 +53,7 @@ fun RegisterScreen(
     var nicknameOfUser by remember { mutableStateOf("") }
     val error = registerViewModel.state.error
     if (registerViewModel.state.success) {
-        navigator.navigate(HomeScreenDestination)
+        navigator.navigate(LoginScreenDestination)
     } else if (registerViewModel.state.loading) {
         MyCircularProgressbar()
     } else if (!confirmScreen) {

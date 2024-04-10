@@ -1,7 +1,6 @@
 package com.android.salamandra.data.cognito
 
 import android.util.Log
-import com.amplifyframework.auth.AuthException
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult
@@ -18,7 +17,7 @@ class CognitoService @Inject constructor(
         email: String,
         password: String,
         onSuccess: () -> Unit,
-        onError: (AuthException) -> Unit
+        onError: (Exception) -> Unit
     ) {
         if (!isUserLoged())
             Amplify.Auth.signIn(
@@ -55,7 +54,7 @@ class CognitoService @Inject constructor(
         password: String,
         username: String,
         onSuccess: () -> Unit,
-        onError: (AuthException) -> Unit
+        onError: (Exception) -> Unit
     ) { //throws exception
         val options = AuthSignUpOptions.builder()
             .userAttribute(AuthUserAttributeKey.email(), email)
@@ -79,27 +78,28 @@ class CognitoService @Inject constructor(
         username: String,
         code: String,
         onSuccess: () -> Unit,
-        onError: (AuthException) -> Unit
+        onError: (Exception) -> Unit
     ) {
         Amplify.Auth.confirmSignUp(
             username,
             code,
             {//onSuccess
                 Log.i("SLM", "Signup confirmed")
-                Amplify.Auth.fetchAuthSession(
-                    { result ->
-                        val cognitoAuthSession: AWSCognitoAuthSession =
-                            result as AWSCognitoAuthSession
-                        runBlocking {
-                            dataStore.saveToken(cognitoAuthSession.accessToken!!)
-                        }
-                        onSuccess()
-                    },
-                    { fetchError ->
-                        Log.e("SLM", "Failed to fetch session", fetchError)
-                        onError(fetchError)
-                    }
-                )
+//                Amplify.Auth.fetchAuthSession(
+//                    { result ->
+//                        val cognitoAuthSession: AWSCognitoAuthSession =
+//                            result as AWSCognitoAuthSession
+//                        runBlocking {
+//                            dataStore.saveToken(cognitoAuthSession.accessToken!!)
+//                        }
+//                        onSuccess()
+//                    },
+//                    { fetchError ->
+//                        Log.e("SLM", "Failed to fetch session", fetchError)
+//                        onError(fetchError)
+//                    }
+//                )
+                onSuccess()
             },
             { confirmationError ->//onError
                 Log.e("SLM", "Signup confirmation not yet complete: ${confirmationError.message}")

@@ -51,8 +51,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onLogout() {
-        viewModelScope.launch {
-            onLogout()
+        viewModelScope.launch(Dispatchers.IO) {
+            logoutUseCase()
         }
     }
 

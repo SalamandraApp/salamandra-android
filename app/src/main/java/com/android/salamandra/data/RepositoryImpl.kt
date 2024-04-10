@@ -5,7 +5,6 @@ import com.android.salamandra.data.cognito.CognitoService
 import com.android.salamandra.data.network.SalamandraApiService
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.model.ExerciseModel
-import com.android.salamandra.domain.model.UserModel
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -15,15 +14,14 @@ class RepositoryImpl @Inject constructor(
 
     //Auth
     override suspend fun login(email: String, password: String, onSuccess: () -> Unit) {
+        logout()
         cognitoService.login(
             email,
             password,
             onSuccess = {
-                Log.i("SLM", "Login success")
                 onSuccess()
             },
             onError = {
-                Log.e("SLM", "An error occurred while using cognitoService, ${it.message}")
                 throw Exception(it.message)
             }
         )
@@ -43,7 +41,6 @@ class RepositoryImpl @Inject constructor(
                 onSuccess()
             },
             onError = {
-                Log.e("SLM", "An error ocurred while using cognitoService, ${it.message}")
                 throw Exception(it.message)
             }
         )
@@ -54,11 +51,9 @@ class RepositoryImpl @Inject constructor(
             username,
             code,
             onSuccess = {
-                Log.i("SLM", "Register confirmed")
                 onSuccess()
             },
             onError = {
-                Log.e("SLM", "An error ocurred while using cognitoService, ${it.message}")
                 throw Exception(it.message)
             })
     }
