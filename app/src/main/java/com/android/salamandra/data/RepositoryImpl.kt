@@ -12,6 +12,10 @@ class RepositoryImpl @Inject constructor(
     private val cognitoService: CognitoService
 ) : Repository {
 
+    //TODO with the new PL implementation, exception shouldn't surpass this layer, they should be caught and returned as a Result
+
+    //TODO IDEA: why not save the token in the user model and avoid datastore?
+
     //Auth
     override suspend fun login(email: String, password: String, onSuccess: () -> Unit) {
         logout()

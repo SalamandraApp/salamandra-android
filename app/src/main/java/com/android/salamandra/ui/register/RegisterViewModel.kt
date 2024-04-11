@@ -1,8 +1,11 @@
 package com.android.salamandra.ui.register
 
 import androidx.lifecycle.viewModelScope
+import com.android.salamandra.domain.UserDataValidator
+import com.android.salamandra.domain.error.Result
 import com.android.salamandra.domain.model.UiError
 import com.android.salamandra.domain.usecases.auth.RegisterUseCase
+import com.android.salamandra.ui.asUiText
 import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUseCase: RegisterUseCase
+    private val registerUseCase: RegisterUseCase,
+    private val userDataValidator: UserDataValidator
 ) : BaseViewModel<RegisterState, RegisterIntent>(RegisterState.initial) {
 
     override fun reduce(
@@ -41,6 +45,8 @@ class RegisterViewModel @Inject constructor(
                 loading = false,
                 success = false
             )
+
+            is RegisterIntent.NewError -> state.copy(newErrorType = intent.error)
         }
     }
 
@@ -69,6 +75,19 @@ class RegisterViewModel @Inject constructor(
                 dispatch(RegisterIntent.Error(e.message.orEmpty()))
             }
         }
+    }
+
+    fun onRegisterClick(password: String){
+        when(val result = userDataValidator.validatePassword(password)){
+            is Result.Error -> {
+                dispatch(RegisterIntent.NewError(result.error.asUiText()))
+            }
+            is Result.Success -> {
+
+            }
+        }
+
+        //add errors for network call... etc
     }
 
     fun onCloseDialog() = dispatch(RegisterIntent.CloseError)
