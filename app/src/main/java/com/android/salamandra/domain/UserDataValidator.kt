@@ -2,8 +2,9 @@ package com.android.salamandra.domain
 
 import com.android.salamandra.domain.error.PasswordError
 import com.android.salamandra.domain.error.Result
+import javax.inject.Inject
 
-class UserDataValidator {
+class UserDataValidator @Inject constructor() {
     fun validatePassword(password: String): Result<Unit, PasswordError>{
         if(password.length < 9)
             return Result.Error(PasswordError.TOO_SHORT)

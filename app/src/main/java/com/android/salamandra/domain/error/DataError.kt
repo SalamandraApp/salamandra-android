@@ -8,6 +8,7 @@ sealed interface DataError: Error {
         //...
     }
     enum class Cognito: DataError {
-        SIGN_IN_AUTH
+        INVALID_EMAIL_OR_PASSWORD,
+        SESSION_FETCH
     }
 }

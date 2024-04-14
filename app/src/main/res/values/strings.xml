@@ -15,4 +15,7 @@
     <string name="ok">OK</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="incorrect_email_or_password_account_not_confirmed">Either your email/password is incorrect or your email isn\'t verified…</string>
+    <string name="internal_error_while_fetching_auth_session">Internal error while fetching auth session</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

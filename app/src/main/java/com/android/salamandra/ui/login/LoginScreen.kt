@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
-import com.android.salamandra.domain.model.UiError
+import com.android.salamandra.ui.UiText
 import com.android.salamandra.ui.components.MyAlertDialog
 import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
@@ -57,7 +57,7 @@ fun LoginScreen(
             onCloseDialog = { loginViewModel.onCloseDialog() },
             error = error,
             onLogin = { email, password ->
-                loginViewModel.onLogin(username = email, password = password)
+                loginViewModel.onLogin(email = email, password = password)
             },
             onRegister = { navigator.navigate(RegisterScreenDestination) }
         )
@@ -66,7 +66,7 @@ fun LoginScreen(
 
 @Composable
 private fun ScreenBody(
-    error: UiError,
+    error: UiText?,
     onCloseDialog: () -> Unit,
     onLogin: (String, String) -> Unit,
     onRegister: () -> Unit
@@ -115,12 +115,13 @@ private fun ScreenBody(
                 modifier = Modifier.padding(4.dp)
             )
         }
+
         MyAlertDialog(
             title = "Error during log in",
-            text = error.errorMsg ?: "Invalid credentials",
+            text = error?.asString() ?: stringResource(R.string.unknown_error),
             onDismiss = { onCloseDialog() },
             onConfirm = { onCloseDialog() },
-            showDialog = error.isError
+            showDialog = error != null
         )
 
     }
@@ -131,7 +132,7 @@ private fun ScreenBody(
 fun LightPreview() {
     SalamandraTheme {
         ScreenBody(
-            error = UiError(false, null),
+            error = null,
             onCloseDialog = {},
             onLogin = { _, _ -> },
             onRegister = {}

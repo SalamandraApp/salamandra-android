@@ -68,9 +68,9 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.04.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -82,7 +82,7 @@ dependencies {
     //Ui test
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
@@ -92,7 +92,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
     //Hilt navigation
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //Destinations
     val destinationsVersion = "1.9.54"
@@ -100,10 +100,10 @@ dependencies {
     ksp("io.github.raamcosta.compose-destinations:ksp:$destinationsVersion")
 
     //Icons Extended
-    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("androidx.compose.material:material-icons-extended:1.6.5")
 
     //Animation
-    implementation("androidx.compose.animation:animation:1.5.4")
+    implementation("androidx.compose.animation:animation:1.6.5")
 
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -117,10 +117,10 @@ dependencies {
 
     //Cognito
     // Amplify core dependency
-    implementation ("com.amplifyframework:core:2.14.10")
+    implementation ("com.amplifyframework:core-kotlin:2.14.11")
     // Support for Java 8 features
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
-    implementation("com.amplifyframework:aws-auth-cognito:2.14.10")
+    implementation("com.amplifyframework:aws-auth-cognito:2.15.1")
 
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")

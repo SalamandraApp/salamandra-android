@@ -4,6 +4,8 @@ import android.util.Log
 import com.android.salamandra.data.cognito.CognitoService
 import com.android.salamandra.data.network.SalamandraApiService
 import com.android.salamandra.domain.Repository
+import com.android.salamandra.domain.error.DataError
+import com.android.salamandra.domain.error.Result
 import com.android.salamandra.domain.model.ExerciseModel
 import javax.inject.Inject
 
@@ -17,18 +19,9 @@ class RepositoryImpl @Inject constructor(
     //TODO IDEA: why not save the token in the user model and avoid datastore?
 
     //Auth
-    override suspend fun login(email: String, password: String, onSuccess: () -> Unit) {
-        logout()
-        cognitoService.login(
-            email,
-            password,
-            onSuccess = {
-                onSuccess()
-            },
-            onError = {
-                throw Exception(it.message)
-            }
-        )
+    override suspend fun login(email: String, password: String): Result<Unit, DataError.Cognito> {
+        logout() //this should be deleted in the future
+        return cognitoService.login(email, password)
     }
 
     override suspend fun register(
