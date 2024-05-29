@@ -3,9 +3,8 @@ package com.android.salamandra.ui.login
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.error.Result
-import com.android.salamandra.domain.model.UiError
 import com.android.salamandra.ui.asUiText
-import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
+import com.android.salamandra.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

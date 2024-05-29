@@ -1,28 +1,27 @@
 package com.android.salamandra.ui.home
 
 import com.android.salamandra.domain.model.ExerciseModel
+import com.android.salamandra.ui.UiText
 import com.vzkz.fitjournal.core.boilerplate.Intent
 import com.vzkz.fitjournal.core.boilerplate.State
 
 
 data class HomeState(
     val loading: Boolean,
-    val error: Error,
+    val error: UiText?,
     val exList: List<ExerciseModel>?
 ) : State {
     companion object {
         val initial: HomeState = HomeState(
             loading = false,
-            error = Error(false, null),
+            error = null,
             exList = null
         )
     }
 }
-
-data class Error(val isError: Boolean, val errorMsg: String?)
-
 sealed class HomeIntent: Intent {
-    data object Loading: HomeIntent()
-    data class Error(val errorMsg: String): HomeIntent()
-    data class SetExList(val exList: List<ExerciseModel>): HomeIntent()
+    data class Loading(val isLoading: Boolean): HomeIntent()
+    data class Error(val error: UiText): HomeIntent()
+    data object CloseError: HomeIntent()
+    data class SearchExercise(val term: String): HomeIntent()
 }

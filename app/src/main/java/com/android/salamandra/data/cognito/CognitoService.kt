@@ -2,7 +2,6 @@ package com.android.salamandra.data.cognito
 
 import android.util.Log
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
-import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult
 import com.amplifyframework.kotlin.core.Amplify
 import com.android.salamandra.domain.DataStoreRepository
 import com.android.salamandra.domain.error.DataError
@@ -41,10 +40,9 @@ class CognitoService @Inject constructor(
     suspend fun register(
         email: String,
         password: String,
-        username: String,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) { //throws exception
+        username: String
+    ): Result<Unit, DataError.Cognito>  { //throws exception
+        TODO()
 //        val options = AuthSignUpOptions.builder()
 //            .userAttribute(AuthUserAttributeKey.email(), email)
 //            .build()
@@ -66,10 +64,9 @@ class CognitoService @Inject constructor(
 
     suspend fun confirmRegister(
         username: String,
-        code: String,
-        onSuccess: () -> Unit,
-        onError: (Exception) -> Unit
-    ) {
+        code: String
+    ): Result<Unit, DataError.Cognito> {
+        TODO()
 //        Amplify.Auth.confirmSignUp(
 //            username,
 //            code,
@@ -123,19 +120,20 @@ class CognitoService @Inject constructor(
         TODO()
     }
 
-    suspend fun logout() {
-        when (Amplify.Auth.signOut()) {
-            is AWSCognitoAuthSignOutResult.CompleteSignOut -> {
-                Log.i("SLM", "Sign out complete")
-            }
-
-            is AWSCognitoAuthSignOutResult.PartialSignOut -> {
-                Log.e("SLM", "Partial sign out, some data may still be on the device")
-            }
-
-            is AWSCognitoAuthSignOutResult.FailedSignOut -> {
-                Log.e("SLM", "Sign out failed")
-            }
-        }
+    suspend fun logout(): Result<Unit, DataError.Cognito> {
+        TODO()
+//        when (Amplify.Auth.signOut()) {
+//            is AWSCognitoAuthSignOutResult.CompleteSignOut -> {
+//                Log.i("SLM", "Sign out complete")
+//            }
+//
+//            is AWSCognitoAuthSignOutResult.PartialSignOut -> {
+//                Log.e("SLM", "Partial sign out, some data may still be on the device")
+//            }
+//
+//            is AWSCognitoAuthSignOutResult.FailedSignOut -> {
+//                Log.e("SLM", "Sign out failed")
+//            }
+//        }
     }
 }

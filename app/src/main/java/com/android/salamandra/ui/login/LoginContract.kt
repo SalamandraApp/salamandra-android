@@ -21,7 +21,7 @@ data class LoginState(
 
 
 sealed class LoginIntent: Intent {
-    data object Loading: LoginIntent()
+    data class Loading(val isLoading: Boolean): LoginIntent()
     data class Error(val errorMsg: UiText): LoginIntent()
     data object Login: LoginIntent()
     data object CloseError: LoginIntent()

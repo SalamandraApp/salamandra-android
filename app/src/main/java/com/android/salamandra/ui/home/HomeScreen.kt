@@ -31,9 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.destinations.LoginScreenDestination
-import com.android.salamandra.domain.model.ExerciseModel
 import com.android.salamandra.ui.components.MyColumn
-import com.android.salamandra.ui.components.MyExerciseCardView
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -41,10 +39,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hiltViewModel()) {
-    val exList = homeViewModel.state.exList
     ScreenBody(
-        exList = exList,
-        onSearch = { homeViewModel.onSearchExercise(it) },
+        state = homeViewModel.state,
+        sendIntent = homeViewModel::dispatch,
         onLogout = {
             homeViewModel.onLogout()
             navigator.navigate(LoginScreenDestination)
@@ -54,8 +51,8 @@ fun HomeScreen(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = 
 
 @Composable
 private fun ScreenBody(
-    exList: List<ExerciseModel>?,
-    onSearch: (String) -> Unit,
+    state: HomeState,
+    sendIntent: (HomeIntent) -> Unit,
     onLogout: () -> Unit
 ) {
     Box(
@@ -82,20 +79,20 @@ private fun ScreenBody(
                 shape = CircleShape,
                 singleLine = true,
                 trailingIcon = {
-                    IconButton(onClick = { onSearch(term) }, modifier = Modifier.padding(8.dp)) {
+                    IconButton(onClick = { sendIntent(HomeIntent.SearchExercise(term)) }, modifier = Modifier.padding(8.dp)) {
                         Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
                     }
                 }
             )
-            if (exList != null) {
+            if (state.exList != null) {
                 LazyColumn {
-                    items(exList) {
-                        MyExerciseCardView(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            exName = it.name
-                        )
+                    items(state.exList) {
+//                        MyExerciseCardView(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(vertical = 8.dp),
+//                            exName = it.name
+//                        )
                     }
                 }
 
@@ -114,6 +111,10 @@ private fun ScreenBody(
 @Composable
 fun LightPreview() {
     SalamandraTheme {
-        ScreenBody(exList = null, onSearch = {}, onLogout = {})
+        ScreenBody(
+            state = HomeState.initial,
+            sendIntent = {},
+            onLogout = {}
+        )
     }
 }

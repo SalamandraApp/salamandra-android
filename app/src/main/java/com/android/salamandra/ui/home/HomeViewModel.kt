@@ -1,60 +1,57 @@
 package com.android.salamandra.ui.home
 
 import androidx.lifecycle.viewModelScope
-import com.android.salamandra.domain.usecases.SearchExerciseUseCase
-import com.android.salamandra.domain.usecases.auth.LogoutUseCase
-import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
+import com.android.salamandra.core.boilerplate.BaseViewModel
+import com.android.salamandra.domain.Repository
+import com.android.salamandra.ui.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val searchExerciseUseCase: SearchExerciseUseCase,
-    val logoutUseCase: LogoutUseCase
+    val repository: Repository
 ) :
     BaseViewModel<HomeState, HomeIntent>(HomeState.initial) {
 
     override fun reduce(
-        state: HomeState,
         intent: HomeIntent
-    ): HomeState { //This function reduces each intent with a when
-        return when (intent) {
-            is HomeIntent.Error -> state.copy(
-                error = Error(isError = true, errorMsg = intent.errorMsg),
-                loading = false
-            )
-
-            is HomeIntent.Loading -> state.copy(
-                loading = true
-            )
-
-            is HomeIntent.SetExList -> state.copy(
-                exList = intent.exList
-            )
+    ){ //This function reduces each intent with a when
+        when (intent) {
+            is HomeIntent.Error -> onError(intent.error)
+            is HomeIntent.CloseError -> onCloseError()
+            is HomeIntent.Loading -> onLoading(intent.isLoading)
+            is HomeIntent.SearchExercise -> onSearchExercise(intent.term)
         }
     }
 
-    //Observe events from UI and dispatch them, this are the methods called from the UI
-    fun onSearchExercise(term: String) {
+
+    private fun onSearchExercise(term: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = withContext(Dispatchers.IO) { searchExerciseUseCase(term) }
-            if (result != null) {
-                dispatch(HomeIntent.SetExList(result))
+            val result = repository.getExercise(term)
+            state = if (result != null) {
+                state.copy(exList = result)
             } else {
-                dispatch(HomeIntent.Error("Error while calling Search exercise API"))
+                state.copy(error = null) // TODO should be done using Error handling
             }
         }
     }
-
-    fun onLogout() {
-        viewModelScope.launch(Dispatchers.IO) {
-            logoutUseCase()
-        }
+    private fun onError(error: UiText) {
+        state = state.copy(error = error)
     }
 
+    private fun onCloseError() {
+        state = state.copy(error = null)
+    }
+    private fun onLoading(isLoading: Boolean) {
+        state = state.copy(loading = isLoading)
+    }
 
+    fun onLogout() {
+        viewModelScope.launch(Dispatchers.IO) { repository.logout()}
+    }
 }
+
+

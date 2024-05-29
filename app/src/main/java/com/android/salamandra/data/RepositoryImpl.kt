@@ -27,48 +27,36 @@ class RepositoryImpl @Inject constructor(
     override suspend fun register(
         email: String,
         password: String,
-        username: String,
-        onSuccess: () -> Unit
-    ) {
+        username: String
+    ): Result<Unit, DataError.Cognito> =
         cognitoService.register(
             email,
             password,
-            username,
-            onSuccess = {
-                onSuccess()
-            },
-            onError = {
-                throw Exception(it.message)
-            }
+            username
         )
-    }
 
-    override suspend fun confirmRegister(username: String, code: String, onSuccess: () -> Unit) {
-        cognitoService.confirmRegister(
-            username,
-            code,
-            onSuccess = {
-                onSuccess()
-            },
-            onError = {
-                throw Exception(it.message)
-            })
-    }
+
+    override suspend fun confirmRegister(
+        username: String,
+        code: String,
+    ): Result<Unit, DataError.Cognito> = cognitoService.confirmRegister(username, code)
+
 
     override suspend fun logout() = cognitoService.logout()
 
     //Ex query
     override suspend fun getExercise(term: String): List<ExerciseModel>? {
-        runCatching {
-            salamandraApiService.searchExercise(term)
-        }
-            .onSuccess {
-                return it.toDomain()
-            }
-            .onFailure {
-                Log.i("Jaime", "An error ocurred while using apiService, ${it.message}")
-            }
-        return null
+        TODO()
+//        runCatching {
+//            salamandraApiService.searchExercise(term)
+//        }
+//            .onSuccess {
+//                return it.toDomain()
+//            }
+//            .onFailure {
+//                Log.i("Jaime", "An error ocurred while using apiService, ${it.message}")
+//            }
+//        return null
     }
 }
 

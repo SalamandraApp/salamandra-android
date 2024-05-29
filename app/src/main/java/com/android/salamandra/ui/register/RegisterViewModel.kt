@@ -1,12 +1,11 @@
 package com.android.salamandra.ui.register
 
 import androidx.lifecycle.viewModelScope
+import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.UserDataValidator
 import com.android.salamandra.domain.error.Result
-import com.android.salamandra.domain.model.UiError
-import com.android.salamandra.domain.usecases.auth.RegisterUseCase
 import com.android.salamandra.ui.asUiText
-import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
+import com.android.salamandra.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUseCase: RegisterUseCase,
+    private val repository: Repository,
     private val userDataValidator: UserDataValidator
 ) : BaseViewModel<RegisterState, RegisterIntent>(RegisterState.initial) {
 
@@ -54,12 +53,9 @@ class RegisterViewModel @Inject constructor(
     fun onRegister(username: String, email: String, password: String){
         dispatch(RegisterIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            try{
-                registerUseCase.register(username = username, email = email, password = password){
-                    dispatch(RegisterIntent.ConfirmCode)
-                }
-            } catch(e: Exception){
-                dispatch(RegisterIntent.Error(e.message.orEmpty()))
+            when(val register = repository.register(email = email, password = password, username = username)){
+                is Result.Success -> dispatch(RegisterIntent.ConfirmCode)
+                is Result.Error -> TODO()
             }
         }
     }
@@ -67,12 +63,9 @@ class RegisterViewModel @Inject constructor(
     fun onVerifyCode(username: String, code: String){
         dispatch(RegisterIntent.Loading)
         viewModelScope.launch(Dispatchers.IO) {
-            try{
-                registerUseCase.confirmRegister(username = username, code = code){
-                    dispatch(RegisterIntent.Success)
-                }
-            } catch(e: Exception){
-                dispatch(RegisterIntent.Error(e.message.orEmpty()))
+            when(val confirmation = repository.confirmRegister(username = username, code = code)){
+                is Result.Error -> TODO()
+                is Result.Success -> dispatch(RegisterIntent.Success)
             }
         }
     }

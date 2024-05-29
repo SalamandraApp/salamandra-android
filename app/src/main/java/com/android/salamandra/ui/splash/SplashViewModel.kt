@@ -1,6 +1,6 @@
 package com.android.salamandra.ui.splash
 
-import com.vzkz.fitjournal.core.boilerplate.BaseViewModel
+import com.android.salamandra.core.boilerplate.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -20,10 +20,4 @@ class SplashViewModel @Inject constructor(): BaseViewModel<SplashState, SplashIn
             )
         }
     }
-    //Observe events from UI and dispatch them, this are the methods called from the UI
-    fun onX(){ //Example fun
-        dispatch(SplashIntent.Loading)
-    }
-
-
 }
