@@ -2,6 +2,7 @@ package com.android.salamandra.ui
 
 import com.android.salamandra.R
 import com.android.salamandra.domain.error.DataError
+import com.android.salamandra.domain.error.GenericError
 import com.android.salamandra.domain.error.PasswordError
 import com.android.salamandra.domain.error.Result
 
@@ -13,13 +14,19 @@ fun PasswordError.asUiText(): UiText {
     }
 }
 
-fun DataError.asUiText(): UiText{
-    return when(this){
-        DataError.Cognito.INVALID_EMAIL_OR_PASSWORD ->  UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
+fun DataError.asUiText(): UiText {
+    return when (this) {
+        DataError.Cognito.INVALID_EMAIL_OR_PASSWORD -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
         DataError.Cognito.SESSION_FETCH -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
         DataError.Network.REQUEST_TIEMOUT -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
         DataError.Network.TOO_MANY_REQUESTS -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
         DataError.Network.UNKNOW -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
+    }
+}
+
+fun GenericError.asUiText(): UiText {
+    return when (this) {
+        GenericError.UNKNOWN_ERROR -> UiText.StringResource(R.string.unknown_error)
     }
 }
 

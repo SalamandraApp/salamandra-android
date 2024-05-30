@@ -47,15 +47,12 @@ fun RegisterScreen(
     navigator: DestinationsNavigator,
     registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
-    var confirmScreen by remember { mutableStateOf(false) }
-    confirmScreen = registerViewModel.state.confirmScreen
-    var nicknameOfUser by remember { mutableStateOf("") }
-    val error = registerViewModel.state.error
+
     if (registerViewModel.state.success) {
         navigator.navigate(LoginScreenDestination)
     } else if (registerViewModel.state.loading) {
         MyCircularProgressbar()
-    } else if (!confirmScreen) {
+    } else if (!registerViewModel.state.confirmScreen) {
         ScreenBody(
             onCloseDialog = { registerViewModel.onCloseDialog() },
             error = error,
@@ -80,10 +77,9 @@ fun RegisterScreen(
 
 @Composable
 private fun ScreenBody(
-    error: UiError,
-    onCloseDialog: () -> Unit,
-    onSignIn: () -> Unit,
-    onRegister: (String, String, String) -> Unit
+    state: RegisterState,
+    sendIntent: (RegisterIntent) -> Unit,
+    onSignIn: () -> Unit
 ) {
     Box(
         modifier = Modifier

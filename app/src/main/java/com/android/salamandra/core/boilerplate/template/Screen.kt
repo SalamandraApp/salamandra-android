@@ -12,6 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.salamandra.domain.error.GenericError
+import com.android.salamandra.ui.asUiText
+import com.android.salamandra.ui.components.ErrorDialog
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -39,13 +42,7 @@ private fun ScreenBody(
         //TODO
 
 
-        if (state.error != null) {
-            AlertDialog(
-                title = { Text(text = "Error") },
-                text = { Text(text = state.error.asString()) },
-                onDismissRequest = { },
-                confirmButton = { })
-        }
+        if (state.error != null) ErrorDialog(error = state.error)
 
     }
 }

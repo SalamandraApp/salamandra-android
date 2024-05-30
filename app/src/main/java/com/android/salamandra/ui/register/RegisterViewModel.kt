@@ -6,6 +6,8 @@ import com.android.salamandra.domain.UserDataValidator
 import com.android.salamandra.domain.error.Result
 import com.android.salamandra.ui.asUiText
 import com.android.salamandra.core.boilerplate.BaseViewModel
+import com.android.salamandra.core.boilerplate.template.tIntent
+import com.android.salamandra.ui.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,63 +20,59 @@ class RegisterViewModel @Inject constructor(
     private val userDataValidator: UserDataValidator
 ) : BaseViewModel<RegisterState, RegisterIntent>(RegisterState.initial) {
 
-    override fun reduce(
-        state: RegisterState,
-        intent: RegisterIntent
-    ): RegisterState { //This function reduces each intent with a when
-        return when(intent){
-            is RegisterIntent.Error -> state.copy(
-                error = UiError(isError = true, errorMsg = intent.errorMsg),
-                loading = false
-            )
 
-            is RegisterIntent.Loading -> state.copy(
-                loading = true
-            )
-
-            is RegisterIntent.Success ->state.copy(
-                loading = false,
-                success = true
-            )
-
-            is RegisterIntent.ConfirmCode -> state.copy(loading = false, confirmScreen = true)
-
-            is RegisterIntent.CloseError -> state.copy(
-                error = UiError(false, null),
-                loading = false,
-                success = false
-            )
-
-            is RegisterIntent.NewError -> state.copy(newErrorType = intent.error)
+    override fun reduce(intent: RegisterIntent) {
+        when (intent) {
+            is RegisterIntent.Error -> onError(intent.error)
+            is RegisterIntent.CloseError -> onCloseError()
+            is RegisterIntent.Loading -> onLoading(intent.isLoading)
+            RegisterIntent.ConfirmCode -> TODO()
+            RegisterIntent.Success -> TODO()
         }
     }
 
-    //Observe events from UI and dispatch them, this are the methods called from the UI
-    fun onRegister(username: String, email: String, password: String){
-        dispatch(RegisterIntent.Loading)
+
+
+    private fun onError(error: UiText) {
+        state = state.copy(error = error)
+    }
+
+    private fun onCloseError() {
+        state = state.copy(error = null)
+    }
+
+    private fun onLoading(isLoading: Boolean) {
+        state = state.copy(loading = isLoading)
+    }
+
+    private fun onRegister() {
         viewModelScope.launch(Dispatchers.IO) {
-            when(val register = repository.register(email = email, password = password, username = username)){
-                is Result.Success -> dispatch(RegisterIntent.ConfirmCode)
+            when (val register =
+                repository.register(
+                    email = state.email,
+                    password = state.password,
+                    username = state.username
+                )) {
+                is Result.Success -> state = state.copy(confirmScreen = true)
                 is Result.Error -> TODO()
             }
         }
     }
 
-    fun onVerifyCode(username: String, code: String){
-        dispatch(RegisterIntent.Loading)
+    private fun onVerifyCode() {
         viewModelScope.launch(Dispatchers.IO) {
-            when(val confirmation = repository.confirmRegister(username = username, code = code)){
+            when (val confirmation =
+                repository.confirmRegister(username = state.username, code = state.code)) {
                 is Result.Error -> TODO()
                 is Result.Success -> dispatch(RegisterIntent.Success)
             }
         }
     }
 
-    fun onRegisterClick(password: String){
-        when(val result = userDataValidator.validatePassword(password)){
-            is Result.Error -> {
-                dispatch(RegisterIntent.NewError(result.error.asUiText()))
-            }
+    private fun onRegisterClick(password: String) {
+        when (val result = userDataValidator.validatePassword(password)) {
+            is Result.Error -> state = state.copy(error = result.error.asUiText())
+
             is Result.Success -> {
 
             }
@@ -82,8 +80,4 @@ class RegisterViewModel @Inject constructor(
 
         //add errors for network call... etc
     }
-
-    fun onCloseDialog() = dispatch(RegisterIntent.CloseError)
-
-
 }

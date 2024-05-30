@@ -14,11 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,13 +26,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
-import com.android.salamandra.ui.UiText
-import com.android.salamandra.ui.components.MyAlertDialog
+import com.android.salamandra.ui.components.ErrorDialog
 import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
-import com.android.salamandra.ui.components.MyEmailTextField
 import com.android.salamandra.ui.components.MyImageLogo
-import com.android.salamandra.ui.components.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -49,16 +43,12 @@ fun LoginScreen(
 ) {
     if (loginViewModel.state.success) {
         navigator.navigate(HomeScreenDestination)
-    }else if (loginViewModel.state.loading) {
+    } else if (loginViewModel.state.loading) {
         MyCircularProgressbar()
-    }  else {
-        val error = loginViewModel.state.error
+    } else {
         ScreenBody(
-            onCloseDialog = { loginViewModel.onCloseDialog() },
-            error = error,
-            onLogin = { email, password ->
-                loginViewModel.onLogin(email = email, password = password)
-            },
+            state = loginViewModel.state,
+            sendIntent = loginViewModel::dispatch,
             onRegister = { navigator.navigate(RegisterScreenDestination) }
         )
     }
@@ -66,9 +56,8 @@ fun LoginScreen(
 
 @Composable
 private fun ScreenBody(
-    error: UiText?,
-    onCloseDialog: () -> Unit,
-    onLogin: (String, String) -> Unit,
+    state: LoginState,
+    sendIntent: (LoginIntent) -> Unit,
     onRegister: () -> Unit
 ) {
     Box(
@@ -77,16 +66,20 @@ private fun ScreenBody(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        var email by remember { mutableStateOf("jaimevzkz1@gmail.com") }
-        var password by remember { mutableStateOf("1234Qwerty$") }
         MyColumn(modifier = Modifier.offset(y = (-30).dp)) {
             MyImageLogo()
-            MyEmailTextField(modifier = Modifier, text = email, onTextChanged = { email = it })
-            MyPasswordTextField(
+            TextField(
                 modifier = Modifier,
-                text = password,
-                onTextChanged = { password = it }
+                value = state.email,
+                onValueChange = {
+                    sendIntent(LoginIntent.SetEmail(it))
+                }
             )
+//            MyPasswordTextField(
+//                modifier = Modifier,
+//                text = password,
+//                onTextChanged = { password = it }
+//            )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = stringResource(R.string.don_t_have_an_account_register),
@@ -99,7 +92,7 @@ private fun ScreenBody(
             )
         }
         OutlinedButton(
-            onClick = { onLogin(email, password) },
+            onClick = {sendIntent(LoginIntent.Login)},
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(32.dp)
@@ -116,13 +109,8 @@ private fun ScreenBody(
             )
         }
 
-        MyAlertDialog(
-            title = "Error during log in",
-            text = error?.asString() ?: stringResource(R.string.unknown_error),
-            onDismiss = { onCloseDialog() },
-            onConfirm = { onCloseDialog() },
-            showDialog = error != null
-        )
+        if (state.error != null) ErrorDialog(state.error)
+
 
     }
 }
@@ -132,9 +120,8 @@ private fun ScreenBody(
 fun LightPreview() {
     SalamandraTheme {
         ScreenBody(
-            error = null,
-            onCloseDialog = {},
-            onLogin = { _, _ -> },
+            state = LoginState.initial,
+            sendIntent = {},
             onRegister = {}
         )
     }

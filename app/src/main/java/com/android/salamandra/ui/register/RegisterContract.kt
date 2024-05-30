@@ -8,9 +8,12 @@ import com.vzkz.fitjournal.core.boilerplate.State
 data class RegisterState(
     val loading: Boolean,
     val error: UiText?,
-    val newErrorType: UiText?,
     val success: Boolean,
-    val confirmScreen: Boolean
+    val confirmScreen: Boolean,
+    val username: String,
+    val email: String,
+    val password: String,
+    val code: String
 ) : State {
     companion object {
         val initial: RegisterState = RegisterState(
@@ -18,7 +21,10 @@ data class RegisterState(
             error = null,
             success = false,
             confirmScreen = false,
-            newErrorType = null
+            username = "",
+            email = "",
+            password = "",
+            code = ""
         )
     }
 }

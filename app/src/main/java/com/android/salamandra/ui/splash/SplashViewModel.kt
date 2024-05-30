@@ -6,18 +6,14 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(): BaseViewModel<SplashState, SplashIntent>(SplashState.initial) {
+class SplashViewModel @Inject constructor() :
+    BaseViewModel<SplashState, SplashIntent>(SplashState.initial) {
 
-    override fun reduce(state: SplashState, intent: SplashIntent): SplashState { //This function reduces each intent with a when
-        return when(intent){
-            is SplashIntent.Error -> state.copy(
-                error = Error(isError = true, errorMsg = intent.errorMsg),
-                loading = false
-            )
+    override fun reduce(intent: SplashIntent) { //This function reduces each intent with a when
+        state = when (intent) {
+            is SplashIntent.Error -> state.copy(error = intent.error)
 
-            is SplashIntent.Loading -> state.copy(
-                loading = true
-            )
+            is SplashIntent.Loading -> state.copy(loading = true)
         }
     }
 }
