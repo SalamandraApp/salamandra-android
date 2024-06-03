@@ -1,5 +1,6 @@
 package com.android.salamandra.ui.register
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,16 +28,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.destinations.LoginScreenDestination
-import com.android.salamandra.ui.components.MyAlertDialog
+import com.android.salamandra.ui.components.ErrorDialog
 import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
-import com.android.salamandra.ui.components.MyEmailTextField
-import com.android.salamandra.ui.components.MyGenericTextField
 import com.android.salamandra.ui.components.MyImageLogo
-import com.android.salamandra.ui.components.MyPasswordTextField
 import com.android.salamandra.ui.components.MySpacer
-import com.android.salamandra.ui.components.validateEmail
-import com.android.salamandra.ui.components.validatePassword
+import com.android.salamandra.ui.components.textFields.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -54,23 +52,14 @@ fun RegisterScreen(
         MyCircularProgressbar()
     } else if (!registerViewModel.state.confirmScreen) {
         ScreenBody(
-            onCloseDialog = { registerViewModel.onCloseDialog() },
-            error = error,
-            onRegister = { nickname, email, password ->
-                nicknameOfUser = nickname
-                registerViewModel.onRegister(
-                    username = nickname,
-                    email = email,
-                    password = password
-                )
-            },
+            state = registerViewModel.state,
+            sendIntent = registerViewModel::dispatch,
             onSignIn = { navigator.navigate(LoginScreenDestination) }
         )
     } else {
         ConfirmCodeScreen(
-            onCloseDialog = { registerViewModel.onCloseDialog() },
-            error = error,
-            onVerifyCode = { registerViewModel.onVerifyCode(username = nicknameOfUser, code = it) }
+            state = registerViewModel.state,
+            sendIntent = registerViewModel::dispatch
         )
     }
 }
@@ -87,23 +76,16 @@ private fun ScreenBody(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        var email by remember { mutableStateOf("jaimevzkz1@gmail.com") }
-        var password by remember { mutableStateOf("1234Qwerty$") }
         var repeatPassword by remember { mutableStateOf("1234Qwerty$") }
-        var username by remember { mutableStateOf("jaimee") }
-        //Validation
-        var isEmailValid by remember { mutableStateOf(true) }
-        var isPasswordValid by remember { mutableStateOf(true) }
         var isSamePassword by remember { mutableStateOf(true) }
         var isNicknameValid by remember { mutableStateOf(true) }
 
         MyColumn {
             MyImageLogo()
-            MyEmailTextField(modifier = Modifier, text = email, onTextChanged = {
-                isEmailValid = validateEmail(it)
-                email = it
+            OutlinedTextField(modifier = Modifier, value = state.email, onValueChange = {
+                sendIntent(RegisterIntent.ChangeEmail(it))
             })
-            if (!isEmailValid) {
+            if (!state.isEmailValid) {
                 Text(
                     text = stringResource(R.string.email_must_have_a_valid_format),
                     color = MaterialTheme.colorScheme.error,
@@ -115,16 +97,13 @@ private fun ScreenBody(
             } else MySpacer(size = 8)
 
             MyPasswordTextField(
-                text = password,
-                onTextChanged = {
-                    isPasswordValid = validatePassword(it)
-                    password = it
-                },
-                modifier = Modifier
+                value = state.password,
+                hint = state.password,
+                onValueChange = { sendIntent(RegisterIntent.ChangePassword(it)) }
             )
-            if (!isPasswordValid) {
+            if (state.passwordFormatError != null) {
                 Text(
-                    text = stringResource(R.string.invalid_password_capital_required),
+                    text = state.passwordFormatError.asString(),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
@@ -132,14 +111,15 @@ private fun ScreenBody(
                         .padding(2.dp)
                 )
             } else MySpacer(size = 8)
+
             MyPasswordTextField(
-                modifier = Modifier,
-                text = repeatPassword,
+                value = repeatPassword,
                 hint = stringResource(R.string.repeat_password),
-                onTextChanged = {
+                onValueChange = {
                     repeatPassword = it
-                    isSamePassword = repeatPassword == password
-                })
+                    isSamePassword = repeatPassword == state.password
+                }
+            )
             if (!isSamePassword) {
                 Text(
                     text = stringResource(R.string.passwords_must_coincide),
@@ -150,13 +130,19 @@ private fun ScreenBody(
                         .padding(2.dp)
                 )
             } else MySpacer(size = 8)
-            MyGenericTextField(
+
+            OutlinedTextField(
                 modifier = Modifier,
-                text = username,
-                hint = stringResource(R.string.user_name),
-                onTextChanged = {
-                    username = it
-                    isNicknameValid = (username != "")
+                value = state.username,
+                label = {
+                    Text(
+                        text = stringResource(R.string.user_name),
+                        fontSize = 16.sp,
+                    )
+                },
+                onValueChange = {
+                    sendIntent(RegisterIntent.ChangeUsername(it))
+                    isNicknameValid = (state.username != "")
                 }
             )
             if (!isNicknameValid) {
@@ -182,11 +168,9 @@ private fun ScreenBody(
         }
         OutlinedButton(
             onClick = {
-
-//                if (isEmailValid && isPasswordValid && isSamePassword && isNicknameValid) {
-//                    //TODO
-//                }
-                onRegister(username, email, password)
+                if (state.isEmailValid && state.passwordFormatError != null && isSamePassword && isNicknameValid) {
+                    sendIntent(RegisterIntent.OnRegister(state.username, state.email, state.password))
+                }
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -204,23 +188,16 @@ private fun ScreenBody(
             )
         }
 
-        MyAlertDialog(
-            title = "Error during log in",
-            text = error.errorMsg ?: "Invalid credentials",
-            onDismiss = { onCloseDialog() },
-            onConfirm = { onCloseDialog() },
-            showDialog = error.isError
-        )
+        if (state.error != null) ErrorDialog(error = state.error)
     }
 }
 
 @Composable
 private fun ConfirmCodeScreen(
-    error: UiError,
-    onCloseDialog: () -> Unit,
-    onVerifyCode: (String) -> Unit
+    //TODO change, make a new screen
+    state: RegisterState,
+    sendIntent: (RegisterIntent) -> Unit,
 ) {
-    var code by remember { mutableStateOf("") }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         MyColumn(
             modifier = Modifier
@@ -228,13 +205,12 @@ private fun ConfirmCodeScreen(
                 .padding(12.dp)
         ) {
             MyImageLogo()
-            MyGenericTextField(
+            OutlinedTextField(
                 modifier = Modifier,
-                text = code,
-                hint = "Confirmation code",
-                onTextChanged = {
-                    code = it
-
+                value = state.code,
+//                hint = "Confirmation code",
+                onValueChange = {
+                    sendIntent(RegisterIntent.ChangeCode(it))
                 }
             )
             MySpacer(size = 8)
@@ -247,7 +223,7 @@ private fun ConfirmCodeScreen(
 
         OutlinedButton(
             onClick = {
-                onVerifyCode(code)
+                sendIntent(RegisterIntent.ConfirmCode)
             },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -264,36 +240,18 @@ private fun ConfirmCodeScreen(
                 modifier = Modifier.padding(4.dp)
             )
         }
-        MyAlertDialog(
-            title = "Error during log in",
-            text = error.errorMsg ?: "Invalid credentials",
-            onDismiss = { onCloseDialog() },
-            onConfirm = { onCloseDialog() },
-            showDialog = error.isError
-        )
+        if (state.error != null) ErrorDialog(error = state.error)
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun LightPreview() {
+private fun ScreenPreview() {
     SalamandraTheme {
-//        ScreenBody(
-//            onRegister = {},
-//            onSignIn = {}
-//        )
-        ConfirmCodeScreen(
-            error = UiError(false, null),
-            onCloseDialog = {},
-            onVerifyCode = {}
+        ScreenBody(
+            state = RegisterState.initial,
+            sendIntent = {},
+            onSignIn = {}
         )
     }
 }
-
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun DarkPreview() {
-//    SalamandraTheme {
-//        ScreenBody()
-//    }
-//}

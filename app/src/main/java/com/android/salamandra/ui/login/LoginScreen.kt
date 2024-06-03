@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +29,8 @@ import com.android.salamandra.ui.components.ErrorDialog
 import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyImageLogo
+import com.android.salamandra.ui.components.textFields.MyEmailTextField
+import com.android.salamandra.ui.components.textFields.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
 import com.ramcosta.composedestinations.annotation.Destination
@@ -68,18 +69,19 @@ private fun ScreenBody(
     ) {
         MyColumn(modifier = Modifier.offset(y = (-30).dp)) {
             MyImageLogo()
-            TextField(
+            MyEmailTextField(
                 modifier = Modifier,
                 value = state.email,
                 onValueChange = {
-                    sendIntent(LoginIntent.SetEmail(it))
+                    sendIntent(LoginIntent.ChangeEmail(it))
                 }
             )
-//            MyPasswordTextField(
-//                modifier = Modifier,
-//                text = password,
-//                onTextChanged = { password = it }
-//            )
+            MyPasswordTextField(
+                modifier = Modifier,
+                value = state.password,
+                hint = stringResource(R.string.password),
+                onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) }
+            )
             Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = stringResource(R.string.don_t_have_an_account_register),

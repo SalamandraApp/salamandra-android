@@ -29,6 +29,6 @@ sealed class LoginIntent: Intent {
     data class Error(val error: UiText): LoginIntent()
     data object Login: LoginIntent()
     data object CloseError: LoginIntent()
-    data class SetEmail(val email: String): LoginIntent()
-    data class SetPassword(val password: String): LoginIntent()
+    data class ChangeEmail(val email: String): LoginIntent()
+    data class ChangePassword(val password: String): LoginIntent()
 }

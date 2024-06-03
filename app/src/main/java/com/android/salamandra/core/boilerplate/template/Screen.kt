@@ -49,7 +49,7 @@ private fun ScreenBody(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun LightPreview() {
+private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
            state = tState.initial,

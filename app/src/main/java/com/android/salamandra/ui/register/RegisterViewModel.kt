@@ -1,13 +1,12 @@
 package com.android.salamandra.ui.register
 
 import androidx.lifecycle.viewModelScope
+import com.android.salamandra.core.boilerplate.BaseViewModel
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.UserDataValidator
 import com.android.salamandra.domain.error.Result
-import com.android.salamandra.ui.asUiText
-import com.android.salamandra.core.boilerplate.BaseViewModel
-import com.android.salamandra.core.boilerplate.template.tIntent
 import com.android.salamandra.ui.UiText
+import com.android.salamandra.ui.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,14 +23,26 @@ class RegisterViewModel @Inject constructor(
     override fun reduce(intent: RegisterIntent) {
         when (intent) {
             is RegisterIntent.Error -> onError(intent.error)
+
             is RegisterIntent.CloseError -> onCloseError()
+
             is RegisterIntent.Loading -> onLoading(intent.isLoading)
-            RegisterIntent.ConfirmCode -> TODO()
-            RegisterIntent.Success -> TODO()
+
+            RegisterIntent.ConfirmCode -> onVerifyCode()
+
+            RegisterIntent.Success -> state = state.copy(success = true)
+
+            is RegisterIntent.ChangeEmail -> validateEmail(intent.email)
+
+            is RegisterIntent.ChangePassword -> validatePassword(intent.password)
+
+            is RegisterIntent.ChangeUsername -> state = state.copy(username = intent.username)
+
+            is RegisterIntent.ChangeCode -> state = state.copy(code = intent.code)
+
+            is RegisterIntent.OnRegister -> onRegister()
         }
     }
-
-
 
     private fun onError(error: UiText) {
         state = state.copy(error = error)
@@ -69,15 +80,16 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    private fun onRegisterClick(password: String) {
-        when (val result = userDataValidator.validatePassword(password)) {
-            is Result.Error -> state = state.copy(error = result.error.asUiText())
-
-            is Result.Success -> {
-
-            }
+    private fun validatePassword(password: String) {
+        state = when (val result = userDataValidator.validatePassword(password)) {
+            is Result.Success -> state.copy(passwordFormatError = null)
+            is Result.Error -> state.copy(passwordFormatError = result.error.asUiText())
         }
+        state = state.copy(password = password)
+    }
 
-        //add errors for network call... etc
+    private fun validateEmail(email:String){
+        if(!userDataValidator.validateEmail(email)) state = state.copy(isEmailValid = false)
+        state = state.copy(email = email)
     }
 }

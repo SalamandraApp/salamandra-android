@@ -13,7 +13,9 @@ data class RegisterState(
     val username: String,
     val email: String,
     val password: String,
-    val code: String
+    val code: String,
+    val isEmailValid: Boolean,
+    val passwordFormatError: UiText?,
 ) : State {
     companion object {
         val initial: RegisterState = RegisterState(
@@ -24,7 +26,9 @@ data class RegisterState(
             username = "",
             email = "",
             password = "",
-            code = ""
+            code = "",
+            isEmailValid = true,
+            passwordFormatError = null
         )
     }
 }
@@ -36,4 +40,9 @@ sealed class RegisterIntent: Intent {
     data object Success: RegisterIntent()
     data object ConfirmCode: RegisterIntent()
     data object CloseError: RegisterIntent()
+    data class ChangeEmail(val email: String): RegisterIntent()
+    data class ChangePassword(val password: String): RegisterIntent()
+    data class ChangeUsername(val username: String): RegisterIntent()
+    data class ChangeCode(val code: String): RegisterIntent()
+    data class OnRegister(val username: String, val email: String, val password: String): RegisterIntent()
 }

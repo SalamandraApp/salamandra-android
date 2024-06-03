@@ -24,8 +24,8 @@ class LoginViewModel @Inject constructor(private val repository: Repository) :
             is LoginIntent.CloseError -> onCloseError()
             is LoginIntent.Loading -> onLoading(intent.isLoading)
             LoginIntent.Login -> onLogin()
-            is LoginIntent.SetEmail -> onChangeEmail(intent.email)
-            is LoginIntent.SetPassword -> onChangePassword(intent.password)
+            is LoginIntent.ChangeEmail -> onChangeEmail(intent.email)
+            is LoginIntent.ChangePassword -> onChangePassword(intent.password)
         }
     }
 
