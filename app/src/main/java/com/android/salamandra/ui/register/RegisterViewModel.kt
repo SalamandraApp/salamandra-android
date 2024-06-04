@@ -9,6 +9,7 @@ import com.android.salamandra.ui.UiText
 import com.android.salamandra.ui.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,41 +31,38 @@ class RegisterViewModel @Inject constructor(
 
             RegisterIntent.ConfirmCode -> onVerifyCode()
 
-            RegisterIntent.Success -> state = state.copy(success = true)
+            RegisterIntent.Success -> _state.update { it.copy(success = true) }
 
             is RegisterIntent.ChangeEmail -> validateEmail(intent.email)
 
             is RegisterIntent.ChangePassword -> validatePassword(intent.password)
 
-            is RegisterIntent.ChangeUsername -> state = state.copy(username = intent.username)
+            is RegisterIntent.ChangeUsername -> _state.update { it.copy(username = intent.username) }
 
-            is RegisterIntent.ChangeCode -> state = state.copy(code = intent.code)
+            is RegisterIntent.ChangeCode -> _state.update { it.copy(code = intent.code) }
 
             is RegisterIntent.OnRegister -> onRegister()
         }
     }
 
-    private fun onError(error: UiText) {
-        state = state.copy(error = error)
-    }
+    private fun onError(error: UiText) =
+        _state.update { it.copy(error = error) }
 
-    private fun onCloseError() {
-        state = state.copy(error = null)
-    }
+    private fun onCloseError() =
+        _state.update { it.copy(error = null) }
 
-    private fun onLoading(isLoading: Boolean) {
-        state = state.copy(loading = isLoading)
-    }
+    private fun onLoading(isLoading: Boolean) =
+        _state.update { it.copy(loading = isLoading) }
 
     private fun onRegister() {
         viewModelScope.launch(Dispatchers.IO) {
             when (val register =
                 repository.register(
-                    email = state.email,
-                    password = state.password,
-                    username = state.username
+                    email = state.value.email,
+                    password = state.value.password,
+                    username = state.value.username
                 )) {
-                is Result.Success -> state = state.copy(confirmScreen = true)
+                is Result.Success -> _state.update { it.copy(confirmScreen = true) }
                 is Result.Error -> TODO()
             }
         }
@@ -73,7 +71,10 @@ class RegisterViewModel @Inject constructor(
     private fun onVerifyCode() {
         viewModelScope.launch(Dispatchers.IO) {
             when (val confirmation =
-                repository.confirmRegister(username = state.username, code = state.code)) {
+                repository.confirmRegister(
+                    username = state.value.username,
+                    code = state.value.code
+                )) {
                 is Result.Error -> TODO()
                 is Result.Success -> dispatch(RegisterIntent.Success)
             }
@@ -81,15 +82,15 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun validatePassword(password: String) {
-        state = when (val result = userDataValidator.validatePassword(password)) {
-            is Result.Success -> state.copy(passwordFormatError = null)
-            is Result.Error -> state.copy(passwordFormatError = result.error.asUiText())
+        when (val result = userDataValidator.validatePassword(password)) {
+            is Result.Success -> _state.update { it.copy(passwordFormatError = null) }
+            is Result.Error -> _state.update { it.copy(passwordFormatError = result.error.asUiText()) }
         }
-        state = state.copy(password = password)
+        _state.update { it.copy(password = password) }
     }
 
-    private fun validateEmail(email:String){
-        if(!userDataValidator.validateEmail(email)) state = state.copy(isEmailValid = false)
-        state = state.copy(email = email)
+    private fun validateEmail(email: String) {
+        if (!userDataValidator.validateEmail(email)) _state.update { it.copy(isEmailValid = false) }
+        _state.update { it.copy(email = email) }
     }
 }

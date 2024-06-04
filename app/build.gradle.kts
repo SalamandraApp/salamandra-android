@@ -78,6 +78,12 @@ dependencies {
 
     //Unit test
     testImplementation("junit:junit:4.13.2")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    val coroutinesTestVersion = "1.7.3"
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTestVersion")
+    //mockk
+    val mockkVersion = "1.13.9"
+    testImplementation("io.mockk:mockk:${mockkVersion}")
 
     //Ui test
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -124,7 +130,4 @@ dependencies {
 
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
-
-
-
 }

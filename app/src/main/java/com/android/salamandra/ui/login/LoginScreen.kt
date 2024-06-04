@@ -15,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -40,16 +42,18 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator,
-    loginViewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
-    if (loginViewModel.state.success) {
+    val state by viewModel.state.collectAsState()
+
+    if (state.success) {
         navigator.navigate(HomeScreenDestination)
-    } else if (loginViewModel.state.loading) {
+    } else if (state.loading) {
         MyCircularProgressbar()
     } else {
         ScreenBody(
-            state = loginViewModel.state,
-            sendIntent = loginViewModel::dispatch,
+            state = state,
+            sendIntent = viewModel::dispatch,
             onRegister = { navigator.navigate(RegisterScreenDestination) }
         )
     }

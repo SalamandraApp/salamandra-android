@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,12 +39,14 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun HomeScreen(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(navigator: DestinationsNavigator, viewModel: HomeViewModel = hiltViewModel()) {
+    val state by viewModel.state.collectAsState()
+
     ScreenBody(
-        state = homeViewModel.state,
-        sendIntent = homeViewModel::dispatch,
+        state = state,
+        sendIntent = viewModel::dispatch,
         onLogout = {
-            homeViewModel.onLogout()
+            viewModel.onLogout()
             navigator.navigate(LoginScreenDestination)
         }
     )

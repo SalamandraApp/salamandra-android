@@ -8,6 +8,7 @@ import com.android.salamandra.ui.UiText
 import com.android.salamandra.ui.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,32 +30,28 @@ class LoginViewModel @Inject constructor(private val repository: Repository) :
         }
     }
 
-    private fun onError(error: UiText) {
-        state = state.copy(error = error)
-    }
+    private fun onError(error: UiText) = _state.update { it.copy(error = error) }
 
-    private fun onCloseError() {
-        state = state.copy(error = null)
-    }
 
-    private fun onLoading(isLoading: Boolean) {
-        state = state.copy(loading = isLoading)
-    }
+    private fun onCloseError() = _state.update { it.copy(error = null) }
+
+
+    private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
+
 
     private fun onLogin() {
         viewModelScope.launch(Dispatchers.IO) {
-            state = when (val result = repository.login(email = state.email, password = state.password)) {
-                is Result.Success -> state.copy(success = true)
-                is Result.Error -> state.copy(error = result.error.asUiText())
+            when (val result =
+                repository.login(email = state.value.email, password = state.value.password)) {
+                is Result.Success -> _state.update { it.copy(success = true) }
+                is Result.Error -> _state.update { it.copy(error = result.error.asUiText()) }
             }
         }
     }
 
-    private fun onChangePassword(password: String) {
-        state = state.copy(password = password)
-    }
+    private fun onChangePassword(password: String) = _state.update { it.copy(password = password) }
 
-    private fun onChangeEmail(email: String) {
-        state = state.copy(email = email)
-    }
+
+    private fun onChangeEmail(email: String) = _state.update { it.copy(email = email) }
+
 }

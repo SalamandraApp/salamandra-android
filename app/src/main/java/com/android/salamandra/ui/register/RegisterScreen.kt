@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,19 +47,20 @@ fun RegisterScreen(
     registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
 
-    if (registerViewModel.state.success) {
+    val state by registerViewModel.state.collectAsState()
+    if (state.success) {
         navigator.navigate(LoginScreenDestination)
-    } else if (registerViewModel.state.loading) {
+    } else if (state.loading) {
         MyCircularProgressbar()
-    } else if (!registerViewModel.state.confirmScreen) {
+    } else if (!state.confirmScreen) {
         ScreenBody(
-            state = registerViewModel.state,
+            state = state,
             sendIntent = registerViewModel::dispatch,
             onSignIn = { navigator.navigate(LoginScreenDestination) }
         )
     } else {
         ConfirmCodeScreen(
-            state = registerViewModel.state,
+            state = state,
             sendIntent = registerViewModel::dispatch
         )
     }

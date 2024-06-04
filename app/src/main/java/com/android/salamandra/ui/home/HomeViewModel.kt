@@ -6,6 +6,7 @@ import com.android.salamandra.domain.Repository
 import com.android.salamandra.ui.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class HomeViewModel @Inject constructor(
 
     override fun reduce(
         intent: HomeIntent
-    ){ //This function reduces each intent with a when
+    ) { //This function reduces each intent with a when
         when (intent) {
             is HomeIntent.Error -> onError(intent.error)
             is HomeIntent.CloseError -> onCloseError()
@@ -31,26 +32,23 @@ class HomeViewModel @Inject constructor(
     private fun onSearchExercise(term: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.getExercise(term)
-            state = if (result != null) {
-                state.copy(exList = result)
+            if (result != null) {
+                _state.update { it.copy(exList = result) }
             } else {
-                state.copy(error = null) // TODO should be done using Error handling
+                _state.update { it.copy(error = null) } // TODO should be done using Error handling
             }
         }
     }
-    private fun onError(error: UiText) {
-        state = state.copy(error = error)
-    }
 
-    private fun onCloseError() {
-        state = state.copy(error = null)
-    }
-    private fun onLoading(isLoading: Boolean) {
-        state = state.copy(loading = isLoading)
-    }
+    private fun onError(error: UiText) = _state.update { it.copy(error = error) }
+
+    private fun onCloseError() = _state.update { it.copy(error = null) }
+
+
+    private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 
     fun onLogout() {
-        viewModelScope.launch(Dispatchers.IO) { repository.logout()}
+        viewModelScope.launch(Dispatchers.IO) { repository.logout() }
     }
 }
 

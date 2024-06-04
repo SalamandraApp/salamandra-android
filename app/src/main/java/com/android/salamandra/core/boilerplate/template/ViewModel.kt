@@ -3,11 +3,12 @@ package com.android.salamandra.core.boilerplate.template
 import com.android.salamandra.core.boilerplate.BaseViewModel
 import com.android.salamandra.ui.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
 @HiltViewModel
-class tViewModel @Inject constructor() : BaseViewModel<tState, tIntent>(tState.initial) {
+class ViewModel @Inject constructor() : BaseViewModel<tState, tIntent>(tState.initial) {
 
     override fun reduce(intent: tIntent) {
         when (intent) {
@@ -16,15 +17,7 @@ class tViewModel @Inject constructor() : BaseViewModel<tState, tIntent>(tState.i
             is tIntent.Loading -> onLoading(intent.isLoading)
         }
     }
-
-    private fun onError(error: UiText) {
-        state = state.copy(error = error)
-    }
-
-    private fun onCloseError() {
-        state = state.copy(error = null)
-    }
-    private fun onLoading(isLoading: Boolean) {
-        state = state.copy(loading = isLoading)
-    }
+    private fun onError(error: UiText) = _state.update { it.copy(error = error) }
+    private fun onCloseError() = _state.update { it.copy(error = null) }
+    private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 }
