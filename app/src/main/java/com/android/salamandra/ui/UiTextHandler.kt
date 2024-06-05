@@ -4,7 +4,7 @@ import com.android.salamandra.R
 import com.android.salamandra.domain.error.DataError
 import com.android.salamandra.domain.error.GenericError
 import com.android.salamandra.domain.error.PasswordError
-import com.android.salamandra.domain.error.Result
+import com.android.salamandra.domain.error.RootError
 
 fun PasswordError.asUiText(): UiText {
     return when (this) {
@@ -30,6 +30,8 @@ fun GenericError.asUiText(): UiText {
     }
 }
 
-fun Result.Error<*, PasswordError>.asErrorUiText(): UiText {
-    return error.asUiText()
+fun RootError.asUiText(): UiText = when (this) {
+    is DataError -> this.asUiText()
+    is GenericError -> this.asUiText()
+    is PasswordError -> this.asUiText()
 }

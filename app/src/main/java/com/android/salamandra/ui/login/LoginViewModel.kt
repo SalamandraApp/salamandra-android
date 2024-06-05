@@ -1,21 +1,21 @@
 package com.android.salamandra.ui.login
 
-import androidx.lifecycle.viewModelScope
 import com.android.salamandra.core.boilerplate.BaseViewModel
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.error.Result
-import com.android.salamandra.ui.UiText
-import com.android.salamandra.ui.asUiText
+import com.android.salamandra.domain.error.RootError
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val repository: Repository) :
-    BaseViewModel<LoginState, LoginIntent>(LoginState.initial) {
+class LoginViewModel @Inject constructor(
+    private val repository: Repository,
+    ioDispatcher: CoroutineDispatcher
+) :
+    BaseViewModel<LoginState, LoginIntent>(LoginState.initial, ioDispatcher) {
 
     override fun reduce(
         intent: LoginIntent
@@ -24,13 +24,13 @@ class LoginViewModel @Inject constructor(private val repository: Repository) :
             is LoginIntent.Error -> onError(intent.error)
             is LoginIntent.CloseError -> onCloseError()
             is LoginIntent.Loading -> onLoading(intent.isLoading)
-            LoginIntent.Login -> onLogin()
+            is LoginIntent.Login -> onLogin()
             is LoginIntent.ChangeEmail -> onChangeEmail(intent.email)
             is LoginIntent.ChangePassword -> onChangePassword(intent.password)
         }
     }
 
-    private fun onError(error: UiText) = _state.update { it.copy(error = error) }
+    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
 
 
     private fun onCloseError() = _state.update { it.copy(error = null) }
@@ -40,11 +40,14 @@ class LoginViewModel @Inject constructor(private val repository: Repository) :
 
 
     private fun onLogin() {
-        viewModelScope.launch(Dispatchers.IO) {
+        ioLaunch {
             when (val result =
                 repository.login(email = state.value.email, password = state.value.password)) {
-                is Result.Success -> _state.update { it.copy(success = true) }
-                is Result.Error -> _state.update { it.copy(error = result.error.asUiText()) }
+                is Result.Success -> {
+                    _state.update { it.copy(success = true) }
+                }
+
+                is Result.Error -> _state.update { it.copy(error = result.error) }
             }
         }
     }

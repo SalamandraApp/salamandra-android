@@ -1,6 +1,6 @@
 package com.android.salamandra.domain.error
 
-enum class GenericError : Error {
+enum class GenericError : RootError {
     UNKNOWN_ERROR
 }
 

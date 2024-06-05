@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
+import com.android.salamandra.ui.asUiText
 import com.android.salamandra.ui.components.ErrorDialog
 import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
@@ -115,7 +116,7 @@ private fun ScreenBody(
             )
         }
 
-        if (state.error != null) ErrorDialog(state.error)
+        if (state.error != null) ErrorDialog(state.error.asUiText())
 
 
     }

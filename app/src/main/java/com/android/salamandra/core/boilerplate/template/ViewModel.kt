@@ -3,12 +3,13 @@ package com.android.salamandra.core.boilerplate.template
 import com.android.salamandra.core.boilerplate.BaseViewModel
 import com.android.salamandra.ui.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
 @HiltViewModel
-class ViewModel @Inject constructor() : BaseViewModel<tState, tIntent>(tState.initial) {
+class ViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : BaseViewModel<tState, tIntent>(tState.initial, ioDispatcher) {
 
     override fun reduce(intent: tIntent) {
         when (intent) {

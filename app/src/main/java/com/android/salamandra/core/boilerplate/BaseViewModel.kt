@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vzkz.fitjournal.core.boilerplate.Intent
 import com.vzkz.fitjournal.core.boilerplate.State
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +16,7 @@ import kotlinx.coroutines.launch
 
 private const val BUFFER_SIZE = 64
 
-abstract class BaseViewModel<S : State, I: Intent> (initialState: S): ViewModel(){
+abstract class BaseViewModel<S : State, I: Intent> (initialState: S, private val ioDispatcher: CoroutineDispatcher): ViewModel(){
 
     private val intents = MutableSharedFlow<I>(extraBufferCapacity = BUFFER_SIZE) // Intent pipeline
 
@@ -27,6 +30,10 @@ abstract class BaseViewModel<S : State, I: Intent> (initialState: S): ViewModel(
             }
         }
 
+    }
+
+    protected fun ioLaunch(block: suspend CoroutineScope.() -> Unit){
+        viewModelScope.launch(ioDispatcher) { block() }
     }
 
     protected abstract fun reduce(intent: I)

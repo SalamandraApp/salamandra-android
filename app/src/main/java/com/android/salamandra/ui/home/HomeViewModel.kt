@@ -5,6 +5,7 @@ import com.android.salamandra.core.boilerplate.BaseViewModel
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.ui.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -13,9 +14,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    val repository: Repository
+    val repository: Repository,
+    ioDispatcher: CoroutineDispatcher
 ) :
-    BaseViewModel<HomeState, HomeIntent>(HomeState.initial) {
+    BaseViewModel<HomeState, HomeIntent>(HomeState.initial, ioDispatcher) {
 
     override fun reduce(
         intent: HomeIntent
@@ -48,7 +50,7 @@ class HomeViewModel @Inject constructor(
     private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 
     fun onLogout() {
-        viewModelScope.launch(Dispatchers.IO) { repository.logout() }
+        ioLaunch { repository.logout() }
     }
 }
 

@@ -1,3 +1,3 @@
 package com.android.salamandra.domain.error
 
-sealed interface Error
+sealed interface RootError

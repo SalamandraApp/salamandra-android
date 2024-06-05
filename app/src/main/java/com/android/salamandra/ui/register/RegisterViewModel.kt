@@ -1,6 +1,5 @@
 package com.android.salamandra.ui.register
 
-import androidx.lifecycle.viewModelScope
 import com.android.salamandra.core.boilerplate.BaseViewModel
 import com.android.salamandra.domain.Repository
 import com.android.salamandra.domain.UserDataValidator
@@ -8,17 +7,17 @@ import com.android.salamandra.domain.error.Result
 import com.android.salamandra.ui.UiText
 import com.android.salamandra.ui.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val repository: Repository,
+    ioDispatcher: CoroutineDispatcher,
     private val userDataValidator: UserDataValidator
-) : BaseViewModel<RegisterState, RegisterIntent>(RegisterState.initial) {
+) : BaseViewModel<RegisterState, RegisterIntent>(RegisterState.initial, ioDispatcher) {
 
 
     override fun reduce(intent: RegisterIntent) {
@@ -55,7 +54,7 @@ class RegisterViewModel @Inject constructor(
         _state.update { it.copy(loading = isLoading) }
 
     private fun onRegister() {
-        viewModelScope.launch(Dispatchers.IO) {
+        ioLaunch {
             when (val register =
                 repository.register(
                     email = state.value.email,
@@ -69,7 +68,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun onVerifyCode() {
-        viewModelScope.launch(Dispatchers.IO) {
+        ioLaunch {
             when (val confirmation =
                 repository.confirmRegister(
                     username = state.value.username,

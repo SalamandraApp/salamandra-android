@@ -1,6 +1,6 @@
 package com.android.salamandra.domain.error
 
-sealed interface DataError: Error {
+sealed interface DataError: RootError {
     enum class Network: DataError {
         REQUEST_TIEMOUT,
         TOO_MANY_REQUESTS,
