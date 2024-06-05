@@ -1,0 +1,62 @@
+[versions]
+activityCompose = "1.9.0"
+androidxComposeBom = "2024.05.00"
+awsAuthCognito = "2.15.1"
+converterGson = "2.9.0"
+animation = "1.6.7"
+coreKotlin = "2.14.11"
+coreKtx = "1.13.1"
+coroutinesTestVersion = "1.7.3"
+datastorePreferences = "1.1.1"
+destinationsVersion = "1.9.54"
+desugar_jdk_libs = "2.0.4"
+espressoCore = "3.5.1"
+hiltAndroidGradlePlugin = "2.48.1"
+hiltNavigationCompose = "1.2.0"
+hiltVersion = "2.49"
+junitVersion = "1.1.5"
+kotlintestRunnerJunit5 = "3.4.2"
+junit = "4.13.2"
+lifecycleRuntimeKtx = "2.8.1"
+loggingInterceptor = "4.3.1"
+materialIconsExtended = "1.6.7"
+mockkVersion = "1.13.9"
+retrofit = "2.9.0"
+
+[libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
+androidx-compose-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-material3 = { group = "androidx.compose.ui", name = "material3" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+aws-auth-cognito = { module = "com.amplifyframework:aws-auth-cognito", version.ref = "awsAuthCognito" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "destinationsVersion" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+core-kotlin = { module = "com.amplifyframework:core-kotlin", version.ref = "coreKotlin" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltVersion" }
+kotlintest-runner-junit5 = { module = "io.kotlintest:kotlintest-runner-junit5", version.ref = "kotlintestRunnerJunit5" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTestVersion" }
+ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "destinationsVersion" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+
+
+
+[plugins]

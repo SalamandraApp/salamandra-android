@@ -67,67 +67,63 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.compose.bom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.ui.material3)
 
     //Unit test
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
-    val coroutinesTestVersion = "1.7.3"
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTestVersion")
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlintest.runner.junit5)
+    testImplementation(libs.kotlinx.coroutines.test)
     //mockk
-    val mockkVersion = "1.13.9"
-    testImplementation("io.mockk:mockk:${mockkVersion}")
+    testImplementation(libs.mockk)
 
     //Ui test
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.compose.compose.bom)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     //Hilt
-    val hiltVersion = "2.49"
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    ksp("com.google.dagger:hilt-compiler:$hiltVersion")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
     //Hilt navigation
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.androidx.hilt.navigation.compose)
 
     //Destinations
-    val destinationsVersion = "1.9.54"
-    implementation("io.github.raamcosta.compose-destinations:core:$destinationsVersion")
-    ksp("io.github.raamcosta.compose-destinations:ksp:$destinationsVersion")
+    implementation(libs.core)
+    ksp(libs.ksp)
 
     //Icons Extended
-    implementation("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation(libs.androidx.material.icons.extended)
 
     //Animation
-    implementation("androidx.compose.animation:animation:1.6.7")
+    implementation(libs.androidx.animation)
 
     //DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation(libs.androidx.datastore.preferences)
 
     //Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     //Interceptor
-    implementation("com.squareup.okhttp3:logging-interceptor:4.3.1")
+    implementation(libs.logging.interceptor)
 
     //Cognito
     // Amplify core dependency
-    implementation ("com.amplifyframework:core-kotlin:2.14.11")
+    implementation (libs.core.kotlin)
     // Support for Java 8 features
-    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
-    implementation("com.amplifyframework:aws-auth-cognito:2.15.1")
+    coreLibraryDesugaring (libs.desugar.jdk.libs)
+    implementation(libs.aws.auth.cognito)
 
     //DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation(libs.androidx.datastore.preferences)
 }
