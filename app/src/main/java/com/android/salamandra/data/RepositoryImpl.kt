@@ -46,7 +46,7 @@ class RepositoryImpl @Inject constructor(
 
     //Ex query
     override suspend fun getExercise(term: String): List<ExerciseModel>? {
-        TODO()
+        return emptyList() //TODO
 //        runCatching {
 //            salamandraApiService.searchExercise(term)
 //        }
