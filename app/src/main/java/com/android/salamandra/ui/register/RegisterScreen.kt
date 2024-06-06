@@ -34,6 +34,8 @@ import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyImageLogo
 import com.android.salamandra.ui.components.MySpacer
+import com.android.salamandra.ui.components.textFields.MyEmailTextField
+import com.android.salamandra.ui.components.textFields.MyOutlinedTextField
 import com.android.salamandra.ui.components.textFields.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
@@ -78,13 +80,13 @@ private fun ScreenBody(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        var repeatPassword by remember { mutableStateOf("1234Qwerty$") }
+        var repeatPassword by remember { mutableStateOf("") }
         var isSamePassword by remember { mutableStateOf(true) }
         var isNicknameValid by remember { mutableStateOf(true) }
 
         MyColumn {
             MyImageLogo()
-            OutlinedTextField(modifier = Modifier, value = state.email, onValueChange = {
+            MyEmailTextField(modifier = Modifier, value = state.email, onValueChange = {
                 sendIntent(RegisterIntent.ChangeEmail(it))
             })
             if (!state.isEmailValid) {
@@ -100,7 +102,7 @@ private fun ScreenBody(
 
             MyPasswordTextField(
                 value = state.password,
-                hint = state.password,
+                hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(RegisterIntent.ChangePassword(it)) }
             )
             if (state.passwordFormatError != null) {

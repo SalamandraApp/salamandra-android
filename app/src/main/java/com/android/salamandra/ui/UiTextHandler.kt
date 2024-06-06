@@ -21,6 +21,11 @@ fun DataError.asUiText(): UiText {
         DataError.Network.REQUEST_TIEMOUT -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
         DataError.Network.TOO_MANY_REQUESTS -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
         DataError.Network.UNKNOW -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
+        DataError.Cognito.UNKNOWN_ERROR -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
+        DataError.Cognito.SIGN_UP_FIELDS_NOT_VALID -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
+        DataError.Cognito.WRONG_CONFIRMATION_CODE -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
+        DataError.Cognito.SIGN_OUT_FAILED_USER_SIGNED_IN -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
+        DataError.Cognito.SIGN_OUT_FAILED_USER_NOT_SIGNED_IN -> UiText.StringResource(R.string.incorrect_email_or_password_account_not_confirmed)
     }
 }
 
