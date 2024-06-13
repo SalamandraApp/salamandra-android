@@ -1,8 +1,9 @@
 package com.android.salamandra.ui.splash
 
+import com.android.salamandra.core.boilerplate.Event
 import com.android.salamandra.ui.UiText
-import com.vzkz.fitjournal.core.boilerplate.Intent
-import com.vzkz.fitjournal.core.boilerplate.State
+import com.android.salamandra.core.boilerplate.Intent
+import com.android.salamandra.core.boilerplate.State
 
 
 data class SplashState(
@@ -21,4 +22,7 @@ data class SplashState(
 sealed class SplashIntent: Intent {
     data class Loading(val isLoading: Boolean): SplashIntent()
     data class Error(val error: UiText): SplashIntent()
+}
+
+sealed class SplashEvent: Event {
 }

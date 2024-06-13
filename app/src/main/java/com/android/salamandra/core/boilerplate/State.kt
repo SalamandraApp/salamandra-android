@@ -1,3 +1,3 @@
-package com.vzkz.fitjournal.core.boilerplate
+package com.android.salamandra.core.boilerplate
 
 interface State

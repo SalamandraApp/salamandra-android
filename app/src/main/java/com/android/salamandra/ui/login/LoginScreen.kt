@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -46,16 +47,21 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val events by viewModel.events.collectAsState(initial = null)
+    LaunchedEffect(events) {
+        when (events) {
+            LoginEvent.NavigateToSignUp -> navigator.navigate(RegisterScreenDestination)
+            LoginEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
+            null -> {}
+        }
+    }
 
-    if (state.success) {
-        navigator.navigate(HomeScreenDestination)
-    } else if (state.loading) {
+    if (state.loading) {
         MyCircularProgressbar()
     } else {
         ScreenBody(
             state = state,
             sendIntent = viewModel::dispatch,
-            onRegister = { navigator.navigate(RegisterScreenDestination) }
         )
     }
 }
@@ -64,7 +70,6 @@ fun LoginScreen(
 private fun ScreenBody(
     state: LoginState,
     sendIntent: (LoginIntent) -> Unit,
-    onRegister: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -94,7 +99,7 @@ private fun ScreenBody(
                 fontSize = 14.sp,
                 modifier = Modifier
                     .align(Alignment.End)
-                    .clickable { onRegister() }
+                    .clickable { sendIntent(LoginIntent.GoToSignup) }
                     .padding(4.dp)
             )
         }
@@ -129,7 +134,6 @@ fun LightPreview() {
         ScreenBody(
             state = LoginState.initial,
             sendIntent = {},
-            onRegister = {}
         )
     }
 }

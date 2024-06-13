@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) :
-    BaseViewModel<SplashState, SplashIntent>(SplashState.initial, ioDispatcher) {
+    BaseViewModel<SplashState, SplashIntent,SplashEvent>(SplashState.initial, ioDispatcher) {
 
     override fun reduce(intent: SplashIntent) { //This function reduces each intent with a when
         when (intent) {

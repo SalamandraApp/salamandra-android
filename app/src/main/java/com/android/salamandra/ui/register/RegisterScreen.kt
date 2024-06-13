@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +14,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,13 +29,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.destinations.LoginScreenDestination
+import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra.ui.components.ErrorDialog
 import com.android.salamandra.ui.components.MyCircularProgressbar
 import com.android.salamandra.ui.components.MyColumn
 import com.android.salamandra.ui.components.MyImageLogo
 import com.android.salamandra.ui.components.MySpacer
 import com.android.salamandra.ui.components.textFields.MyEmailTextField
-import com.android.salamandra.ui.components.textFields.MyOutlinedTextField
 import com.android.salamandra.ui.components.textFields.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
@@ -46,24 +46,25 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun RegisterScreen(
     navigator: DestinationsNavigator,
-    registerViewModel: RegisterViewModel = hiltViewModel()
+    viewModel: RegisterViewModel = hiltViewModel()
 ) {
 
-    val state by registerViewModel.state.collectAsState()
-    if (state.success) {
-        navigator.navigate(LoginScreenDestination)
-    } else if (state.loading) {
+    val state by viewModel.state.collectAsState()
+    val events by viewModel.events.collectAsState(initial = null)
+    LaunchedEffect(events) {
+        when (events) {
+            RegisterEvent.NavigateToLogin ->  navigator.navigate(LoginScreenDestination)
+            RegisterEvent.NavigateToVerifyCode ->  navigator.navigate(VerifyCodeScreenDestination(state.username))
+            null -> {}
+        }
+    }
+
+    if (state.loading) {
         MyCircularProgressbar()
-    } else if (!state.confirmScreen) {
+    } else{
         ScreenBody(
             state = state,
-            sendIntent = registerViewModel::dispatch,
-            onSignIn = { navigator.navigate(LoginScreenDestination) }
-        )
-    } else {
-        ConfirmCodeScreen(
-            state = state,
-            sendIntent = registerViewModel::dispatch
+            sendIntent = viewModel::dispatch,
         )
     }
 }
@@ -72,7 +73,6 @@ fun RegisterScreen(
 private fun ScreenBody(
     state: RegisterState,
     sendIntent: (RegisterIntent) -> Unit,
-    onSignIn: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -163,7 +163,7 @@ private fun ScreenBody(
             Text(
                 text = stringResource(R.string.login),
                 modifier = Modifier
-                    .clickable { onSignIn() }
+                    .clickable { sendIntent(RegisterIntent.GoToSignIn) }
                     .align(Alignment.End)
                     .padding(4.dp),
                 fontSize = 14.sp,
@@ -196,58 +196,6 @@ private fun ScreenBody(
     }
 }
 
-@Composable
-private fun ConfirmCodeScreen(
-    //TODO change, make a new screen
-    state: RegisterState,
-    sendIntent: (RegisterIntent) -> Unit,
-) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        MyColumn(
-            modifier = Modifier
-                .offset(y = (-32).dp)
-                .padding(12.dp)
-        ) {
-            MyImageLogo()
-            OutlinedTextField(
-                modifier = Modifier,
-                value = state.code,
-//                hint = "Confirmation code",
-                onValueChange = {
-                    sendIntent(RegisterIntent.ChangeCode(it))
-                }
-            )
-            MySpacer(size = 8)
-            Text(
-                text = "Check your email for confirmation code",
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-        }
-
-        OutlinedButton(
-            onClick = {
-                sendIntent(RegisterIntent.ConfirmCode)
-            },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(32.dp)
-                .padding(bottom = 12.dp)
-                .fillMaxWidth(),
-            border = BorderStroke(1.dp, salamandraColor),
-            shape = RoundedCornerShape(42)
-        ) {
-            Text(
-                text = "Confirm",
-                fontSize = 16.sp,
-                color = salamandraColor,
-                modifier = Modifier.padding(4.dp)
-            )
-        }
-        if (state.error != null) ErrorDialog(error = state.error)
-    }
-}
-
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ScreenPreview() {
@@ -255,7 +203,6 @@ private fun ScreenPreview() {
         ScreenBody(
             state = RegisterState.initial,
             sendIntent = {},
-            onSignIn = {}
         )
     }
 }

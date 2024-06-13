@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : BaseViewModel<tState, tIntent>(tState.initial, ioDispatcher) {
+class ViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : BaseViewModel<tState, tIntent, tEvent>(tState.initial, ioDispatcher) {
 
     override fun reduce(intent: tIntent) {
         when (intent) {

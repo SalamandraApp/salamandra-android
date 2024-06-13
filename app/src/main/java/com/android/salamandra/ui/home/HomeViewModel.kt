@@ -17,7 +17,7 @@ class HomeViewModel @Inject constructor(
     val repository: Repository,
     ioDispatcher: CoroutineDispatcher
 ) :
-    BaseViewModel<HomeState, HomeIntent>(HomeState.initial, ioDispatcher) {
+    BaseViewModel<HomeState, HomeIntent, HomeEvent>(HomeState.initial, ioDispatcher) {
 
     override fun reduce(
         intent: HomeIntent

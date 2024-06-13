@@ -17,7 +17,7 @@ class RegisterViewModel @Inject constructor(
     private val repository: Repository,
     ioDispatcher: CoroutineDispatcher,
     private val userDataValidator: UserDataValidator
-) : BaseViewModel<RegisterState, RegisterIntent>(RegisterState.initial, ioDispatcher) {
+) : BaseViewModel<RegisterState, RegisterIntent, RegisterEvent>(RegisterState.initial, ioDispatcher) {
 
 
     override fun reduce(intent: RegisterIntent) {
@@ -28,19 +28,15 @@ class RegisterViewModel @Inject constructor(
 
             is RegisterIntent.Loading -> onLoading(intent.isLoading)
 
-            RegisterIntent.ConfirmCode -> onVerifyCode()
-
-            RegisterIntent.Success -> _state.update { it.copy(success = true) }
-
             is RegisterIntent.ChangeEmail -> validateEmail(intent.email)
 
             is RegisterIntent.ChangePassword -> validatePassword(intent.password)
 
             is RegisterIntent.ChangeUsername -> _state.update { it.copy(username = intent.username) }
 
-            is RegisterIntent.ChangeCode -> _state.update { it.copy(code = intent.code) }
-
             is RegisterIntent.OnRegister -> onRegister()
+
+            RegisterIntent.GoToSignIn -> sendEvent(RegisterEvent.NavigateToLogin)
         }
     }
 
@@ -61,21 +57,8 @@ class RegisterViewModel @Inject constructor(
                     password = state.value.password,
                     username = state.value.username
                 )) {
-                is Result.Success -> _state.update { it.copy(confirmScreen = true) }
-                is Result.Error -> TODO()
-            }
-        }
-    }
-
-    private fun onVerifyCode() {
-        ioLaunch {
-            when (val confirmation =
-                repository.confirmRegister(
-                    username = state.value.username,
-                    code = state.value.code
-                )) {
-                is Result.Error -> TODO()
-                is Result.Success -> dispatch(RegisterIntent.Success)
+                is Result.Success -> sendEvent(RegisterEvent.NavigateToVerifyCode)
+                is Result.Error ->  _state.update { it.copy(passwordFormatError = register.error.asUiText()) }
             }
         }
     }

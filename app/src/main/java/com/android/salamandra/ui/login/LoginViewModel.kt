@@ -15,7 +15,7 @@ class LoginViewModel @Inject constructor(
     private val repository: Repository,
     ioDispatcher: CoroutineDispatcher
 ) :
-    BaseViewModel<LoginState, LoginIntent>(LoginState.initial, ioDispatcher) {
+    BaseViewModel<LoginState, LoginIntent, LoginEvent>(LoginState.initial, ioDispatcher) {
 
     override fun reduce(
         intent: LoginIntent
@@ -27,6 +27,7 @@ class LoginViewModel @Inject constructor(
             is LoginIntent.Login -> onLogin()
             is LoginIntent.ChangeEmail -> onChangeEmail(intent.email)
             is LoginIntent.ChangePassword -> onChangePassword(intent.password)
+            LoginIntent.GoToSignup -> sendEvent(LoginEvent.NavigateToSignUp)
         }
     }
 
@@ -44,7 +45,7 @@ class LoginViewModel @Inject constructor(
             when (val result =
                 repository.login(email = state.value.email, password = state.value.password)) {
                 is Result.Success -> {
-                    _state.update { it.copy(success = true) }
+                    sendEvent(LoginEvent.NavigateToHome)
                 }
 
                 is Result.Error -> _state.update { it.copy(error = result.error) }

@@ -18,4 +18,6 @@
     <string name="incorrect_email_or_password_account_not_confirmed">Either your email/password is incorrect or your email isn\'t verified…</string>
     <string name="internal_error_while_fetching_auth_session">Internal error while fetching auth session</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="confirmation_code">Confirmation code</string>
+    <string name="check_your_email_for_confirmation_code">Check your email for confirmation code</string>
 </resources>

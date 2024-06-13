@@ -1,9 +1,9 @@
 package com.android.salamandra.ui.login
 
+import com.android.salamandra.core.boilerplate.Event
 import com.android.salamandra.domain.error.RootError
-import com.android.salamandra.ui.UiText
-import com.vzkz.fitjournal.core.boilerplate.Intent
-import com.vzkz.fitjournal.core.boilerplate.State
+import com.android.salamandra.core.boilerplate.Intent
+import com.android.salamandra.core.boilerplate.State
 
 
 data class LoginState(
@@ -11,7 +11,6 @@ data class LoginState(
     val password: String,
     val loading: Boolean,
     val error: RootError?,
-    val success: Boolean,
 ) : State {
     companion object {
         val initial: LoginState = LoginState(
@@ -19,7 +18,6 @@ data class LoginState(
             password = "",
             loading = false,
             error = null,
-            success = false
         )
     }
 }
@@ -32,4 +30,10 @@ sealed class LoginIntent: Intent {
     data object CloseError: LoginIntent()
     data class ChangeEmail(val email: String): LoginIntent()
     data class ChangePassword(val password: String): LoginIntent()
+    data object GoToSignup: LoginIntent()
+}
+
+sealed class LoginEvent: Event {
+    data object NavigateToSignUp: LoginEvent()
+    data object NavigateToHome: LoginEvent()
 }

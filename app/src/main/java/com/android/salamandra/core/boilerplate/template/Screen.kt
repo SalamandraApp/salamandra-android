@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,6 +22,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun TScreen(navigator: DestinationsNavigator, viewModel: ViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
+    val events by viewModel.events.collectAsState(initial = null)
+    LaunchedEffect(events) {
+        TODO()
+        when (events) {
+            null -> {}
+        }
+    }
 
     ScreenBody(
         state = state,
@@ -52,7 +60,7 @@ private fun ScreenBody(
 private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
-           state = tState.initial,
+            state = tState.initial,
             sendIntent = {}
         )
     }
