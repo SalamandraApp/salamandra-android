@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra._core.presentation.components.MyImageLogo
+import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -23,7 +24,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun SplashScreen(navigator: DestinationsNavigator) {
     ScreenBody()
 
-    navigator.navigate(LoginScreenDestination)
+    navigator.navigate(HomeScreenDestination)
 }
 
 

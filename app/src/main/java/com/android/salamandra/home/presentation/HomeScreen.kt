@@ -78,8 +78,8 @@ private fun ScreenBody(
     MyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp)
-            .background(tertiary),
+            .background(tertiary)
+            .padding(12.dp),
         verticalArrangement = Arrangement.Top
     ) {
         MyRow {
@@ -88,7 +88,7 @@ private fun ScreenBody(
             Text(
                 text = "Your Workouts",
                 color = title,
-                fontSize = 29.sp,
+                fontSize = 26.sp,
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily(Font(R.font.roboto))
@@ -96,17 +96,25 @@ private fun ScreenBody(
             )
             Spacer(modifier = Modifier.weight(1f))
             MyRow {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    tint = title,
-                    contentDescription = "Search workout"
-                )
-                MySpacer(size = 8)
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    tint = title,
-                    contentDescription = "Add workout"
-                )
+                IconButton(
+                    onClick = {/*TODO*/}
+                ){
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        tint = title,
+                        contentDescription = "Search workout"
+                    )
+                }
+//                MySpacer(size = 8)
+                IconButton(
+                    onClick = {/*TODO*/}
+                ){
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        tint = title,
+                        contentDescription = "Add workout"
+                    )
+                }
             }
         }
 
