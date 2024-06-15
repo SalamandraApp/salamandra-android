@@ -1,6 +1,8 @@
 package com.android.salamandra.home.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -26,7 +29,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +42,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra._core.presentation.components.MyColumn
+import com.android.salamandra._core.presentation.components.MyRow
+import com.android.salamandra._core.presentation.components.MySpacer
+import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra.ui.theme.SalamandraTheme
+import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.ui.theme.tertiary
+import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -45,17 +59,14 @@ fun HomeScreen(navigator: DestinationsNavigator, viewModel: HomeViewModel = hilt
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            else -> {}
+            HomeEvent.Logout -> navigator.navigate(LoginScreenDestination)
+            null -> {}
         }
     }
 
     ScreenBody(
         state = state,
         sendIntent = viewModel::dispatch,
-        onLogout = {
-            viewModel.onLogout()
-            navigator.navigate(LoginScreenDestination)
-        }
     )
 }
 
@@ -63,53 +74,39 @@ fun HomeScreen(navigator: DestinationsNavigator, viewModel: HomeViewModel = hilt
 private fun ScreenBody(
     state: HomeState,
     sendIntent: (HomeIntent) -> Unit,
-    onLogout: () -> Unit
 ) {
-    Box(
+    MyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.TopCenter
+            .padding(12.dp)
+            .background(tertiary),
+        verticalArrangement = Arrangement.Top
     ) {
-        var term by remember { mutableStateOf("") }
-
-        MyColumn(modifier = Modifier.padding(16.dp)) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                value = term,
-                onValueChange = { term = it },
-                label = {
-                    Text(
-                        text = stringResource(R.string.search_by_name),
-                        fontSize = 16.sp
-                    )
-                },
-                shape = CircleShape,
-                singleLine = true,
-                trailingIcon = {
-                    IconButton(onClick = { sendIntent(HomeIntent.SearchExercise(term)) }, modifier = Modifier.padding(8.dp)) {
-                        Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
-                    }
-                }
+        MyRow {
+            ProfilePicture(size = 50)
+            MySpacer(size = 12)
+            Text(
+                text = "Your Workouts",
+                color = title,
+                fontSize = 29.sp,
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.roboto))
+                )
             )
-            if (state.exList != null) {
-                LazyColumn {
-                    items(state.exList) {
-//                        MyExerciseCardView(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(vertical = 8.dp),
-//                            exName = it.name
-//                        )
-                    }
-                }
-
-            }
             Spacer(modifier = Modifier.weight(1f))
-            Button(onClick = { onLogout() }, modifier = Modifier.padding(8.dp)) {
-                Text(text = "Log out")
+            MyRow {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    tint = title,
+                    contentDescription = "Search workout"
+                )
+                MySpacer(size = 8)
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    tint = title,
+                    contentDescription = "Add workout"
+                )
             }
         }
 
@@ -124,7 +121,6 @@ fun LightPreview() {
         ScreenBody(
             state = HomeState.initial,
             sendIntent = {},
-            onLogout = {}
         )
     }
 }

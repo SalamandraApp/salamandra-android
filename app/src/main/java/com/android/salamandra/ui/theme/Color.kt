@@ -74,3 +74,23 @@ val dark_CustomColor1 = Color(0xFFFFB598)
 val dark_onCustomColor1 = Color(0xFF591C00)
 val dark_CustomColor1Container = Color(0xFF7E2C00)
 val dark_onCustomColor1Container = Color(0xFFFFDBCE)
+
+
+//Color Palette
+val primary = Color(0xffff6000)
+val primaryVariant = Color(0xffff7827)
+val onPrimary = Color(0xFFFFFFFF)
+
+val secondary = Color(0xff343434)
+val secondaryVariant = Color(0xffff7827)
+val onSecondary = Color(0xffd3d3d3)
+
+val tertiary = Color(0xff202020)
+val onTertiary = Color(0xff6b6b6b)
+
+
+val title = Color(0xFFFFFFFF)
+
+val error = Color(0xffd84848)
+
+val message = Color(0xfffff126)

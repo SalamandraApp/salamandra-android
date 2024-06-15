@@ -25,6 +25,8 @@ sealed class HomeIntent: Intent {
     data class Error(val error: UiText): HomeIntent()
     data object CloseError: HomeIntent()
     data class SearchExercise(val term: String): HomeIntent()
+    data object Logout: HomeIntent()
 }
 sealed class HomeEvent: Event {
+    data object Logout: HomeEvent()
 }

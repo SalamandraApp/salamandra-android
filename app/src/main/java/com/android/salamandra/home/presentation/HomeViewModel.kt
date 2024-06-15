@@ -27,6 +27,7 @@ class HomeViewModel @Inject constructor(
             is HomeIntent.CloseError -> onCloseError()
             is HomeIntent.Loading -> onLoading(intent.isLoading)
             is HomeIntent.SearchExercise -> onSearchExercise(intent.term)
+            HomeIntent.Logout -> onLogout()
         }
     }
 
@@ -49,8 +50,9 @@ class HomeViewModel @Inject constructor(
 
     private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 
-    fun onLogout() {
+    private fun onLogout() {
         ioLaunch { repository.logout() }
+        sendEvent(HomeEvent.Logout)
     }
 }
 
