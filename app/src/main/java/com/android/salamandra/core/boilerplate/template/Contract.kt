@@ -3,6 +3,7 @@ package com.android.salamandra.core.boilerplate.template
 import com.android.salamandra.core.boilerplate.Event
 import com.android.salamandra.ui.UiText
 import com.android.salamandra.core.boilerplate.Intent
+import com.android.salamandra.core.boilerplate.NavArgs
 import com.android.salamandra.core.boilerplate.State
 
 
@@ -26,3 +27,7 @@ sealed class tIntent: Intent {
 
 sealed class tEvent: Event{
 }
+
+data class tNavArgs(
+    val dummy: Int? = null
+): NavArgs

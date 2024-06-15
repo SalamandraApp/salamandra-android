@@ -18,7 +18,7 @@ import com.android.salamandra.ui.theme.SalamandraTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination(navArgsDelegate = tNavArgs::class)
 @Composable
 fun TScreen(navigator: DestinationsNavigator, viewModel: ViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
