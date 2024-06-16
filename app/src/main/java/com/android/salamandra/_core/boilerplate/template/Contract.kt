@@ -20,7 +20,6 @@ data class tState(
 }
 
 sealed class tIntent: Intent {
-    data class Loading(val isLoading: Boolean): tIntent()
     data class Error(val error: UiText): tIntent()
     data object CloseError: tIntent()
 }

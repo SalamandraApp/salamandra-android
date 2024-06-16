@@ -24,22 +24,14 @@ class HomeViewModel @Inject constructor(
     ) { //This function reduces each intent with a when
         when (intent) {
             is HomeIntent.Error -> onError(intent.error)
+
             is HomeIntent.CloseError -> onCloseError()
+
             is HomeIntent.Loading -> onLoading(intent.isLoading)
-            is HomeIntent.SearchExercise -> onSearchExercise(intent.term)
-            HomeIntent.Logout -> onLogout()
-        }
-    }
 
+            is HomeIntent.Logout -> onLogout()
 
-    private fun onSearchExercise(term: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = repository.getExercise(term)
-            if (result != null) {
-                _state.update { it.copy(exList = result) }
-            } else {
-                _state.update { it.copy(error = null) } // TODO should be done using Error handling
-            }
+            HomeIntent.NewWk -> sendEvent(HomeEvent.NavigateToEditWk)
         }
     }
 

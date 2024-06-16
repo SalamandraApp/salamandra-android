@@ -91,6 +91,6 @@ val onTertiary = Color(0xff6b6b6b)
 
 val title = Color(0xFFFFFFFF)
 
-val error = Color(0xffd84848)
+val colorError = Color(0xffd84848)
 
 val message = Color(0xfffff126)

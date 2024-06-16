@@ -15,10 +15,8 @@ class ViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : BaseVie
         when (intent) {
             is tIntent.Error -> onError(intent.error)
             is tIntent.CloseError -> onCloseError()
-            is tIntent.Loading -> onLoading(intent.isLoading)
         }
     }
     private fun onError(error: UiText) = _state.update { it.copy(error = error) }
     private fun onCloseError() = _state.update { it.copy(error = null) }
-    private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 }

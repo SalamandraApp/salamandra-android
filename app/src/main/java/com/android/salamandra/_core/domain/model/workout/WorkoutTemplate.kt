@@ -4,10 +4,10 @@ import java.util.Date
 import java.util.UUID
 
 data class WorkoutTemplate(
-    val wkId: UUID,
-    val userId: UUID?,
-    val name: String,
-    val elements: List<WkTemplateElement>?,
-    val description: String?,
-    val dateCreated: Date?
+    val wkId: UUID? = null,
+    val userId: UUID? = null,
+    val name: String = "New workout",
+    val elements: List<WkTemplateElement>? = emptyList(),
+    val description: String? = null,
+    val dateCreated: Date? = null
 )

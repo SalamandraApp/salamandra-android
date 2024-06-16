@@ -20,4 +20,5 @@
     <string name="unknown_error">Unknown error</string>
     <string name="confirmation_code">Confirmation code</string>
     <string name="check_your_email_for_confirmation_code">Check your email for confirmation code</string>
+    <string name="your_workouts">Your Workouts</string>
 </resources>
