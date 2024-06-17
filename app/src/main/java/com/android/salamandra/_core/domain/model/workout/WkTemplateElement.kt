@@ -7,8 +7,8 @@ data class WkTemplateElement(
     val exInWkId: UUID,
     val exercise: Exercise,
     val position: Int,
-    val reps: Int,
-    val sets: Int,
+    val reps: Int = 8,
+    val sets: Int = 4,
     val weight: Double,
-    val rest: Int,
+    val rest: Int = 60,
 )

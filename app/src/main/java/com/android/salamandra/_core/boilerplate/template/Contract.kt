@@ -5,11 +5,12 @@ import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
+import com.android.salamandra._core.domain.error.RootError
 
 
 data class tState(
     val loading: Boolean,
-    val error: UiText?
+    val error: RootError?
 ) : State {
     companion object {
         val initial: tState = tState(
@@ -20,7 +21,7 @@ data class tState(
 }
 
 sealed class tIntent: Intent {
-    data class Error(val error: UiText): tIntent()
+    data class Error(val error: RootError): tIntent()
     data object CloseError: tIntent()
 }
 

@@ -4,6 +4,7 @@ import com.android.salamandra.authentication.register.domain.Repository
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.UserDataValidator
 import com.android.salamandra._core.domain.error.Result
+import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.presentation.asUiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,7 +41,7 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-    private fun onError(error: UiText) =
+    private fun onError(error: RootError) =
         _state.update { it.copy(error = error) }
 
     private fun onCloseError() =

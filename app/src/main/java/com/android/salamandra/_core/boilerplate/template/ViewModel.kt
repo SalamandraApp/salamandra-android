@@ -1,6 +1,7 @@
 package com.android.salamandra._core.boilerplate.template
 
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.presentation.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,6 +18,6 @@ class ViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : BaseVie
             is tIntent.CloseError -> onCloseError()
         }
     }
-    private fun onError(error: UiText) = _state.update { it.copy(error = error) }
+    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
     private fun onCloseError() = _state.update { it.copy(error = null) }
 }

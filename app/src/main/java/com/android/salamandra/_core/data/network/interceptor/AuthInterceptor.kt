@@ -11,14 +11,15 @@ class AuthInterceptor @Inject constructor(
     private val datastore: DataStoreRepository
 ): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = runBlocking {
-            datastore.getToken().first()
-        }
-        if(token != null) {
-            return chain.proceed(chain.request())
-        }
-        val request = chain.request().newBuilder()
-        request.addHeader("Authorization", "Bearer $token")
-        return chain.proceed(request.build())
+        return chain.proceed(chain.request())
+//        val token = runBlocking {
+//            datastore.getToken().first()
+//        }
+//        if(token != null) {
+//            return chain.proceed(chain.request())
+//        }
+//        val request = chain.request().newBuilder()
+//        request.addHeader("Authorization", "Bearer $token")
+//        return chain.proceed(request.build())
     }
 }

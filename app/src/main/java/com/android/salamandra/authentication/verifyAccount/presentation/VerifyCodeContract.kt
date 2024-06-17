@@ -4,11 +4,12 @@ import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.State
+import com.android.salamandra._core.domain.error.RootError
 
 
 data class VerifyCodeState(
     val loading: Boolean,
-    val error: UiText?,
+    val error: RootError?,
     val username: String,
     val code: String,
 ) : State {
@@ -24,7 +25,7 @@ data class VerifyCodeState(
 
 sealed class VerifyCodeIntent: Intent {
     data class Loading(val isLoading: Boolean): VerifyCodeIntent()
-    data class Error(val error: UiText): VerifyCodeIntent()
+    data class Error(val error: RootError): VerifyCodeIntent()
     data object CloseError: VerifyCodeIntent()
     data object ConfirmCode: VerifyCodeIntent()
     data class ChangeCode(val code: String): VerifyCodeIntent()

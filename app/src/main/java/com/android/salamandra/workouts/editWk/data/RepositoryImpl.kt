@@ -1,14 +1,14 @@
-package com.android.salamandra.home.data
+package com.android.salamandra.workouts.editWk.data
 
-import com.android.salamandra._core.data.cognito.CognitoService
+import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra.home.domain.Repository
+import com.android.salamandra.workouts.editWk.domain.Repository
 
-class RepositoryImpl(private val cognitoService: CognitoService): Repository {
-    override suspend fun getExercise(term: String): List<Exercise>? {
-        return emptyList() //TODO
+class RepositoryImpl(private val salamandraApiService: SalamandraApiService): Repository {
+    override suspend fun getExercises(term: String): Result<List<Exercise>, DataError.Network> {
+        return Result.Error(DataError.Network.REQUEST_TIEMOUT)
 //        runCatching {
 //            salamandraApiService.searchExercise(term)
 //        }
@@ -19,10 +19,6 @@ class RepositoryImpl(private val cognitoService: CognitoService): Repository {
 //                Log.i("Jaime", "An error ocurred while using apiService, ${it.message}")
 //            }
 //        return null
-    }
-
-    override suspend fun logout(): Result<Unit, DataError.Cognito> {
-        TODO("Not yet implemented")
     }
 
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
+import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyImageLogo
@@ -99,6 +100,6 @@ private fun ScreenBody(
                 modifier = Modifier.padding(4.dp)
             )
         }
-        if (state.error != null) ErrorDialog(error = state.error)
+        if (state.error != null) ErrorDialog(error = state.error.asUiText())
     }
 }

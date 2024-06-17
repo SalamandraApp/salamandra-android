@@ -3,6 +3,7 @@ package com.android.salamandra.authentication.verifyAccount.presentation
 import com.android.salamandra.authentication.verifyAccount.domain.Repository
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
+import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.presentation.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,7 +31,7 @@ class VerifyCodeViewModel @Inject constructor(
         }
     }
 
-    private fun onError(error: UiText) = _state.update { it.copy(error = error) }
+    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
     private fun onCloseError() = _state.update { it.copy(error = null) }
     private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 

@@ -4,11 +4,12 @@ import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.State
+import com.android.salamandra._core.domain.error.RootError
 
 
 data class RegisterState(
     val loading: Boolean,
-    val error: UiText?,
+    val error: RootError?,
     val username: String,
     val email: String,
     val password: String,
@@ -31,7 +32,7 @@ data class RegisterState(
 
 sealed class RegisterIntent: Intent {
     data class Loading(val isLoading: Boolean): RegisterIntent()
-    data class Error(val error: UiText): RegisterIntent()
+    data class Error(val error: RootError): RegisterIntent()
     data object CloseError: RegisterIntent()
     data class ChangeEmail(val email: String): RegisterIntent()
     data class ChangePassword(val password: String): RegisterIntent()
