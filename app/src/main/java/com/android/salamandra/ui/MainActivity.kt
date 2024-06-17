@@ -22,13 +22,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        try {
-            Amplify.addPlugin(AWSCognitoAuthPlugin())
-            Amplify.configure(applicationContext)
-            Log.i("Jaime", "Initialized Amplify")
-        } catch (error: AmplifyException) {
-            Log.e("Jaime", "Could not initialize Amplify", error)
-        }
+//        try {
+//            Amplify.addPlugin(AWSCognitoAuthPlugin())
+//            Amplify.configure(applicationContext)
+//            Log.i("Jaime", "Initialized Amplify")
+//        } catch (error: AmplifyException) {
+//            Log.e("Jaime", "Could not initialize Amplify", error)
+//        }
 
         setContent {
             SalamandraTheme {
