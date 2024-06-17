@@ -28,6 +28,7 @@ import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra._core.presentation.components.MySpacer
 import com.android.salamandra._core.presentation.components.textFields.MyOutlinedTextField
 import com.android.salamandra.ui.theme.salamandraColor
+import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -100,6 +101,10 @@ private fun ScreenBody(
                 modifier = Modifier.padding(4.dp)
             )
         }
-        if (state.error != null) ErrorDialog(error = state.error.asUiText())
+        if (state.error != null)
+            ErrorDialog(
+                error = state.error.asUiText(),
+                onDismiss = { sendIntent(VerifyCodeIntent.CloseError) }
+            )
     }
 }

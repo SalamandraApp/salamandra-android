@@ -2,6 +2,7 @@ package com.android.salamandra.home.presentation
 
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra.home.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +36,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onError(error: UiText) = _state.update { it.copy(error = error) }
+    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
 
     private fun onCloseError() = _state.update { it.copy(error = null) }
 

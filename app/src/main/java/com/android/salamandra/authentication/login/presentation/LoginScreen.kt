@@ -37,6 +37,7 @@ import com.android.salamandra.authentication.commons.presentation.textfields.MyE
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.salamandraColor
+import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -121,7 +122,11 @@ private fun ScreenBody(
             )
         }
 
-        if (state.error != null) ErrorDialog(state.error.asUiText())
+        if (state.error != null)
+            ErrorDialog(
+                error = state.error.asUiText(),
+                onDismiss = { sendIntent(LoginIntent.CloseError) }
+            )
 
 
     }

@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra.ui.theme.SalamandraTheme
+import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -54,7 +55,11 @@ private fun ScreenBody(
         //TODO
 
 
-        if (state.error != null) ErrorDialog(error = state.error.asUiText())
+        if (state.error != null)
+            ErrorDialog(
+                error = state.error.asUiText(),
+                onDismiss = { sendIntent(tIntent.CloseError) }
+            )
 
     }
 }

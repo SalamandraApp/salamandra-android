@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
+import com.android.salamandra._core.presentation.asUiText
+import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyRow
@@ -60,6 +62,7 @@ import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
+import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -133,6 +136,12 @@ private fun ScreenBody(
                 MySpacer(size = 8)
             }
         }
+
+        if (state.error != null)
+            ErrorDialog(
+                error = state.error.asUiText(),
+                onDismiss = { sendIntent(HomeIntent.CloseError) }
+            )
 
     }
 }

@@ -142,7 +142,8 @@ private fun ScreenBody(
             ) {
                 MyRow {
                     MyRow(modifier = Modifier.clickable {
-                        if (!state.showSearchExercise) {/*TODO*/ }
+                        if (!state.showSearchExercise) {/*TODO*/
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.Outlined.Delete,
@@ -217,7 +218,11 @@ private fun ScreenBody(
 
         if (state.showSearchExercise) SearchScreen(state, sendIntent)
 
-        if (state.error != null) ErrorDialog(error = state.error.asUiText())
+        if (state.error != null)
+            ErrorDialog(
+                error = state.error.asUiText(),
+                onDismiss = { sendIntent(EditWkIntent.CloseError) }
+            )
     }
 }
 
@@ -251,7 +256,7 @@ private fun SearchScreen(
                 shape = RoundedCornerShape(roundedCorner),
                 onValueChange = { sendIntent(EditWkIntent.ChangeSearchTerm(it)) },
                 trailingIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = { sendIntent(EditWkIntent.SearchExercise) }) {
                         Icon(
                             imageVector = Icons.Outlined.Search,
                             contentDescription = "Search exercise"
