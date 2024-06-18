@@ -25,4 +25,6 @@
     <string name="reps">Reps</string>
     <string name="sets">Sets</string>
     <string name="weight">Weight</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
 </resources>

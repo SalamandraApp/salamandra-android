@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SalamandraApiService {
-    @GET("exercises/{term}")
-    suspend fun searchExercise(@Query("term") term: String): ExerciseResponse
+    @GET("exercises")
+    suspend fun searchExercise(@Query("name") term: String): ExerciseResponse
 
 }

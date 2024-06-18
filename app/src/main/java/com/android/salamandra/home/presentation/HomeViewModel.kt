@@ -32,7 +32,9 @@ class HomeViewModel @Inject constructor(
 
             is HomeIntent.Logout -> onLogout()
 
-            HomeIntent.NewWk -> sendEvent(HomeEvent.NavigateToEditWk)
+            is HomeIntent.NewWk -> sendEvent(HomeEvent.NavigateToEditWk)
+
+            is HomeIntent.BottomBarClicked -> sendEvent(HomeEvent.BottomBarClicked(intent.destination))
         }
     }
 

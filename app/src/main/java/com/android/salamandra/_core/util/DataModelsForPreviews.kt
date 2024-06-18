@@ -25,7 +25,6 @@ val EXERCISE = Exercise(
 )
 
 val WORKOUT_TEMPLATE_ELEMENT = WkTemplateElement(
-    UUID.randomUUID(),
     exercise = EXERCISE,
     position = 1,
     reps = 3,

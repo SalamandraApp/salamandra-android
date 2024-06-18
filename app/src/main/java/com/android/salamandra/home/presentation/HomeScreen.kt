@@ -1,9 +1,7 @@
 package com.android.salamandra.home.presentation
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,36 +9,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,20 +31,20 @@ import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
-import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyRow
 import com.android.salamandra._core.presentation.components.MySpacer
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkPlaceholder
+import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
 import com.android.salamandra._core.util.WORKOUT_PREVIEW_LIST
 import com.android.salamandra.destinations.EditWkScreenDestination
+import com.android.salamandra.destinations.HomeScreenDestination
+import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -75,6 +57,7 @@ fun HomeScreen(navigator: DestinationsNavigator, viewModel: HomeViewModel = hilt
         when (events) {
             HomeEvent.Logout -> navigator.navigate(LoginScreenDestination)
             HomeEvent.NavigateToEditWk -> navigator.navigate(EditWkScreenDestination())
+            is HomeEvent.BottomBarClicked -> navigator.navigate((events as HomeEvent.BottomBarClicked).destination)
             null -> {}
         }
     }
@@ -90,58 +73,64 @@ private fun ScreenBody(
     state: HomeState,
     sendIntent: (HomeIntent) -> Unit,
 ) {
-    MyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(tertiary)
-            .padding(12.dp),
-        verticalArrangement = Arrangement.Top
+    MyBottomBarScaffold(
+        currentDestination = HomeScreenDestination,
+        onBottomBarClicked = { sendIntent(HomeIntent.BottomBarClicked(it)) }
     ) {
-        MyRow {
-            ProfilePicture(size = 50)
-            MySpacer(size = 12)
-            Text(
-                text = stringResource(R.string.your_workouts),
-                color = title,
-                fontSize = 26.sp,
-                style = TitleTypo
-            )
-            Spacer(modifier = Modifier.weight(1f))
+        MyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(tertiary)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
             MyRow {
-                IconButton(
-                    onClick = {/*TODO*/ }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        tint = title,
-                        contentDescription = "Search workout"
-                    )
+                ProfilePicture(size = 50)
+                MySpacer(size = 12)
+                Text(
+                    text = stringResource(R.string.your_workouts),
+                    color = title,
+                    fontSize = 26.sp,
+                    style = TitleTypo
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                MyRow {
+                    IconButton(
+                        onClick = {/*TODO*/ }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            tint = title,
+                            contentDescription = "Search workout"
+                        )
+                    }
+                    IconButton(
+                        onClick = { sendIntent(HomeIntent.NewWk) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            tint = title,
+                            contentDescription = "Add workout"
+                        )
+                    }
                 }
-                IconButton(
-                    onClick = { sendIntent(HomeIntent.NewWk) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Add,
-                        tint = title,
-                        contentDescription = "Add workout"
-                    )
+
+            }
+            MySpacer(size = 12)
+            LazyColumn() {
+                items(state.wkPreviewList) { wkPreview ->
+                    MyWkPreview(wkPreview = wkPreview)
+                    MySpacer(size = 8)
                 }
             }
 
-        }
-        MySpacer(size = 12)
-        LazyColumn() {
-            items(state.wkPreviewList) { wkPreview ->
-                MyWkPreview(wkPreview = wkPreview)
-                MySpacer(size = 8)
-            }
-        }
+            if (state.error != null)
+                ErrorDialog(
+                    error = state.error.asUiText(),
+                    onDismiss = { sendIntent(HomeIntent.CloseError) }
+                )
 
-        if (state.error != null)
-            ErrorDialog(
-                error = state.error.asUiText(),
-                onDismiss = { sendIntent(HomeIntent.CloseError) }
-            )
+        }
 
     }
 }

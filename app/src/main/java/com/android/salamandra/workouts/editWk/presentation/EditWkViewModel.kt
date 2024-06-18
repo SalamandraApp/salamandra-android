@@ -5,6 +5,7 @@ import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.domain.model.Exercise
+import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra.workouts.editWk.domain.Repository
@@ -46,7 +47,12 @@ class EditWkViewModel @Inject constructor(
             is EditWkIntent.ShowSearchExercise -> _state.update { it.copy(showSearchExercise = intent.show) }
 
             is EditWkIntent.ChangeSearchTerm -> _state.update { it.copy(searchTerm = intent.newTerm) }
+
             EditWkIntent.SearchExercise -> searchExercise()
+
+            is EditWkIntent.AddExerciseToTemplate -> addExerciseToTemplate(intent.exercise)
+
+            EditWkIntent.NavigateBack -> sendEvent(EditWkEvent.NavigateToHome)
         }
     }
 
@@ -61,5 +67,11 @@ class EditWkViewModel @Inject constructor(
             }
         }
 
+    }
+
+    private fun addExerciseToTemplate(exercise: Exercise){
+        val position = state.value.wkTemplate.elements.size + 1
+        val wkTemplateElement = WkTemplateElement(exercise = exercise, position = position)
+        _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = it.wkTemplate.elements + wkTemplateElement)) }
     }
 }

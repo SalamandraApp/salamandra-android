@@ -37,9 +37,12 @@ sealed class EditWkIntent: Intent {
     data class ShowSearchExercise(val show: Boolean): EditWkIntent()
     data class ChangeSearchTerm(val newTerm: String): EditWkIntent()
     data object SearchExercise: EditWkIntent()
+    data class AddExerciseToTemplate(val exercise: Exercise): EditWkIntent()
+    data object NavigateBack: EditWkIntent()
 }
 
 sealed class EditWkEvent: Event{
+    data object NavigateToHome: EditWkEvent()
 }
 
 data class EditWkNavArgs(

@@ -1,11 +1,11 @@
-package com.android.salamandra._core.boilerplate.template
+package com.android.salamandra.profile.presentation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -17,20 +17,25 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
+import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
+import com.android.salamandra.destinations.HomeScreenDestination
+import com.android.salamandra.destinations.ProfileScreenDestination
+import com.android.salamandra.home.presentation.HomeEvent
+import com.android.salamandra.home.presentation.HomeIntent
 import com.android.salamandra.ui.theme.SalamandraTheme
+import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.tertiary
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination(navArgsDelegate = tNavArgs::class)
+@Destination
 @Composable
-fun TScreen(navigator: DestinationsNavigator, viewModel: ViewModel = hiltViewModel()) {
+fun ProfileScreen(navigator: DestinationsNavigator, viewModel: ProfileViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
-        TODO()
         when (events) {
+            is ProfileEvent.BottomBarClicked -> navigator.navigate((events as ProfileEvent.BottomBarClicked).destination)
             null -> {}
         }
     }
@@ -43,24 +48,30 @@ fun TScreen(navigator: DestinationsNavigator, viewModel: ViewModel = hiltViewMod
 
 @Composable
 private fun ScreenBody(
-    state: tState,
-    sendIntent: (tIntent) -> Unit
+    state: ProfileState,
+    sendIntent: (ProfileIntent) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(tertiary)
-            .padding(12.dp),
-        contentAlignment = Alignment.Center
+    MyBottomBarScaffold(
+        currentDestination = ProfileScreenDestination,
+        onBottomBarClicked = { sendIntent(ProfileIntent.BottomBarClicked(it)) }
     ) {
-        //TODO
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(tertiary)
+                .padding(12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "Screen not yet implemented", color = onTertiary)
 
 
-        if (state.error != null)
-            ErrorDialog(
-                error = state.error.asUiText(),
-                onDismiss = { sendIntent(tIntent.CloseError) }
-            )
+            if (state.error != null)
+                ErrorDialog(
+                    error = state.error.asUiText(),
+                    onDismiss = { sendIntent(ProfileIntent.CloseError) }
+                )
+
+        }
 
     }
 }
@@ -70,7 +81,7 @@ private fun ScreenBody(
 private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
-            state = tState.initial,
+            state = ProfileState.initial,
             sendIntent = {}
         )
     }

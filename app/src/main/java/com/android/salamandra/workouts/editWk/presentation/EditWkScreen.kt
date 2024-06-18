@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Done
@@ -56,6 +57,8 @@ import com.android.salamandra._core.presentation.components.WkPlaceholder
 import com.android.salamandra._core.util.EXERCISE_LIST
 import com.android.salamandra._core.util.LONG_EXERCISE_LIST
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
+import com.android.salamandra.destinations.HomeScreenDestination
+import com.android.salamandra.home.presentation.components.SearchScreen
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.WkTemplateElementTypo
@@ -77,7 +80,8 @@ fun EditWkScreen(navigator: DestinationsNavigator, viewModel: EditWkViewModel = 
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            else -> {}
+            EditWkEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
+            null -> {}
         }
     }
 
@@ -106,16 +110,14 @@ private fun ScreenBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
-                    .weight(0.8f), verticalArrangement = Arrangement.Top
+                    .weight(1.1f), verticalArrangement = Arrangement.Top
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    WkPlaceholder(size = 110, shape = RoundedCornerShape(0))
-                    MySpacer(size = 12)
-                    Column(modifier = Modifier) {
+                    Column(modifier = Modifier.padding(top = 32.dp).weight(1f)) {
                         WkNameTextField(
                             state.wkTemplate.name,
                             !state.showSearchExercise,
@@ -129,6 +131,8 @@ private fun ScreenBody(
                             sendIntent
                         )
                     }
+                    MySpacer(size = 12)
+                    WkPlaceholder(modifier = Modifier.weight(3f),size = 140, shape = RoundedCornerShape(0))
                 }
 
             }
@@ -213,6 +217,14 @@ private fun ScreenBody(
                 }
             }
         }
+        IconButton(modifier = Modifier.align(Alignment.TopStart), onClick = { sendIntent(EditWkIntent.NavigateBack) }, enabled = !state.showSearchExercise) {
+            Icon(
+                imageVector = Icons.Outlined.ArrowBackIosNew,
+                contentDescription = "Nav Back",
+                tint = onPrimary
+            )
+
+        }
 
         if (state.showSearchExercise) SearchScreen(state, sendIntent)
 
@@ -224,98 +236,45 @@ private fun ScreenBody(
     }
 }
 
+
+
 @Composable
-private fun SearchScreen(
-    state: EditWkState,
+private fun WkNameTextField(
+    name: String,
+    editEnabled: Boolean,
     sendIntent: (EditWkIntent) -> Unit
 ) {
-    Box(
+    BasicTextField(
         modifier = Modifier
-            .fillMaxSize()
-            .padding()
-            .background(secondary.copy(alpha = 0.6f)),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        val roundedCorner = 20.dp
-        MyColumn(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .padding(top = 12.dp)
-                .clip(RoundedCornerShape(roundedCorner))
-                .fillMaxWidth()
-                .background(tertiary),
-            verticalArrangement = Arrangement.Top
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(text = "Type an exercise to search...") },
-                value = state.searchTerm,
-                shape = RoundedCornerShape(roundedCorner),
-                onValueChange = { sendIntent(EditWkIntent.ChangeSearchTerm(it)) },
-                trailingIcon = {
-                    IconButton(onClick = { sendIntent(EditWkIntent.SearchExercise) }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = "Search exercise"
-                        )
-                    }
-                }
-            )
-            LazyColumn {
-                items(state.exerciseList) {
-                    SearchResultElement(exercise = it)
-                }
-            }
-
-        }
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(12.dp)
-                .clip(
-                    RoundedCornerShape(30)
-                )
-                .background(primary),
-            onClick = { sendIntent(EditWkIntent.ShowSearchExercise(false)) }
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Done,
-                tint = onPrimary,
-                contentDescription = "Done"
-            )
-        }
-    }
+            .clip(RoundedCornerShape(20))
+            .background(secondary)
+            .padding(8.dp),
+        singleLine = true,
+        enabled = editEnabled,
+        value = name,
+        textStyle = TitleTypo.copy(color = title, fontSize = 24.sp),
+        onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
+    )
 }
 
 @Composable
-private fun SearchResultElement(modifier: Modifier = Modifier, exercise: Exercise) {
-    MyRow(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(20))
-            .background(secondary)
-            .padding(horizontal = 8.dp)
-    ) {
-        Text(text = exercise.name, color = onSecondary, fontSize = 18.sp)
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(
-                imageVector = Icons.Outlined.Info,
-                contentDescription = "Exercise info",
-                tint = onSecondary
-            )
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(
-                imageVector = Icons.Outlined.Add,
-                contentDescription = "Add exercise",
-                tint = onSecondary
-            )
-
-        }
-    }
-
+private fun WkDescriptionTextField(
+    modifier: Modifier = Modifier,
+    description: String?,
+    editEnabled: Boolean,
+    sendIntent: (EditWkIntent) -> Unit
+) {
+    OutlinedTextField(
+        value = description ?: "",
+        onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
+        enabled = editEnabled,
+        colors = OutlinedTextFieldDefaults.colors().copy(
+            focusedContainerColor = secondary,
+            unfocusedContainerColor = secondary,
+            focusedIndicatorColor = primary
+        ),
+        label = { Text(text = "Add a description...", fontSize = 14.sp) }
+    )
 }
 
 @Composable
@@ -370,45 +329,6 @@ private fun WkElementComponent(modifier: Modifier = Modifier, wkElement: WkTempl
 
 }
 
-@Composable
-private fun WkNameTextField(
-    name: String,
-    editEnabled: Boolean,
-    sendIntent: (EditWkIntent) -> Unit
-) {
-    BasicTextField(
-        modifier = Modifier
-            .clip(RoundedCornerShape(20))
-            .background(secondary)
-            .padding(8.dp),
-        singleLine = true,
-        enabled = editEnabled,
-        value = name,
-        textStyle = TitleTypo.copy(color = title, fontSize = 24.sp),
-        onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
-    )
-}
-
-@Composable
-private fun WkDescriptionTextField(
-    modifier: Modifier = Modifier,
-    description: String?,
-    editEnabled: Boolean,
-    sendIntent: (EditWkIntent) -> Unit
-) {
-    OutlinedTextField(
-        value = description ?: "",
-        onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
-        enabled = editEnabled,
-        colors = OutlinedTextFieldDefaults.colors().copy(
-            focusedContainerColor = secondary,
-            unfocusedContainerColor = secondary,
-            focusedIndicatorColor = primary
-        ),
-        label = { Text(text = "Add a description...", fontSize = 14.sp) }
-    )
-}
-
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ScreenPreview() {
@@ -416,7 +336,7 @@ private fun ScreenPreview() {
         ScreenBody(
             state = EditWkState.initial.copy(
                 wkTemplate = WORKOUT_TEMPLATE,
-                showSearchExercise = true,
+//                showSearchExercise = true,
                 exerciseList = EXERCISE_LIST
             ),
             sendIntent = {}
