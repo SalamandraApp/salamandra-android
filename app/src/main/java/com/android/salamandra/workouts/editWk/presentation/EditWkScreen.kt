@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,12 +21,11 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.DragIndicator
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -38,18 +36,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.salamandra.R
+import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
@@ -57,6 +53,8 @@ import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyRow
 import com.android.salamandra._core.presentation.components.MySpacer
 import com.android.salamandra._core.presentation.components.WkPlaceholder
+import com.android.salamandra._core.util.EXERCISE_LIST
+import com.android.salamandra._core.util.LONG_EXERCISE_LIST
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
@@ -183,13 +181,13 @@ private fun ScreenBody(
                 val weightSeparator = Modifier.weight(0.2f)
                 Row(Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.weight(0.3f))
-                    Text(text = "Exercise", color = onSecondary)
+                    Text(text = stringResource(R.string.exercise), color = onSecondary)
                     Spacer(modifier = Modifier.weight(1f))
-                    Text(text = "Reps", color = onSecondary)
+                    Text(text = stringResource(R.string.reps), color = onSecondary)
                     Spacer(modifier = weightSeparator)
-                    Text(text = "Sets", color = onSecondary)
+                    Text(text = stringResource(R.string.sets), color = onSecondary)
                     Spacer(modifier = weightSeparator)
-                    Text(text = "Weight", color = onSecondary)
+                    Text(text = stringResource(R.string.weight), color = onSecondary)
                     MySpacer(size = 2)
                     Text(
                         modifier = Modifier.align(Alignment.Bottom),
@@ -245,7 +243,6 @@ private fun SearchScreen(
                 .padding(top = 12.dp)
                 .clip(RoundedCornerShape(roundedCorner))
                 .fillMaxWidth()
-                .heightIn(min = 400.dp)
                 .background(tertiary),
             verticalArrangement = Arrangement.Top
         ) {
@@ -264,6 +261,12 @@ private fun SearchScreen(
                     }
                 }
             )
+            LazyColumn {
+                items(state.exerciseList) {
+                    SearchResultElement(exercise = it)
+                }
+            }
+
         }
         IconButton(
             modifier = Modifier
@@ -282,6 +285,37 @@ private fun SearchScreen(
             )
         }
     }
+}
+
+@Composable
+private fun SearchResultElement(modifier: Modifier = Modifier, exercise: Exercise) {
+    MyRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(20))
+            .background(secondary)
+            .padding(horizontal = 8.dp)
+    ) {
+        Text(text = exercise.name, color = onSecondary, fontSize = 18.sp)
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = "Exercise info",
+                tint = onSecondary
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(
+                imageVector = Icons.Outlined.Add,
+                contentDescription = "Add exercise",
+                tint = onSecondary
+            )
+
+        }
+    }
+
 }
 
 @Composable
@@ -382,7 +416,8 @@ private fun ScreenPreview() {
         ScreenBody(
             state = EditWkState.initial.copy(
                 wkTemplate = WORKOUT_TEMPLATE,
-                showSearchExercise = true
+                showSearchExercise = true,
+                exerciseList = EXERCISE_LIST
             ),
             sendIntent = {}
         )

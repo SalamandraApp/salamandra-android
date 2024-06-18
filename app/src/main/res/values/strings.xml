@@ -21,4 +21,8 @@
     <string name="confirmation_code">Confirmation code</string>
     <string name="check_your_email_for_confirmation_code">Check your email for confirmation code</string>
     <string name="your_workouts">Your Workouts</string>
+    <string name="exercise">Exercise</string>
+    <string name="reps">Reps</string>
+    <string name="sets">Sets</string>
+    <string name="weight">Weight</string>
 </resources>

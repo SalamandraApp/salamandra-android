@@ -35,3 +35,6 @@ val WORKOUT_TEMPLATE_ELEMENT = WkTemplateElement(
 )
 
 val WORKOUT_TEMPLATE = WorkoutTemplate(elements = listOf(WORKOUT_TEMPLATE_ELEMENT, WORKOUT_TEMPLATE_ELEMENT.copy(weight = 78.56, exercise = EXERCISE.copy(name = "Legs"))))
+
+val EXERCISE_LIST = listOf(EXERCISE, EXERCISE.copy(name = "Push ups"), EXERCISE.copy(name = "Dumbbell Bench press"), EXERCISE.copy(name = "Cable fly"))
+val LONG_EXERCISE_LIST = List(4) { EXERCISE_LIST}.flatten()
