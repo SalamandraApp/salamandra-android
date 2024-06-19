@@ -26,9 +26,9 @@ class EditWkViewModel @Inject constructor(
 
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
-            is EditWkIntent.Error -> onError(intent.error)
+            is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
 
-            is EditWkIntent.CloseError -> onCloseError()
+            is EditWkIntent.CloseError ->  _state.update { it.copy(error = null) }
 
             is EditWkIntent.ChangeWkName -> _state.update {
                 it.copy(
@@ -56,7 +56,6 @@ class EditWkViewModel @Inject constructor(
         }
     }
 
-    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
     private fun onCloseError() = _state.update { it.copy(error = null) }
 
     private fun searchExercise() {

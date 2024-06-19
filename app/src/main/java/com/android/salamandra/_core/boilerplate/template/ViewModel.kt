@@ -10,14 +10,14 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : BaseViewModel<tState, tIntent, tEvent>(tState.initial, ioDispatcher) {
+class ViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) :
+    BaseViewModel<tState, tIntent, tEvent>(tState.initial, ioDispatcher) {
 
     override fun reduce(intent: tIntent) {
         when (intent) {
-            is tIntent.Error -> onError(intent.error)
-            is tIntent.CloseError -> onCloseError()
+            is tIntent.Error -> _state.update { it.copy(error = intent.error) }
+            is tIntent.CloseError -> _state.update { it.copy(error = null) }
         }
     }
-    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
-    private fun onCloseError() = _state.update { it.copy(error = null) }
+
 }
