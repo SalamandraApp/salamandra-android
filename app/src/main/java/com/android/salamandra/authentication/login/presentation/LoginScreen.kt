@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,7 +37,10 @@ import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra.authentication.commons.presentation.textfields.MyEmailTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
+import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.salamandraColor
+import com.android.salamandra.ui.theme.secondary
+import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -72,55 +76,61 @@ private fun ScreenBody(
     state: LoginState,
     sendIntent: (LoginIntent) -> Unit,
 ) {
+    val defaultPad = 10;
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(secondary),
         contentAlignment = Alignment.Center
     ) {
-        MyColumn(modifier = Modifier.offset(y = (-30).dp)) {
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 50.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             MyImageLogo()
             MyEmailTextField(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth().padding(top = (2 * defaultPad).dp, bottom = defaultPad.dp),
                 value = state.email,
                 onValueChange = {
                     sendIntent(LoginIntent.ChangeEmail(it))
                 }
             )
             MyPasswordTextField(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth().padding(top = defaultPad.dp),
                 value = state.password,
                 hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) }
             )
-            Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = stringResource(R.string.don_t_have_an_account_register),
-                color = salamandraColor,
+                color = primaryVariant,
                 fontSize = 14.sp,
                 modifier = Modifier
-                    .align(Alignment.End)
                     .clickable { sendIntent(LoginIntent.GoToSignup) }
-                    .padding(4.dp)
+                    .align(Alignment.End)
+                    .padding(vertical = defaultPad.dp)
             )
+
+            OutlinedButton(
+                onClick = { sendIntent(LoginIntent.Login) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = (2 * defaultPad).dp),
+                border = BorderStroke(2.dp, primaryVariant),
+                shape = RoundedCornerShape(40)
+            ) {
+                Text(
+                    text = stringResource(R.string.login),
+                    fontSize = 16.sp,
+                    color = primaryVariant,
+                    modifier = Modifier.padding(vertical = defaultPad.dp),
+                )
+            }
         }
-        OutlinedButton(
-            onClick = {sendIntent(LoginIntent.Login)},
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(32.dp)
-                .padding(bottom = 12.dp)
-                .fillMaxWidth(),
-            border = BorderStroke(1.dp, salamandraColor),
-            shape = RoundedCornerShape(42)
-        ) {
-            Text(
-                text = stringResource(R.string.login),
-                fontSize = 16.sp,
-                color = salamandraColor,
-                modifier = Modifier.padding(4.dp)
-            )
-        }
+
+
 
         if (state.error != null)
             ErrorDialog(

@@ -13,9 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.onSecondary
+import com.android.salamandra.ui.theme.onSecondaryVariant
+import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.secondary
+import com.android.salamandra.ui.theme.secondaryVariant
 import com.android.salamandra.ui.theme.selectedScreenBottomBar
 import com.android.salamandra.ui.theme.tertiary
+import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
 @Composable
@@ -44,7 +48,7 @@ fun MyBottomBar(
                     )
                 },
                 colors = NavigationBarItemDefaults.colors().copy(
-                    selectedIndicatorColor = selectedScreenBottomBar,
+                    selectedIndicatorColor = onSecondary.copy(alpha = 0.4f),
                 )
             )
         }

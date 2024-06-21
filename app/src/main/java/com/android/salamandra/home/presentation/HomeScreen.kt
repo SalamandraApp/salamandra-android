@@ -99,7 +99,7 @@ private fun ScreenBody(
         MyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(secondary),
+                .background(tertiary),
             verticalArrangement = Arrangement.Top
         ) {
             MyHomeBanner(sendIntent)
@@ -259,7 +259,7 @@ fun MyFadeLip() {
         modifier = Modifier
             .fillMaxWidth()
             .height(6.dp)
-            .background(secondary)
+            .background(tertiary)
     ) {
         Row(
             modifier = Modifier
