@@ -40,5 +40,9 @@ val TitleTypo = TextStyle(
     fontWeight = FontWeight.Bold,
     fontFamily = FontFamily(Font(R.font.roboto))
 )
+val Normal = TextStyle(
+    fontFamily = FontFamily(Font(R.font.roboto))
+)
+
 
 val WkTemplateElementTypo = TextStyle(color = onTertiary, fontWeight = FontWeight.SemiBold)

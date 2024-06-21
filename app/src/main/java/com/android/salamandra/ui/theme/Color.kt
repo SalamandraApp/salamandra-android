@@ -81,11 +81,11 @@ val primary = Color(0xffff6000)
 val primaryVariant = Color(0xffff7827)
 val onPrimary = Color(0xFFFFFFFF)
 
-val secondary = Color(0xff343434)
+val secondary = Color(0xff181818)
 val secondaryVariant = Color(0xffff7827)
-val onSecondary = Color(0xffd3d3d3)
+val onSecondary = Color(0xff6b6b6b)
 
-val tertiary = Color(0xff202020)
+val tertiary = Color(0xff101010)
 val onTertiary = Color(0xff6b6b6b)
 
 

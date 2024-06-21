@@ -5,7 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -22,17 +26,20 @@ fun ProfilePicture(
     shape: Shape = CircleShape
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(size.dp)
             .shadow(elevation = 1.dp, shape = shape)
-            .background(Color.Black)
+            .background(Color.DarkGray)
+            .clip(shape = shape)
     ) {
-        Image(
-            modifier = modifier
-                .size(size.dp)
-                .clip(shape = shape),
-            painter = painterResource(id = R.drawable.defaultprofile),
-            contentDescription = "Profile photo"
+
+        Icon(
+            imageVector = Icons.Outlined.Person,
+            contentDescription = "Default profile icon",
+            tint = Color.Gray, // Light gray icon
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size((size * 0.8).dp) // Adjust the icon size relative to the box size
         )
     }
 }
