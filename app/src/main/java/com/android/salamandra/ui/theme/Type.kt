@@ -40,8 +40,12 @@ val TitleTypo = TextStyle(
     fontWeight = FontWeight.Bold,
     fontFamily = FontFamily(Font(R.font.roboto))
 )
-val Normal = TextStyle(
-    fontFamily = FontFamily(Font(R.font.roboto))
+val NormalTypo = TextStyle(
+    fontFamily = FontFamily(Font(R.font.roboto)),
+)
+val SemiTypo = TextStyle(
+    fontFamily = FontFamily(Font(R.font.roboto)),
+    fontWeight = FontWeight.SemiBold
 )
 
 

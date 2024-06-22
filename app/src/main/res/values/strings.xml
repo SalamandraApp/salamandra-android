@@ -26,6 +26,8 @@
     <string name="reps">Reps</string>
     <string name="sets">Sets</string>
     <string name="weight">Weight</string>
+    <string name="weight_kg">Weight (kg)</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
+    <string name="edit_workout">Edit Workout</string>
 </resources>

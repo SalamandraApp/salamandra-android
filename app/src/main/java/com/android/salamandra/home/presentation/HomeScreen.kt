@@ -52,7 +52,6 @@ import com.android.salamandra._core.util.WORKOUT_PREVIEW_LIST
 import com.android.salamandra.destinations.EditWkScreenDestination
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.LoginScreenDestination
-import com.android.salamandra.ui.theme.Normal
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.WkTemplateElementTypo
@@ -96,14 +95,15 @@ private fun ScreenBody(
         currentDestination = HomeScreenDestination,
         onBottomBarClicked = { sendIntent(HomeIntent.BottomBarClicked(it)) }
     ) {
+        val mainColor = tertiary;
         MyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(tertiary),
+                .background(mainColor),
             verticalArrangement = Arrangement.Top
         ) {
-            MyHomeBanner(sendIntent)
-            MyFadeLip()
+            MyHomeBanner(sendIntent, mainColor)
+            MyFadeLip(mainColor)
             MyViewToggles()
             LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
                 items(state.wkPreviewList) { wkPreview ->
@@ -172,12 +172,12 @@ fun MyViewToggles() {
 
 
 @Composable
-fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit) {
+fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
     Box (
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .background(tertiary)
+            .background(backgroundColor)
 
     ) {
         Row (
@@ -254,12 +254,12 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit) {
 }
 
 @Composable
-fun MyFadeLip() {
+fun MyFadeLip(backgroundColor: Color) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(6.dp)
-            .background(tertiary)
+            .background(backgroundColor)
     ) {
         Row(
             modifier = Modifier
