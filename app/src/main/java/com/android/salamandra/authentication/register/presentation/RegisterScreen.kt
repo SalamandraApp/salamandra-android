@@ -5,13 +5,19 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,14 +39,16 @@ import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.MyCircularProgressbar
-import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyImageLogo
-import com.android.salamandra._core.presentation.components.MySpacer
-import com.android.salamandra.authentication.commons.presentation.textfields.MyEmailTextField
+import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
+import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SalamandraTheme
+import com.android.salamandra.ui.theme.SemiTypo
+import com.android.salamandra.ui.theme.colorError
+import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.salamandraColor
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
+import com.android.salamandra.ui.theme.secondary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -76,49 +84,141 @@ private fun ScreenBody(
     state: RegisterState,
     sendIntent: (RegisterIntent) -> Unit,
 ) {
+    val defaultPad = 8;
+    val errorMessageHeight = 20.dp
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.Center
+            .background(secondary),
     ) {
         var repeatPassword by remember { mutableStateOf("") }
         var isSamePassword by remember { mutableStateOf(true) }
-        var isNicknameValid by remember { mutableStateOf(true) }
+        var isUsernameValid by remember { mutableStateOf(true) }
 
-        MyColumn {
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 50.dp)
+                .padding(top = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             MyImageLogo()
-            MyEmailTextField(modifier = Modifier, value = state.email, onValueChange = {
-                sendIntent(RegisterIntent.ChangeEmail(it))
-            })
-            if (!state.isEmailValid) {
-                Text(
-                    text = stringResource(R.string.email_must_have_a_valid_format),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
+
+            // USERNAME
+            MyAuthTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = (2 * defaultPad).dp, bottom = defaultPad.dp),
+                value = state.username,
+                onValueChange = {
+                    sendIntent(RegisterIntent.ChangeUsername(it))
+                    isUsernameValid = (state.username != "")
+                },
+                textResource = R.string.username
+            )
+            if (!isUsernameValid) {
+                Row (
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .padding(2.dp),
-                )
-            } else MySpacer(size = 8)
+                        .height(errorMessageHeight)
+                        .padding(vertical = 1.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(errorMessageHeight - 3.dp)
+                            .align(Alignment.CenterVertically),
+                        imageVector = Icons.Outlined.ErrorOutline,
+                        tint = colorError,
+                        contentDescription = "Search workout"
+                    )
+                    Text(
+                        text = stringResource(R.string.username_shouldn_t_be_empty),
+                        color = colorError,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 8.dp),
+                        style = NormalTypo,
+                        fontSize = 13.sp
+                    )
+                }
+            }
 
+            // EMAIL
+            MyAuthTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = defaultPad.dp, bottom = defaultPad.dp),
+                value = state.email,
+                onValueChange = {
+                    sendIntent(RegisterIntent.ChangeEmail(it))
+                },
+                textResource = R.string.email
+            )
+            if (!state.isEmailValid) {
+                Row (
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .height(errorMessageHeight)
+                        .padding(vertical = 1.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(errorMessageHeight - 3.dp)
+                            .align(Alignment.CenterVertically),
+                        imageVector = Icons.Outlined.ErrorOutline,
+                        tint = colorError,
+                        contentDescription = "Search workout"
+                    )
+                    Text(
+                        text = stringResource(R.string.email_must_have_a_valid_format),
+                        color = colorError,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 8.dp),
+                        style = NormalTypo,
+                        fontSize = 13.sp
+                    )
+                }
+            }
             MyPasswordTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = defaultPad.dp, bottom = defaultPad.dp),
                 value = state.password,
                 hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(RegisterIntent.ChangePassword(it)) }
             )
-            if (state.passwordFormatError != null) {
-                Text(
-                    text = state.passwordFormatError.asString(),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
+            if (state.passwordFormatError!= null) {
+                Row (
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .padding(2.dp)
-                )
-            } else MySpacer(size = 8)
+                        .height(errorMessageHeight)
+                        .padding(vertical = 1.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(errorMessageHeight - 3.dp)
+                            .align(Alignment.CenterVertically),
+                        imageVector = Icons.Outlined.ErrorOutline,
+                        tint = colorError,
+                        contentDescription = "Search workout"
+                    )
+                    Text(
+                        text = state.passwordFormatError.asString(),
+                        color = colorError,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 8.dp),
+                        style = NormalTypo,
+                        fontSize = 13.sp
+                    )
+                }
+            }
 
             MyPasswordTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = defaultPad.dp, bottom = defaultPad.dp),
                 value = repeatPassword,
                 hint = stringResource(R.string.repeat_password),
                 onValueChange = {
@@ -127,43 +227,34 @@ private fun ScreenBody(
                 }
             )
             if (!isSamePassword) {
-                Text(
-                    text = stringResource(R.string.passwords_must_coincide),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
+                Row (
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .padding(2.dp)
-                )
-            } else MySpacer(size = 8)
-
-            OutlinedTextField(
-                modifier = Modifier,
-                value = state.username,
-                label = {
-                    Text(
-                        text = stringResource(R.string.user_name),
-                        fontSize = 16.sp,
+                        .height(errorMessageHeight)
+                        .padding(vertical = 1.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(errorMessageHeight - 3.dp)
+                            .align(Alignment.CenterVertically),
+                        imageVector = Icons.Outlined.ErrorOutline,
+                        tint = colorError,
+                        contentDescription = "Search workout"
                     )
-                },
-                onValueChange = {
-                    sendIntent(RegisterIntent.ChangeUsername(it))
-                    isNicknameValid = (state.username != "")
+                    Text(
+                        text = stringResource(R.string.passwords_must_coincide),
+                        color = colorError,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 8.dp),
+                        style = NormalTypo,
+                        fontSize = 13.sp
+                    )
                 }
-            )
-            if (!isNicknameValid) {
-                Text(
-                    text = stringResource(R.string.nickname_shouldn_t_be_empty),
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(2.dp),
-                    style = MaterialTheme.typography.bodySmall
-                )
             }
 
             Text(
-                text = stringResource(R.string.login),
+                text = stringResource(R.string.already_have_an_account_log_in),
                 modifier = Modifier
                     .clickable { sendIntent(RegisterIntent.GoToSignIn) }
                     .align(Alignment.End)
@@ -171,35 +262,34 @@ private fun ScreenBody(
                 fontSize = 14.sp,
                 color = salamandraColor,
             )
-        }
-        OutlinedButton(
-            onClick = {
-                if (state.isEmailValid && state.passwordFormatError != null && isSamePassword && isNicknameValid) {
-                    sendIntent(
-                        RegisterIntent.OnRegister(
-                            state.username,
-                            state.email,
-                            state.password
-                        )
-                    )
-                }
-            },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(32.dp)
-                .padding(bottom = 12.dp)
-                .fillMaxWidth(),
-            border = BorderStroke(1.dp, salamandraColor),
-            shape = RoundedCornerShape(42)
-        ) {
-            Text(
-                text = stringResource(R.string.register),
-                fontSize = 16.sp,
-                color = salamandraColor,
-                modifier = Modifier.padding(4.dp)
-            )
-        }
 
+            OutlinedButton(
+                onClick = {
+                    if (state.isEmailValid && state.passwordFormatError != null && isSamePassword && isUsernameValid) {
+                        sendIntent(
+                            RegisterIntent.OnRegister(
+                                state.username,
+                                state.email,
+                                state.password
+                            )
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = (3 * defaultPad).dp),
+                border = BorderStroke(2.dp, primaryVariant),
+                shape = RoundedCornerShape(40)
+            ) {
+                Text(
+                    text = stringResource(R.string.register),
+                    fontSize = 16.sp,
+                    style = SemiTypo,
+                    color = primaryVariant,
+                    modifier = Modifier.padding(vertical = defaultPad.dp),
+                )
+            }
+        }
         if (state.error != null)
             ErrorDialog(
                 error = state.error.asUiText(),

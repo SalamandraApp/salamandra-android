@@ -5,14 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,16 +29,12 @@ import com.android.salamandra.destinations.RegisterScreenDestination
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.MyCircularProgressbar
-import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyImageLogo
-import com.android.salamandra.authentication.commons.presentation.textfields.MyEmailTextField
+import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.primaryVariant
-import com.android.salamandra.ui.theme.salamandraColor
 import com.android.salamandra.ui.theme.secondary
-import com.android.salamandra.ui.theme.tertiary
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -76,26 +69,30 @@ private fun ScreenBody(
     state: LoginState,
     sendIntent: (LoginIntent) -> Unit,
 ) {
-    val defaultPad = 10;
+    val defaultPad = 8;
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(secondary),
-        contentAlignment = Alignment.Center
     ) {
         Column (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 50.dp),
+                .fillMaxHeight()
+                .padding(horizontal = 50.dp)
+                .padding(top = 80.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MyImageLogo()
-            MyEmailTextField(
-                modifier = Modifier.fillMaxWidth().padding(top = (2 * defaultPad).dp, bottom = defaultPad.dp),
+            MyAuthTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = (2 * defaultPad).dp, bottom = defaultPad.dp),
                 value = state.email,
                 onValueChange = {
                     sendIntent(LoginIntent.ChangeEmail(it))
-                }
+                },
+                textResource = R.string.username_or_email
             )
             MyPasswordTextField(
                 modifier = Modifier.fillMaxWidth().padding(top = defaultPad.dp),
@@ -117,12 +114,12 @@ private fun ScreenBody(
                 onClick = { sendIntent(LoginIntent.Login) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = (2 * defaultPad).dp),
+                    .padding(vertical = (3 * defaultPad).dp),
                 border = BorderStroke(2.dp, primaryVariant),
                 shape = RoundedCornerShape(40)
             ) {
                 Text(
-                    text = stringResource(R.string.login),
+                    text = stringResource(R.string.already_have_an_account_log_in),
                     fontSize = 16.sp,
                     color = primaryVariant,
                     modifier = Modifier.padding(vertical = defaultPad.dp),

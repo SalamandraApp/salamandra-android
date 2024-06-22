@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.salamandra.ui.theme.NormalTypo
 
 @Composable
 fun MyPasswordTextField(
@@ -37,7 +38,8 @@ fun MyPasswordTextField(
         label = {
             Text(
                 text = hint,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                style = NormalTypo
             )
         },
         keyboardOptions = KeyboardOptions.Default.copy(
