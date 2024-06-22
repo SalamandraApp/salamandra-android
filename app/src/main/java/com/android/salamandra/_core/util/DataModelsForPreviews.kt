@@ -27,10 +27,6 @@ val EXERCISE = Exercise(
 val WORKOUT_TEMPLATE_ELEMENT = WkTemplateElement(
     exercise = EXERCISE,
     position = 1,
-    reps = 3,
-    sets = 4,
-    weight = 80.0,
-    rest = 120
 )
 
 val WORKOUT_TEMPLATE = WorkoutTemplate(elements = listOf(WORKOUT_TEMPLATE_ELEMENT, WORKOUT_TEMPLATE_ELEMENT.copy(weight = 78.56, exercise = EXERCISE.copy(name = "Legs"))))

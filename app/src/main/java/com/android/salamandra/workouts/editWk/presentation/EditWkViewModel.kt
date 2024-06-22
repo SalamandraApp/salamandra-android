@@ -56,8 +56,6 @@ class EditWkViewModel @Inject constructor(
         }
     }
 
-    private fun onCloseError() = _state.update { it.copy(error = null) }
-
     private fun searchExercise() {
         viewModelScope.launch {
             when (val search = withContext(ioDispatcher) { repository.getExercises(state.value.searchTerm) }){
