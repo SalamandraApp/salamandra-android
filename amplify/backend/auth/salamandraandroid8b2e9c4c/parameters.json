@@ -1,14 +1,13 @@
 {
   "authSelections": "userPoolOnly",
-  "resourceName": "salamandraandroid654600e2",
+  "resourceName": "salamandraandroid8b2e9c4c",
   "serviceType": "imported",
-  "region": "eu-central-1",
+  "region": "eu-west-3",
   "aliasAttributes": [
-    "email"
+    "email",
+    "preferred_username"
   ],
-  "requiredAttributes": [
-    "email"
-  ],
+  "requiredAttributes": [],
   "passwordPolicyMinLength": 8,
   "passwordPolicyCharacters": [
     "Requires Lowercase",
@@ -16,9 +15,11 @@
     "Requires Numbers",
     "Requires Symbols"
   ],
-  "mfaConfiguration": "OFF",
+  "mfaConfiguration": "OPTIONAL",
   "autoVerifiedAttributes": [
     "email"
   ],
-  "mfaTypes": []
+  "mfaTypes": [
+    "TOTP"
+  ]
 }

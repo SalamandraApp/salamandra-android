@@ -13,11 +13,11 @@
     },
     "categories": {
       "auth": {
-        "salamandraandroid654600e2": {
-          "userPoolId": "eu-central-1_Vu4DPBYFD",
-          "userPoolName": "dummyDev2",
-          "webClientId": "5i1gug0bavsn9an0c2q6h3038m",
-          "nativeClientId": "5i1gug0bavsn9an0c2q6h3038m"
+        "salamandraandroid8b2e9c4c": {
+          "userPoolId": "eu-west-3_OIKGoXD5F",
+          "userPoolName": "TestPool",
+          "webClientId": "3pj3eaddae9k3tu52n9dnbvqj1",
+          "nativeClientId": "3pj3eaddae9k3tu52n9dnbvqj1"
         }
       }
     }
