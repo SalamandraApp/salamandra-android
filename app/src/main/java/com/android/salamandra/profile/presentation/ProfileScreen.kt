@@ -1,6 +1,8 @@
 package com.android.salamandra.profile.presentation
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,10 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -23,8 +28,11 @@ import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkPlaceholder
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
+import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
+import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.tertiary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -37,6 +45,7 @@ fun ProfileScreen(navigator: DestinationsNavigator, viewModel: ProfileViewModel 
     LaunchedEffect(events) {
         when (events) {
             is ProfileEvent.BottomBarClicked -> navigator.navigate((events as ProfileEvent.BottomBarClicked).destination)
+            ProfileEvent.NavigateToLogin -> navigator.navigate(LoginScreenDestination)
             null -> {}
         }
     }
@@ -65,6 +74,13 @@ private fun ScreenBody(
         ) {
             ProfileBanner(backgroundColor = mainColor)
             FadeLip(backgroundColor = mainColor)
+            OutlinedButton(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                border = BorderStroke(1.dp, primary),
+                onClick = { sendIntent(ProfileIntent.GoToLogin) }) { //TODO change
+                Text(text = "Go to login", color = primary)
+            }
         }
     }
 }
@@ -76,13 +92,13 @@ private fun ProfileBanner(
     val bannerHeight = 300
     val bannerPicHeight = 150
     val bannerInfoHeight = bannerHeight - bannerPicHeight
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(backgroundColor)
             .height(bannerHeight.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
         ) {

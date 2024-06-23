@@ -15,8 +15,12 @@ class ProfileViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : 
     override fun reduce(intent: ProfileIntent) {
         when (intent) {
             is ProfileIntent.Error -> onError(intent.error)
+
             is ProfileIntent.CloseError -> onCloseError()
+
             is ProfileIntent.BottomBarClicked -> sendEvent(ProfileEvent.BottomBarClicked(intent.destination))
+
+            ProfileIntent.GoToLogin -> sendEvent(ProfileEvent.NavigateToLogin)
         }
     }
     private fun onError(error: RootError) = _state.update { it.copy(error = error) }

@@ -95,7 +95,9 @@ private fun ScreenBody(
                 textResource = R.string.username_or_email
             )
             MyPasswordTextField(
-                modifier = Modifier.fillMaxWidth().padding(top = defaultPad.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = defaultPad.dp),
                 value = state.password,
                 hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) }
@@ -119,7 +121,7 @@ private fun ScreenBody(
                 shape = RoundedCornerShape(40)
             ) {
                 Text(
-                    text = stringResource(R.string.already_have_an_account_log_in),
+                    text = stringResource(R.string.login),
                     fontSize = 16.sp,
                     color = primaryVariant,
                     modifier = Modifier.padding(vertical = defaultPad.dp),
