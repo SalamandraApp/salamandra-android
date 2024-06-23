@@ -1,29 +1,30 @@
 package com.android.salamandra.profile.presentation
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.android.salamandra._core.presentation.asUiText
-import com.android.salamandra._core.presentation.components.ErrorDialog
+import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.ProfilePicture
+import com.android.salamandra._core.presentation.components.WkPlaceholder
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
-import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
-import com.android.salamandra.home.presentation.HomeEvent
-import com.android.salamandra.home.presentation.HomeIntent
 import com.android.salamandra.ui.theme.SalamandraTheme
-import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.tertiary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -55,24 +56,48 @@ private fun ScreenBody(
         currentDestination = ProfileScreenDestination,
         onBottomBarClicked = { sendIntent(ProfileIntent.BottomBarClicked(it)) }
     ) {
-        Box(
+        val mainColor = tertiary
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(tertiary)
-                .padding(12.dp),
-            contentAlignment = Alignment.Center
+                .background(mainColor),
+            verticalArrangement = Arrangement.Top
         ) {
-            Text(text = "Screen not yet implemented", color = onTertiary)
-
-
-            if (state.error != null)
-                ErrorDialog(
-                    error = state.error.asUiText(),
-                    onDismiss = { sendIntent(ProfileIntent.CloseError) }
-                )
-
+            ProfileBanner(backgroundColor = mainColor)
+            FadeLip(backgroundColor = mainColor)
         }
+    }
+}
 
+@Composable
+private fun ProfileBanner(
+    backgroundColor: Color
+) {
+    val bannerHeight = 300
+    val bannerPicHeight = 150
+    val bannerInfoHeight = bannerHeight - bannerPicHeight
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(backgroundColor)
+            .height(bannerHeight.dp)
+    ) {
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+
+            WkPlaceholder(
+                modifier = Modifier.fillMaxWidth(),
+                size = bannerPicHeight,
+                shape = RoundedCornerShape(0)
+            )
+            Box(
+
+            ) {
+                ProfilePicture(size = 42)
+            }
+        }
     }
 }
 

@@ -1,6 +1,5 @@
 package com.android.salamandra.workouts.editWk.presentation
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,11 +12,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,22 +22,15 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ArrowBackIosNew
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.DragIndicator
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PublicOff
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -61,32 +51,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
-import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.presentation.asUiText
-import com.android.salamandra._core.presentation.components.ErrorDialog
-import com.android.salamandra._core.presentation.components.MyColumn
+import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.MyRow
-import com.android.salamandra._core.presentation.components.MySpacer
-import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkPlaceholder
 import com.android.salamandra._core.util.EXERCISE_LIST
-import com.android.salamandra._core.util.LONG_EXERCISE_LIST
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.destinations.HomeScreenDestination
-import com.android.salamandra.home.presentation.HomeIntent
-import com.android.salamandra.home.presentation.components.SearchScreen
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.WkTemplateElementTypo
 import com.android.salamandra.ui.theme.colorError
-import com.android.salamandra.ui.theme.onPrimary
-import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
-import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.secondaryVariant
@@ -137,7 +115,7 @@ private fun ScreenBody(
                 backgroundColor = mainColor,
                 startPad = startPad,
                 columnWeightVector = columnWeights)
-            MyFadeLip(backgroundColor = mainColor)
+            FadeLip(backgroundColor = mainColor)
             Spacer(modifier = Modifier.size(5.dp))
             LazyColumn(
                 modifier = Modifier
@@ -156,30 +134,6 @@ private fun ScreenBody(
     }
 }
 
-
-@Composable
-fun MyFadeLip(backgroundColor: Color) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(6.dp)
-            .background(backgroundColor)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.6f),
-                            Color.Black.copy(alpha = 0.0f)
-                        )
-                    )
-                )
-        ) {}
-    }
-}
 
 @Composable
 fun MyEditWkBanner(
@@ -468,6 +422,7 @@ private fun WkElementComponent(
     Row(
         modifier = modifier
             .padding(horizontal = 10.dp, vertical = 6.dp)
+            .border(1.dp, valueBoxColor, RoundedCornerShape(15.dp))
             .clip(RoundedCornerShape(15.dp))
             .fillMaxWidth()
             .background(fgColor),

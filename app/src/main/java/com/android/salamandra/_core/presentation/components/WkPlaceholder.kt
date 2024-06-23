@@ -19,23 +19,32 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WkPlaceholder(
     modifier: Modifier = Modifier,
-    size: Int,
+    size: Int? = null,
+    size_x: Int? = null,
     shape: Shape = CircleShape
 ) {
+    val width = size_x ?: size ?: 0
+    val height = size ?: 0
+    val iconSize = 0.7f * minOf(height, width)
+
     Box(
-        modifier = Modifier
-            .size(size.dp)
+        modifier = if (size != null && size_x != null) {
+            modifier.size(width.dp, height.dp)
+        } else {
+            modifier
+        }
             .shadow(elevation = 1.dp, shape = shape)
             .background(Color.DarkGray)
             .clip(shape)
     ) {
-        Icon (
-            imageVector = Icons.Filled.Image, // Material icon
+        Icon(
+            imageVector = Icons.Filled.Image,
             contentDescription = "Image icon",
-            tint = Color.Gray.copy(alpha = 0.7f), // Set the desired color and opacity
+            tint = Color.Gray.copy(alpha = 0.7f),
             modifier = Modifier
                 .align(Alignment.Center)
-                .size((size * 0.7).dp) // Adjust the icon size relative to the box size
+                .size(iconSize.dp)
         )
     }
 }
+
