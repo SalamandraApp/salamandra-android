@@ -12,7 +12,7 @@ class UserDataValidator @Inject constructor() {
         if (!password.any { it.isUpperCase() })
             return Result.Error(PasswordError.NO_UPPERCASE)
 
-        if (password.any { it.isDigit() })
+        if (!password.any { it.isDigit() })
             return Result.Error(PasswordError.NO_DIGIT)
 
         return Result.Success(Unit)
@@ -20,6 +20,4 @@ class UserDataValidator @Inject constructor() {
 
     fun validateEmail(email: String): Boolean =
         email.matches(Regex("[a-zA-Z0-9.+_-]+@[a-z]+\\.+[a-z]+"))
-
-
 }

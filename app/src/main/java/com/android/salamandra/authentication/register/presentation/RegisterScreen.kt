@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -116,7 +117,7 @@ private fun ScreenBody(
                 value = state.username,
                 onValueChange = {
                     sendIntent(RegisterIntent.ChangeUsername(it))
-                    isUsernameValid = (state.username != "")
+                    isUsernameValid = (it != "")
                 },
                 textResource = R.string.username
             )
@@ -269,7 +270,7 @@ private fun ScreenBody(
 
             OutlinedButton(
                 onClick = {
-                    if (state.isEmailValid && state.passwordFormatError == null && isSamePassword && isUsernameValid)
+                    if (checkFields(state, isSamePassword, isUsernameValid))
                         sendIntent(RegisterIntent.OnRegister)
                 },
                 modifier = Modifier
@@ -295,7 +296,11 @@ private fun ScreenBody(
     }
 }
 
+private fun checkFields(state: RegisterState, isSamePassword: Boolean, isUsernameValid: Boolean) =
+    state.isEmailValid && state.passwordFormatError == null && isSamePassword && isUsernameValid && state.email != "" && state.password != "" && state.username != ""
+
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@PreviewScreenSizes
 @Composable
 private fun ScreenPreview() {
     SalamandraTheme {
