@@ -15,6 +15,11 @@ class UserDataValidator @Inject constructor() {
         if (!password.any { it.isDigit() })
             return Result.Error(PasswordError.NO_DIGIT)
 
+        val specialCharacters = Regex("[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]")
+        if(!specialCharacters.containsMatchIn(password))
+            return Result.Error(PasswordError.NO_SPECIAL_CHARACTER)
+
+
         return Result.Success(Unit)
     }
 
