@@ -32,4 +32,17 @@
     <string name="profile">Profile</string>
     <string name="edit_workout">Edit Workout</string>
     <string name="login">Login</string>
+    <string name="password_must_contain_at_least_9_characters">Password must contain at least 9 characters</string>
+    <string name="password_must_have_uppercase">Password must have uppercase</string>
+    <string name="password_must_have_digits">Password must have digits</string>
+    <string name="password_must_have_special_characters">Password must have special characters</string>
+    <string name="error_fetching_auth_session">Error fetching auth session</string>
+    <string name="request_timed_out">Request timed out...</string>
+    <string name="failure_caused_by_too_many_requests">Failure caused by too many requests</string>
+    <string name="unknown_network_error">Unknown network error</string>
+    <string name="unknown_cognito_error">Unknown cognito error</string>
+    <string name="email_or_username_already_in_use">Email or username already in use</string>
+    <string name="the_verification_code_is_not_correct">The verification code is not correct</string>
+    <string name="an_error_occurred_user_not_signed_out">An error occurred, user not signed out.</string>
+    <string name="an_error_occured_user_signed_out">An error occured, user signed out</string>
 </resources>

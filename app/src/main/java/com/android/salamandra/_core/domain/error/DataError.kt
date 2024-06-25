@@ -2,7 +2,7 @@ package com.android.salamandra._core.domain.error
 
 sealed interface DataError : RootError {
     enum class Network : DataError {
-        REQUEST_TIEMOUT,
+        REQUEST_TIMEOUT,
         TOO_MANY_REQUESTS,
         UNKNOW
         //...
