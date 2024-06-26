@@ -140,4 +140,7 @@ dependencies {
     //SLQDelight
     implementation("app.cash.sqldelight:android-driver:2.0.2")
     implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
+    //Turbine for testing flows
+    androidTestImplementation("app.cash.turbine:turbine:1.1.0")
+
 }

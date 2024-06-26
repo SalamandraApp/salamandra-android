@@ -32,7 +32,7 @@ class WorkoutTemplateDataSourceImpl @Inject constructor(db: SalamandraLocalDB, p
         }
     }
 
-    override suspend fun insertWkByID(
+    override suspend fun insertWk(
         id: String,
         name: String,
         description: String

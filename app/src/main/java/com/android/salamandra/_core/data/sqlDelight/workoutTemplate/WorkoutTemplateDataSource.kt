@@ -11,5 +11,5 @@ interface WorkoutTemplateDataSource {
     fun getAllWk(): Flow<List<WorkoutTemplateEntity>>
 
     suspend fun deleteWkByID(id: String): Result<Unit, DataError.Local>
-    suspend fun insertWkByID(id: String, name: String, description: String): Result<Unit, DataError.Local>
+    suspend fun insertWk(id: String, name: String, description: String): Result<Unit, DataError.Local>
 }
