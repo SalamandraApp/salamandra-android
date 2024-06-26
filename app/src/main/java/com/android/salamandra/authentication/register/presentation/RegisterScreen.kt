@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,18 +29,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.presentation.asUiText
-import com.android.salamandra.destinations.LoginScreenDestination
-import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.MyCircularProgressbar
 import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
+import com.android.salamandra.destinations.LoginScreenDestination
+import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
@@ -63,15 +63,20 @@ fun RegisterScreen(
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            RegisterEvent.NavigateToLogin ->  navigator.navigate(LoginScreenDestination)
-            RegisterEvent.NavigateToVerifyCode ->  navigator.navigate(VerifyCodeScreenDestination(state.username))
+            RegisterEvent.NavigateToLogin -> navigator.navigate(LoginScreenDestination)
+            RegisterEvent.NavigateToVerifyCode -> navigator.navigate(
+                VerifyCodeScreenDestination(
+                    state.username
+                )
+            )
+
             null -> {}
         }
     }
 
     if (state.loading) {
         MyCircularProgressbar()
-    } else{
+    } else {
         ScreenBody(
             state = state,
             sendIntent = viewModel::dispatch,
@@ -95,7 +100,7 @@ private fun ScreenBody(
         var isSamePassword by remember { mutableStateOf(true) }
         var isUsernameValid by remember { mutableStateOf(true) }
 
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 50.dp)
@@ -112,12 +117,12 @@ private fun ScreenBody(
                 value = state.username,
                 onValueChange = {
                     sendIntent(RegisterIntent.ChangeUsername(it))
-                    isUsernameValid = (state.username != "")
+                    isUsernameValid = (it != "")
                 },
                 textResource = R.string.username
             )
             if (!isUsernameValid) {
-                Row (
+                Row(
                     modifier = Modifier
                         .align(Alignment.Start)
                         .height(errorMessageHeight)
@@ -129,7 +134,7 @@ private fun ScreenBody(
                             .align(Alignment.CenterVertically),
                         imageVector = Icons.Outlined.ErrorOutline,
                         tint = colorError,
-                        contentDescription = "Search workout"
+                        contentDescription = "username error icon"
                     )
                     Text(
                         text = stringResource(R.string.username_shouldn_t_be_empty),
@@ -155,7 +160,7 @@ private fun ScreenBody(
                 textResource = R.string.email
             )
             if (!state.isEmailValid) {
-                Row (
+                Row(
                     modifier = Modifier
                         .align(Alignment.Start)
                         .height(errorMessageHeight)
@@ -167,7 +172,7 @@ private fun ScreenBody(
                             .align(Alignment.CenterVertically),
                         imageVector = Icons.Outlined.ErrorOutline,
                         tint = colorError,
-                        contentDescription = "Search workout"
+                        contentDescription = "Email error icon"
                     )
                     Text(
                         text = stringResource(R.string.email_must_have_a_valid_format),
@@ -188,8 +193,8 @@ private fun ScreenBody(
                 hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(RegisterIntent.ChangePassword(it)) }
             )
-            if (state.passwordFormatError!= null) {
-                Row (
+            if (state.passwordFormatError != null) {
+                Row(
                     modifier = Modifier
                         .align(Alignment.Start)
                         .height(errorMessageHeight)
@@ -201,7 +206,7 @@ private fun ScreenBody(
                             .align(Alignment.CenterVertically),
                         imageVector = Icons.Outlined.ErrorOutline,
                         tint = colorError,
-                        contentDescription = "Search workout"
+                        contentDescription = "Password format error icon"
                     )
                     Text(
                         text = state.passwordFormatError.asString(),
@@ -227,7 +232,7 @@ private fun ScreenBody(
                 }
             )
             if (!isSamePassword) {
-                Row (
+                Row(
                     modifier = Modifier
                         .align(Alignment.Start)
                         .height(errorMessageHeight)
@@ -239,7 +244,7 @@ private fun ScreenBody(
                             .align(Alignment.CenterVertically),
                         imageVector = Icons.Outlined.ErrorOutline,
                         tint = colorError,
-                        contentDescription = "Search workout"
+                        contentDescription = "Repeat password error icon"
                     )
                     Text(
                         text = stringResource(R.string.passwords_must_coincide),
@@ -265,15 +270,8 @@ private fun ScreenBody(
 
             OutlinedButton(
                 onClick = {
-                    if (state.isEmailValid && state.passwordFormatError != null && isSamePassword && isUsernameValid) {
-                        sendIntent(
-                            RegisterIntent.OnRegister(
-                                state.username,
-                                state.email,
-                                state.password
-                            )
-                        )
-                    }
+                    if (checkFields(state, isSamePassword, isUsernameValid))
+                        sendIntent(RegisterIntent.OnRegister)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -298,7 +296,11 @@ private fun ScreenBody(
     }
 }
 
+private fun checkFields(state: RegisterState, isSamePassword: Boolean, isUsernameValid: Boolean) =
+    state.isEmailValid && state.passwordFormatError == null && isSamePassword && isUsernameValid && state.email != "" && state.password != "" && state.username != ""
+
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@PreviewScreenSizes
 @Composable
 private fun ScreenPreview() {
     SalamandraTheme {

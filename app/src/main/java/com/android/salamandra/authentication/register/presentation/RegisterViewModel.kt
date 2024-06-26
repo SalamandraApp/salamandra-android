@@ -74,6 +74,7 @@ class RegisterViewModel @Inject constructor(
 
     private fun validateEmail(email: String) {
         if (!userDataValidator.validateEmail(email)) _state.update { it.copy(isEmailValid = false) }
+        else _state.update { it.copy(isEmailValid = true) }
         _state.update { it.copy(email = email) }
     }
 }

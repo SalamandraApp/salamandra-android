@@ -21,8 +21,10 @@ import kotlin.math.exp
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditWkViewModelTest {
+    private val testDispatcher = StandardTestDispatcher()
+
     @get:Rule
-    val coroutineRule = CoroutineRule()
+    val coroutineRule = CoroutineRule(testDispatcher)
 
     private lateinit var editWkViewModel: EditWkViewModel
 
@@ -33,7 +35,7 @@ class EditWkViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         editWkViewModel =
-            EditWkViewModel(repository = mockkRepository, ioDispatcher = StandardTestDispatcher())
+            EditWkViewModel(repository = mockkRepository, ioDispatcher = testDispatcher)
     }
 
     @Test
@@ -54,9 +56,9 @@ class EditWkViewModelTest {
     @Test
     fun `Error intent and CloseError update the state`() = runTest{
         //Arrange
-        var expectedState = EditWkState.initial.copy(error = DataError.Network.UNKNOW)
+        var expectedState = EditWkState.initial.copy(error = DataError.Network.UNKNOWN)
         //Act
-        editWkViewModel.dispatch(EditWkIntent.Error(error =  DataError.Network.UNKNOW))
+        editWkViewModel.dispatch(EditWkIntent.Error(error =  DataError.Network.UNKNOWN))
         runCurrent()
 
         //Assert

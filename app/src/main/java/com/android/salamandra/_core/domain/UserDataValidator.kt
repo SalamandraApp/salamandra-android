@@ -12,14 +12,17 @@ class UserDataValidator @Inject constructor() {
         if (!password.any { it.isUpperCase() })
             return Result.Error(PasswordError.NO_UPPERCASE)
 
-        if (password.any { it.isDigit() })
+        if (!password.any { it.isDigit() })
             return Result.Error(PasswordError.NO_DIGIT)
+
+        val specialCharacters = Regex("[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]")
+        if(!specialCharacters.containsMatchIn(password))
+            return Result.Error(PasswordError.NO_SPECIAL_CHARACTER)
+
 
         return Result.Success(Unit)
     }
 
     fun validateEmail(email: String): Boolean =
         email.matches(Regex("[a-zA-Z0-9.+_-]+@[a-z]+\\.+[a-z]+"))
-
-
 }

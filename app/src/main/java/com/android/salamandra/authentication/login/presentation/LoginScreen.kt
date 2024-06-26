@@ -134,7 +134,7 @@ private fun ScreenBody(
                 shape = RoundedCornerShape(40)
             ) {
                 Text(
-                    text = stringResource(R.string.log_in),
+                    text = stringResource(R.string.login),
                     fontSize = 16.sp,
                     color = primaryVariant,
                     modifier = Modifier.padding(vertical = defaultPad.dp),
