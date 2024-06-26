@@ -21,12 +21,13 @@ fun DataError.asUiText(): UiText {
         DataError.Cognito.SESSION_FETCH -> UiText.StringResource(R.string.error_fetching_auth_session)
         DataError.Network.REQUEST_TIMEOUT -> UiText.StringResource(R.string.request_timed_out)
         DataError.Network.TOO_MANY_REQUESTS -> UiText.StringResource(R.string.failure_caused_by_too_many_requests)
-        DataError.Network.UNKNOW -> UiText.StringResource(R.string.unknown_network_error)
+        DataError.Network.UNKNOWN -> UiText.StringResource(R.string.unknown_network_error)
         DataError.Cognito.UNKNOWN_ERROR -> UiText.StringResource(R.string.unknown_cognito_error)
         DataError.Cognito.SIGN_UP_FIELDS_NOT_VALID -> UiText.StringResource(R.string.email_or_username_already_in_use)
         DataError.Cognito.WRONG_CONFIRMATION_CODE -> UiText.StringResource(R.string.the_verification_code_is_not_correct)
         DataError.Cognito.SIGN_OUT_FAILED_USER_SIGNED_IN -> UiText.StringResource(R.string.an_error_occurred_user_not_signed_out)
         DataError.Cognito.SIGN_OUT_FAILED_USER_NOT_SIGNED_IN -> UiText.StringResource(R.string.an_error_occured_user_signed_out)
+        DataError.Local.WORKOUT_TEMPLATE_NOT_FOUND -> UiText.StringResource(R.string.workout_not_found)
     }
 }
 

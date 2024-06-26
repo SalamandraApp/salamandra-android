@@ -1,0 +1,24 @@
+CREATE TABLE WorkoutTemplateEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT
+);
+
+getWkById:
+SELECT *
+FROM WorkoutTemplateEntity
+WHERE id = :id;
+
+
+getAllWks:
+SELECT *
+FROM WorkoutTemplateEntity;
+
+insertWk:
+INSERT OR REPLACE
+INTO WorkoutTemplateEntity
+VALUES (?,?,?);
+
+deleteWkById:
+DELETE FROM WorkoutTemplateEntity
+WHERE id = :id;

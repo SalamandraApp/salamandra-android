@@ -4,8 +4,7 @@ sealed interface DataError : RootError {
     enum class Network : DataError {
         REQUEST_TIMEOUT,
         TOO_MANY_REQUESTS,
-        UNKNOW
-        //...
+        UNKNOWN
     }
 
     enum class Cognito : DataError {
@@ -16,5 +15,9 @@ sealed interface DataError : RootError {
         WRONG_CONFIRMATION_CODE,
         SIGN_OUT_FAILED_USER_SIGNED_IN,
         SIGN_OUT_FAILED_USER_NOT_SIGNED_IN
+    }
+
+    enum class Local: DataError {
+        WORKOUT_TEMPLATE_NOT_FOUND
     }
 }

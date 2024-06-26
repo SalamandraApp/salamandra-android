@@ -54,9 +54,9 @@ class EditWkViewModelTest {
     @Test
     fun `Error intent and CloseError update the state`() = runTest{
         //Arrange
-        var expectedState = EditWkState.initial.copy(error = DataError.Network.UNKNOW)
+        var expectedState = EditWkState.initial.copy(error = DataError.Network.UNKNOWN)
         //Act
-        editWkViewModel.dispatch(EditWkIntent.Error(error =  DataError.Network.UNKNOW))
+        editWkViewModel.dispatch(EditWkIntent.Error(error =  DataError.Network.UNKNOWN))
         runCurrent()
 
         //Assert

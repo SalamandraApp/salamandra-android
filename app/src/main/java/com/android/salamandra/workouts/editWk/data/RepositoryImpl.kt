@@ -19,7 +19,7 @@ class RepositoryImpl(private val salamandraApiService: SalamandraApiService): Re
             .onFailure {
                 Log.i("SLM", "An error ocurred while using apiService, ${it.message}")
             }
-        return Result.Error(DataError.Network.UNKNOW)
+        return Result.Error(DataError.Network.UNKNOWN)
     }
 
 }

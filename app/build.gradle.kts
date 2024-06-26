@@ -1,14 +1,20 @@
 plugins {
-//    id("com.android.application")
     alias(libs.plugins.androidApplication)
-//    id("org.jetbrains.kotlin.android")
     alias(libs.plugins.kotlinVersion)
     //ksp
-//    id("com.google.devtools.ksp")
     alias(libs.plugins.googleDevtools)
     //Hilt
     id("dagger.hilt.android.plugin")
-//    alias(libs.plugins.hiltAndroid)
+    //SQLDelight
+    id("app.cash.sqldelight") version "2.0.2"
+}
+
+sqldelight {
+    databases {
+        create("SalamandraLocalDB") {
+            packageName.set("com.android.salamandra")
+        }
+    }
 }
 
 android {
@@ -130,4 +136,8 @@ dependencies {
 
     //DataStore
     implementation(libs.androidx.datastore.preferences)
+    
+    //SLQDelight
+    implementation("app.cash.sqldelight:android-driver:2.0.2")
+    implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
 }
