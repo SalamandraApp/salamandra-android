@@ -1,6 +1,6 @@
 {
   "auth": {
-    "salamandraandroid8b2e9c4c": {
+    "salamandraappf52f110a": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -9,35 +9,35 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_salamandraandroid8b2e9c4c_nativeClientId": {
+    "AMPLIFY_auth_salamandraappf52f110a_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandraandroid8b2e9c4c"
+          "resourceName": "salamandraappf52f110a"
         }
       ]
     },
-    "AMPLIFY_auth_salamandraandroid8b2e9c4c_userPoolId": {
+    "AMPLIFY_auth_salamandraappf52f110a_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandraandroid8b2e9c4c"
+          "resourceName": "salamandraappf52f110a"
         }
       ]
     },
-    "AMPLIFY_auth_salamandraandroid8b2e9c4c_userPoolName": {
+    "AMPLIFY_auth_salamandraappf52f110a_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandraandroid8b2e9c4c"
+          "resourceName": "salamandraappf52f110a"
         }
       ]
     },
-    "AMPLIFY_auth_salamandraandroid8b2e9c4c_webClientId": {
+    "AMPLIFY_auth_salamandraappf52f110a_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandraandroid8b2e9c4c"
+          "resourceName": "salamandraappf52f110a"
         }
       ]
     }

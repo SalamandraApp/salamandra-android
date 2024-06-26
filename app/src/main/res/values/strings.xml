@@ -6,6 +6,7 @@
     <string name="password">Password</string>
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
     <string name="already_have_an_account_log_in">Already have an account? Log-in</string>
+    <string name="log_in">Log-in</string>
     <string name="register">Register</string>
     <string name="username_shouldn_t_be_empty">Username shouldn\'t be empty</string>
     <string name="user_name">User name</string>

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -79,23 +80,37 @@ private fun ScreenBody(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(horizontal = 50.dp)
-                .padding(top = 80.dp),
+                .padding(horizontal = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val fieldWeights: Map<String, Float> = mapOf(
+                "top-pad" to 0.1f,
+                "under-logo" to 0.1f,
+                "username" to 0.5f,
+                "password" to 0.1f,
+                "between-fields" to 0.1f,
+                "over-button" to 0.1f,
+                "login" to 0.1f,
+                "under-button" to 0.1f,
+            )
+            Spacer(modifier = Modifier.weight(fieldWeights["top-pad"]?: 1f))
             MyImageLogo()
+            Spacer(modifier = Modifier.weight(fieldWeights["under-logo"]?: 1f))
             MyAuthTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = (2 * defaultPad).dp, bottom = defaultPad.dp),
+                    .weight(fieldWeights["username"]?: 1f)
+                    .fillMaxWidth(),
                 value = state.email,
                 onValueChange = {
                     sendIntent(LoginIntent.ChangeEmail(it))
                 },
                 textResource = R.string.username_or_email
             )
+            Spacer(modifier = Modifier.weight(fieldWeights["between-fields"]?: 1f))
             MyPasswordTextField(
-                modifier = Modifier.fillMaxWidth().padding(top = defaultPad.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = defaultPad.dp),
                 value = state.password,
                 hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) }
@@ -119,7 +134,7 @@ private fun ScreenBody(
                 shape = RoundedCornerShape(40)
             ) {
                 Text(
-                    text = stringResource(R.string.already_have_an_account_log_in),
+                    text = stringResource(R.string.log_in),
                     fontSize = 16.sp,
                     color = primaryVariant,
                     modifier = Modifier.padding(vertical = defaultPad.dp),

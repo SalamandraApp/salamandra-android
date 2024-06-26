@@ -1,19 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-salamandraandroid-dev-191202-authRole",
-      "UnauthRoleArn": "arn:aws:iam::106219933233:role/amplify-salamandraandroid-dev-191202-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::106219933233:role/amplify-salamandraandroid-dev-191202-authRole",
-      "Region": "eu-central-1",
-      "DeploymentBucketName": "amplify-salamandraandroid-dev-191202-deployment",
-      "UnauthRoleName": "amplify-salamandraandroid-dev-191202-unauthRole",
-      "StackName": "amplify-salamandraandroid-dev-191202",
-      "StackId": "arn:aws:cloudformation:eu-central-1:106219933233:stack/amplify-salamandraandroid-dev-191202/0e3519c0-cdc0-11ee-aba0-0a490793435f",
-      "AmplifyAppId": "d3t6rl7wtppk1u"
+      "AuthRoleName": "amplify-salamandraapp-dev-e0b77-authRole",
+      "UnauthRoleArn": "arn:aws:iam::533267061967:role/amplify-salamandraapp-dev-e0b77-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::533267061967:role/amplify-salamandraapp-dev-e0b77-authRole",
+      "Region": "eu-west-3",
+      "DeploymentBucketName": "amplify-salamandraapp-dev-e0b77-deployment",
+      "UnauthRoleName": "amplify-salamandraapp-dev-e0b77-unauthRole",
+      "StackName": "amplify-salamandraapp-dev-e0b77",
+      "StackId": "arn:aws:cloudformation:eu-west-3:533267061967:stack/amplify-salamandraapp-dev-e0b77/78b7ced0-33d4-11ef-ab53-0e1e519889d5",
+      "AmplifyAppId": "d13zr2df9xnmgv"
     },
     "categories": {
       "auth": {
-        "salamandraandroid8b2e9c4c": {
+        "salamandraappf52f110a": {
           "userPoolId": "eu-west-3_OIKGoXD5F",
           "userPoolName": "TestPool",
           "webClientId": "3pj3eaddae9k3tu52n9dnbvqj1",

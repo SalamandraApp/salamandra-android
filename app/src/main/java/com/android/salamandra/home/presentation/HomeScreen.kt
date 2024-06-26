@@ -29,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +43,7 @@ import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MySpacer
 import com.android.salamandra._core.presentation.components.ProfilePicture
-import com.android.salamandra._core.presentation.components.WkPlaceholder
+import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
 import com.android.salamandra._core.util.WORKOUT_PREVIEW_LIST
 import com.android.salamandra.destinations.EditWkScreenDestination
@@ -98,7 +97,7 @@ private fun ScreenBody(
             verticalArrangement = Arrangement.Top
         ) {
             MyHomeBanner(sendIntent, mainColor)
-            FadeLip(mainColor)
+            FadeLip()
             MyViewToggles()
             LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
                 items(state.wkPreviewList) { wkPreview ->
@@ -256,7 +255,7 @@ fun MyWkPreview(wkPreview: WorkoutPreview) {
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        WkPlaceholder(size = 50, shape = RoundedCornerShape(10))
+        WkTemplatePicture(size = 50, shape = RoundedCornerShape(10))
         MySpacer(size = 18)
         Column {
             Text(text = wkPreview.name, color = title, fontSize = 15.sp)

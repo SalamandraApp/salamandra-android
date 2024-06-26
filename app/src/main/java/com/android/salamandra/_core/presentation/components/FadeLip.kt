@@ -12,12 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FadeLip(backgroundColor: Color) {
+fun FadeLip() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(6.dp)
-            .background(backgroundColor)
     ) {
         Row(
             modifier = Modifier
