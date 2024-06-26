@@ -80,8 +80,8 @@ private fun ScreenBody(
                 .background(mainColor),
             verticalArrangement = Arrangement.Top
         ) {
-            ProfileBanner(backgroundColor = mainColor)
-            FadeLip(backgroundColor = mainColor)
+            ProfileBanner(bgColor = mainColor, height = 300.dp)
+            FadeLip()
             OutlinedButton(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
@@ -98,9 +98,8 @@ private fun ProfileBanner(
     bgColor: Color,
     height: Dp
 ) {
-    val bannerHeight = 300
-    val bannerPicHeight = 150
-    val bannerInfoHeight = bannerHeight - bannerPicHeight
+    val bannerPicHeight = 150.dp
+    val bannerInfoHeight = height - bannerPicHeight
     Column(
         modifier = Modifier
             .fillMaxWidth()
