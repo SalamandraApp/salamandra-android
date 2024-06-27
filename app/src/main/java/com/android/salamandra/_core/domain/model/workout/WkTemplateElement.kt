@@ -4,7 +4,7 @@ import com.android.salamandra._core.domain.model.Exercise
 import java.util.UUID
 
 data class WkTemplateElement(
-//    val exInWkId: UUID, //I think this uid is not necessary for this model
+    val exInWkId: UUID,
     val exercise: Exercise,
     val position: Int,
     val reps: Int = 8,

@@ -1,0 +1,7 @@
+CREATE TABLE ExerciseEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    secondaryMuscleGroup INTEGER NOT NULL,
+    necessaryEquipment INTEGER NOT NULL,
+    exerciseType INTEGER NOT NULL
+);

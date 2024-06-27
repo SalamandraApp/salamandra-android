@@ -1,0 +1,11 @@
+CREATE TABLE WorkoutTemplateElementEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    wkTemplateId TEXT NOT NULL,
+    exerciseId TEXT NOT NULL,
+    position INTEGER NOT NULL,
+    reps INTEGER NOT NULL,
+    weight REAL NOT NULL,
+    rest INTEGER NOT NULL,
+    FOREIGN KEY (wkTemplateId) REFERENCES WorkoutTemplateEntity(id),
+    FOREIGN KEY (exerciseId) REFERENCES ExerciseEntity(id)
+);
