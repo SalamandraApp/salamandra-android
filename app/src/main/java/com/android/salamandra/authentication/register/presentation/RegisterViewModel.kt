@@ -59,7 +59,7 @@ class RegisterViewModel @Inject constructor(
                     username = state.value.username
                 )) {
                 is Result.Success -> sendEvent(RegisterEvent.NavigateToVerifyCode)
-                is Result.Error ->  _state.update { it.copy(passwordFormatError = register.error.asUiText()) }
+                is Result.Error ->  _state.update { it.copy(error = register.error) }
             }
         }
     }
@@ -67,7 +67,7 @@ class RegisterViewModel @Inject constructor(
     private fun validatePassword(password: String) {
         when (val result = userDataValidator.validatePassword(password)) {
             is Result.Success -> _state.update { it.copy(passwordFormatError = null) }
-            is Result.Error -> _state.update { it.copy(passwordFormatError = result.error.asUiText()) }
+            is Result.Error -> _state.update { it.copy(passwordFormatError = result.error) }
         }
         _state.update { it.copy(password = password) }
     }

@@ -209,7 +209,7 @@ private fun ScreenBody(
                         contentDescription = "Password format error icon"
                     )
                     Text(
-                        text = state.passwordFormatError.asString(),
+                        text = state.passwordFormatError.asUiText().asString(),
                         color = colorError,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -228,9 +228,11 @@ private fun ScreenBody(
                 hint = stringResource(R.string.repeat_password),
                 onValueChange = {
                     repeatPassword = it
-                    isSamePassword = repeatPassword == state.password
                 }
             )
+            LaunchedEffect(key1 = state.password) {
+                isSamePassword = state.password == repeatPassword
+            }
             if (!isSamePassword) {
                 Row(
                     modifier = Modifier
@@ -299,8 +301,12 @@ private fun ScreenBody(
 private fun checkFields(state: RegisterState, isSamePassword: Boolean, isUsernameValid: Boolean) =
     state.isEmailValid && state.passwordFormatError == null && isSamePassword && isUsernameValid && state.email != "" && state.password != "" && state.username != ""
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-//@PreviewScreenSizes
+
+
+@Preview(
+    name = "Custom Device Preview",
+    device = "spec:shape=Normal,width=1280,height=2560,unit=dp,dpi=420")
+@Preview()
 @Composable
 private fun ScreenPreview() {
     SalamandraTheme {
