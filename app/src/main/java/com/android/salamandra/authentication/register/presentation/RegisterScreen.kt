@@ -3,10 +3,12 @@ package com.android.salamandra.authentication.register.presentation
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,6 +42,7 @@ import com.android.salamandra._core.presentation.components.MyCircularProgressba
 import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
+import com.android.salamandra.authentication.login.presentation.LoginIntent
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
@@ -103,17 +106,33 @@ private fun ScreenBody(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 50.dp)
-                .padding(top = 80.dp),
+                .padding(horizontal = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val nFields = 4
+            val textFieldWeight = 100f
+            val buttonWeight = 100f
+            val betweenFieldsWeight = 50f
+            val middlePadWeight = 50f
+
+            val textPad = 12.dp
+
+            val verticalPadWeight = (1000f -
+                    nFields * textFieldWeight -
+                    2 * middlePadWeight -
+                    (nFields - 1) * betweenFieldsWeight -
+                    buttonWeight)/2
+
+
+            Spacer(modifier = Modifier.weight(verticalPadWeight))
             MyImageLogo()
+            Spacer(modifier = Modifier.weight(middlePadWeight))
 
             // USERNAME
             MyAuthTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = (2 * defaultPad).dp, bottom = defaultPad.dp),
+                    .weight(textFieldWeight),
                 value = state.username,
                 onValueChange = {
                     sendIntent(RegisterIntent.ChangeUsername(it))
@@ -148,11 +167,12 @@ private fun ScreenBody(
                 }
             }
 
+            Spacer(modifier = Modifier.weight(betweenFieldsWeight))
             // EMAIL
             MyAuthTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = defaultPad.dp, bottom = defaultPad.dp),
+                    .weight(textFieldWeight),
                 value = state.email,
                 onValueChange = {
                     sendIntent(RegisterIntent.ChangeEmail(it))
@@ -185,10 +205,11 @@ private fun ScreenBody(
                     )
                 }
             }
+            Spacer(modifier = Modifier.weight(betweenFieldsWeight))
             MyPasswordTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = defaultPad.dp, bottom = defaultPad.dp),
+                    .weight(textFieldWeight),
                 value = state.password,
                 hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(RegisterIntent.ChangePassword(it)) }
@@ -220,10 +241,11 @@ private fun ScreenBody(
                 }
             }
 
+            Spacer(modifier = Modifier.weight(betweenFieldsWeight))
             MyPasswordTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = defaultPad.dp, bottom = defaultPad.dp),
+                    .weight(textFieldWeight),
                 value = repeatPassword,
                 hint = stringResource(R.string.repeat_password),
                 onValueChange = {
@@ -257,36 +279,32 @@ private fun ScreenBody(
                     )
                 }
             }
-
             Text(
                 text = stringResource(R.string.already_have_an_account_log_in),
                 modifier = Modifier
-                    .clickable { sendIntent(RegisterIntent.GoToSignIn) }
                     .align(Alignment.End)
-                    .padding(4.dp),
+                    .padding(vertical = textPad)
+                    .clickable { sendIntent(RegisterIntent.GoToSignIn) },
                 fontSize = 14.sp,
                 color = salamandraColor,
             )
-
-            OutlinedButton(
-                onClick = {
-                    if (checkFields(state, isSamePassword, isUsernameValid))
-                        sendIntent(RegisterIntent.OnRegister)
-                },
+            Spacer(modifier = Modifier.weight(middlePadWeight))
+            Box (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = (3 * defaultPad).dp),
-                border = BorderStroke(2.dp, primaryVariant),
-                shape = RoundedCornerShape(40)
+                    .weight(buttonWeight)
+                    .border(BorderStroke(2.dp, primaryVariant), RoundedCornerShape(40))
+                    .clickable { sendIntent(RegisterIntent.OnRegister) },
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = stringResource(R.string.register),
                     fontSize = 16.sp,
-                    style = SemiTypo,
                     color = primaryVariant,
-                    modifier = Modifier.padding(vertical = defaultPad.dp),
                 )
             }
+            Spacer(modifier = Modifier.weight(verticalPadWeight))
+
         }
         if (state.error != null)
             ErrorDialog(

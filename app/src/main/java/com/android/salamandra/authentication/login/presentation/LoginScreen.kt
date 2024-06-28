@@ -2,6 +2,7 @@ package com.android.salamandra.authentication.login.presentation
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,7 +73,7 @@ private fun ScreenBody(
     state: LoginState,
     sendIntent: (LoginIntent) -> Unit,
 ) {
-    val defaultPad = 8;
+    val textPad = 12.dp;
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -83,34 +86,37 @@ private fun ScreenBody(
                 .padding(horizontal = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val fieldWeights: Map<String, Float> = mapOf(
-                "top-pad" to 0.1f,
-                "under-logo" to 0.1f,
-                "username" to 0.5f,
-                "password" to 0.1f,
-                "between-fields" to 0.1f,
-                "over-button" to 0.1f,
-                "login" to 0.1f,
-                "under-button" to 0.1f,
-            )
-            Spacer(modifier = Modifier.weight(fieldWeights["top-pad"]?: 1f))
+            val n = 2 // Text fields
+            val textFieldWeight = 100f
+            val buttonWeight = 100f
+            val betweenFieldsWeight = 50f
+            val middlePadWeight = 50f
+
+            val verticalPadWeight = (1000f -
+                    n * textFieldWeight -
+                    2 * middlePadWeight -
+                    (n - 1) * betweenFieldsWeight -
+                    buttonWeight) / 2
+
+            Spacer(modifier = Modifier.weight(verticalPadWeight))
             MyImageLogo()
-            Spacer(modifier = Modifier.weight(fieldWeights["under-logo"]?: 1f))
+            Spacer(modifier = Modifier.weight(middlePadWeight))
             MyAuthTextField(
                 modifier = Modifier
-                    .weight(fieldWeights["username"]?: 1f)
+                    .weight(textFieldWeight)
                     .fillMaxWidth(),
                 value = state.email,
                 onValueChange = {
                     sendIntent(LoginIntent.ChangeEmail(it))
                 },
-                textResource = R.string.username_or_email
+                textResource = R.string.username_or_email,
+                roundCorner = 40
             )
-            Spacer(modifier = Modifier.weight(fieldWeights["between-fields"]?: 1f))
+            Spacer(modifier = Modifier.weight(betweenFieldsWeight))
             MyPasswordTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = defaultPad.dp),
+                    .weight(textFieldWeight)
+                    .fillMaxWidth(),
                 value = state.password,
                 hint = stringResource(R.string.password),
                 onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) }
@@ -122,35 +128,26 @@ private fun ScreenBody(
                 modifier = Modifier
                     .clickable { sendIntent(LoginIntent.GoToSignup) }
                     .align(Alignment.End)
-                    .padding(vertical = defaultPad.dp)
+                    .padding(vertical = textPad)
             )
 
-            OutlinedButton(
-                onClick = { sendIntent(LoginIntent.Login) },
+            Spacer(modifier = Modifier.weight(middlePadWeight))
+            Box (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = (3 * defaultPad).dp),
-                border = BorderStroke(2.dp, primaryVariant),
-                shape = RoundedCornerShape(40)
+                    .weight(buttonWeight)
+                    .border(BorderStroke(2.dp, primaryVariant), RoundedCornerShape(40))
+                    .clickable { sendIntent(LoginIntent.Login) },
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = stringResource(R.string.login),
                     fontSize = 16.sp,
                     color = primaryVariant,
-                    modifier = Modifier.padding(vertical = defaultPad.dp),
                 )
             }
+            Spacer(modifier = Modifier.weight(verticalPadWeight))
         }
-
-
-
-        if (state.error != null)
-            ErrorDialog(
-                error = state.error.asUiText(),
-                onDismiss = { sendIntent(LoginIntent.CloseError) }
-            )
-
-
     }
 }
 

@@ -19,6 +19,7 @@ fun MyAuthTextField(
     value: String,
     onValueChange: (String) -> Unit,
     textResource: Int,
+    roundCorner: Int = 40
 
     ) {
     OutlinedTextField(
@@ -36,6 +37,6 @@ fun MyAuthTextField(
             keyboardType = KeyboardType.Email
         ),
         singleLine = true,
-        shape = RoundedCornerShape(40),
+        shape = RoundedCornerShape(roundCorner),
     )
 }

@@ -27,7 +27,8 @@ fun MyPasswordTextField(
     modifier: Modifier = Modifier,
     value: String,
     hint: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    roundCorner: Int = 40
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
     val img = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
@@ -45,7 +46,7 @@ fun MyPasswordTextField(
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password
         ),
-        shape = RoundedCornerShape(40),
+        shape = RoundedCornerShape(roundCorner),
         singleLine = true,
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
