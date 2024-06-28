@@ -5,6 +5,7 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import app.cash.turbine.test
 import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra.SalamandraLocalDB.Companion.Schema
+import com.android.salamandra._core.data.sqlDelight.BooleanAdapter
 import com.android.salamandra._core.data.sqlDelight.DateAdapter
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
@@ -16,7 +17,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import workout.WorkoutTemplateEntity
-import java.time.Instant
 import java.util.Date
 
 //@RunWith(AndroidJUnit5::class)
@@ -35,7 +35,8 @@ class WorkoutTemplateDataSourceImplTest {
     private val name = "Push up"
     private val description = "This is a dummy description"
     private val dateCreated = Date(1719567576560)
-    private val expectedWorkoutTemplateEntity = WorkoutTemplateEntity(id, name, description, dateCreated)
+    private val onlyPreviewAvailable = false
+    private val expectedWorkoutTemplateEntity = WorkoutTemplateEntity(id, name, description, dateCreated, onlyPreviewAvailable)
 
     @Before
     fun setUp() {
@@ -44,14 +45,14 @@ class WorkoutTemplateDataSourceImplTest {
             InstrumentationRegistry.getInstrumentation().targetContext,
             "test.db"
         )
-        db = SalamandraLocalDB(driver, WorkoutTemplateEntity.Adapter(DateAdapter()))
+        db = SalamandraLocalDB(driver, WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()))
         dataSource = WorkoutTemplateDataSourceImpl(db, testDispatcher)
     }
 
     @Test
     fun testBasicInsertionAndGet() = runTest {
         // Act
-        val insertion = dataSource.insertWk(id, name, description, dateCreated)
+        val insertion = dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
         runCurrent()
         val wk = dataSource.getWkByID(id)
         runCurrent()
@@ -71,7 +72,7 @@ class WorkoutTemplateDataSourceImplTest {
             assert(list.isEmpty())
 
             // Insert a new item and ensure the list updates
-            dataSource.insertWk(id, name, description, dateCreated)
+            dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
             runCurrent()
             list = awaitItem()
             assert(list.size == 1 && list[0] == expectedWorkoutTemplateEntity)

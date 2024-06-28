@@ -1,10 +1,12 @@
 import java.util.Date;
+import kotlin.Boolean;
 
 CREATE TABLE WorkoutTemplateEntity (
     id TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
-    dateCreated TEXT AS Date
+    dateCreated TEXT AS Date,
+    onlyPreviewAvailable TEXT AS Boolean
 );
 
 getWkById:
@@ -20,7 +22,7 @@ FROM WorkoutTemplateEntity;
 insertWk:
 INSERT OR REPLACE
 INTO WorkoutTemplateEntity
-VALUES (?,?,?,?);
+VALUES (?,?,?,?, ?);
 
 deleteWkById:
 DELETE FROM WorkoutTemplateEntity
@@ -28,3 +30,6 @@ WHERE id = :id;
 
 clearDatabase:
 DELETE FROM WorkoutTemplateEntity;
+
+countElements:
+SELECT COUNT(*) FROM WorkoutTemplateEntity;

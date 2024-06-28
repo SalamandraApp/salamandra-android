@@ -5,4 +5,5 @@ import java.util.UUID
 data class WorkoutPreview (
     val wkId: UUID,
     val name: String,
+    val onlyPreviewAvailable: Boolean = true
 )

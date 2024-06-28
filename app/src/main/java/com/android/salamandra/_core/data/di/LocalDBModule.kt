@@ -7,6 +7,7 @@ import app.cash.sqldelight.ColumnAdapter
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.android.salamandra.SalamandraLocalDB
+import com.android.salamandra._core.data.sqlDelight.BooleanAdapter
 import com.android.salamandra._core.data.sqlDelight.DateAdapter
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSourceImpl
@@ -37,14 +38,23 @@ object LocalDBModule {
 
     @Singleton
     @Provides
-    fun provideSQLDelightDB(driver: SqlDriver, dateAdapter: DateAdapter): SalamandraLocalDB{
-        return SalamandraLocalDB(driver = driver, WorkoutTemplateEntityAdapter = WorkoutTemplateEntity.Adapter(dateAdapter))
+    fun provideSQLDelightDB(driver: SqlDriver, dateAdapter: DateAdapter, booleanAdapter: BooleanAdapter): SalamandraLocalDB {
+        return SalamandraLocalDB(
+            driver = driver,
+            WorkoutTemplateEntityAdapter = WorkoutTemplateEntity.Adapter(
+                dateCreatedAdapter = dateAdapter,
+                onlyPreviewAvailableAdapter = booleanAdapter
+            )
+        )
     }
 
 
     @Singleton
     @Provides
-    fun workoutTemplateDataSource(database: SalamandraLocalDB, ioDispatcher: CoroutineDispatcher): WorkoutTemplateDataSource {
+    fun workoutTemplateDataSource(
+        database: SalamandraLocalDB,
+        ioDispatcher: CoroutineDispatcher
+    ): WorkoutTemplateDataSource {
         return WorkoutTemplateDataSourceImpl(database, ioDispatcher)
     }
 

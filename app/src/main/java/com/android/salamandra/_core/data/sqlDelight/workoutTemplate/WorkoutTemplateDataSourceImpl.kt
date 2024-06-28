@@ -41,10 +41,11 @@ class WorkoutTemplateDataSourceImpl @Inject constructor(
         id: String,
         name: String,
         description: String,
-        dateCreated: Date
+        dateCreated: Date,
+        onlyPreviewAvailable: Boolean
     ): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {
-            queries.insertWk(id, name, description, dateCreated)
+            queries.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
             Result.Success(Unit)
         }
     }
@@ -55,4 +56,22 @@ class WorkoutTemplateDataSourceImpl @Inject constructor(
             Result.Success(Unit)
         }
     }
+
+    override suspend fun isWkTemplateEntityEmpty(): Boolean {
+        return withContext(ioDispatcher){
+            val result = queries.countElements().executeAsOneOrNull()
+            !(result == null || result > 0)
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

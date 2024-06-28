@@ -17,8 +17,10 @@ interface WorkoutTemplateDataSource {
         id: String,
         name: String,
         description: String,
-        dateCreated: Date
+        dateCreated: Date,
+        onlyPreviewAvailable: Boolean
     ): Result<Unit, DataError.Local>
 
     suspend fun clearDatabase(): Result<Unit, DataError.Local>
+    suspend fun isWkTemplateEntityEmpty(): Boolean
 }
