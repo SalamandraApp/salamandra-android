@@ -1,7 +1,10 @@
+import java.util.Date;
+
 CREATE TABLE WorkoutTemplateEntity (
     id TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
-    description TEXT
+    description TEXT,
+    dateCreated TEXT AS Date
 );
 
 getWkById:
@@ -17,8 +20,11 @@ FROM WorkoutTemplateEntity;
 insertWk:
 INSERT OR REPLACE
 INTO WorkoutTemplateEntity
-VALUES (?,?,?);
+VALUES (?,?,?,?);
 
 deleteWkById:
 DELETE FROM WorkoutTemplateEntity
 WHERE id = :id;
+
+clearDatabase:
+DELETE FROM WorkoutTemplateEntity;

@@ -35,6 +35,7 @@ class LoginViewModel @Inject constructor(
 
             is LoginIntent.GoToSignup -> sendEvent(LoginEvent.NavigateToSignUp)
 
+            LoginIntent.GoToHomeNoSignIn -> sendEvent(LoginEvent.NavigateToHome)
         }
     }
 
