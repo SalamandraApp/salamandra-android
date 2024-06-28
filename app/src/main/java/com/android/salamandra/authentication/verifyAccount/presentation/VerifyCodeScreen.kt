@@ -27,6 +27,7 @@ import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra._core.presentation.components.MySpacer
 import com.android.salamandra._core.presentation.components.textFields.MyOutlinedTextField
+import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.salamandraColor
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.ramcosta.composedestinations.annotation.Destination
@@ -44,10 +45,12 @@ fun VerifyCodeScreen(
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            else -> {}
+            VerifyCodeEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
+            null -> {}
         }
     }
 
+    viewModel.dispatch(VerifyCodeIntent.SetUsername(username = username))
     ScreenBody(
         state = state,
         sendIntent = viewModel::dispatch

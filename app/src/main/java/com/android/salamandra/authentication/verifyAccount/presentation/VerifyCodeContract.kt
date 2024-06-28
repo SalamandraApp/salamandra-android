@@ -26,10 +26,12 @@ data class VerifyCodeState(
 sealed class VerifyCodeIntent: Intent {
     data class Loading(val isLoading: Boolean): VerifyCodeIntent()
     data class Error(val error: RootError): VerifyCodeIntent()
+    data class SetUsername(val username: String): VerifyCodeIntent()
     data object CloseError: VerifyCodeIntent()
     data object ConfirmCode: VerifyCodeIntent()
     data class ChangeCode(val code: String): VerifyCodeIntent()
 }
 
 sealed class VerifyCodeEvent: Event {
+    data object NavigateToHome: VerifyCodeEvent()
 }

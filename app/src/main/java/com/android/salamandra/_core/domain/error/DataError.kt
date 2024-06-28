@@ -10,8 +10,8 @@ sealed interface DataError : RootError {
     enum class Cognito : DataError {
         UNKNOWN_ERROR,
         INVALID_EMAIL_OR_PASSWORD,
+        USERNAME_OR_EMAIL_ALREADY_IN_USE,
         SESSION_FETCH,
-        SIGN_UP_FIELDS_NOT_VALID,
         WRONG_CONFIRMATION_CODE,
         SIGN_OUT_FAILED_USER_SIGNED_IN,
         SIGN_OUT_FAILED_USER_NOT_SIGNED_IN

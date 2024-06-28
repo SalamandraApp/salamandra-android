@@ -28,6 +28,7 @@ class VerifyCodeViewModel @Inject constructor(
             is VerifyCodeIntent.ChangeCode -> _state.update { it.copy(code = intent.code) }
 
             is VerifyCodeIntent.ConfirmCode -> onVerifyCode()
+            is VerifyCodeIntent.SetUsername -> _state.update { it.copy(username = intent.username) }
         }
     }
 
@@ -42,8 +43,8 @@ class VerifyCodeViewModel @Inject constructor(
                     username = state.value.username,
                     code = state.value.code
                 )) {
-                is Result.Error -> TODO()
-                is Result.Success -> TODO()
+                is Result.Error -> _state.update { it.copy(error = confirmation.error) }
+                is Result.Success -> sendEvent(VerifyCodeEvent.NavigateToHome)
             }
         }
     }

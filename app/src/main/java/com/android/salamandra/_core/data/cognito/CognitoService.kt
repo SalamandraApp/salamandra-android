@@ -1,8 +1,10 @@
 package com.android.salamandra._core.data.cognito
 
 import android.util.Log
+import aws.sdk.kotlin.services.cognitoidentity.model.NotAuthorizedException
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
+import com.amplifyframework.auth.cognito.exceptions.service.CodeMismatchException
 import com.amplifyframework.auth.cognito.result.AWSCognitoAuthSignOutResult
 import com.amplifyframework.auth.options.AuthSignUpOptions
 import com.amplifyframework.auth.result.step.AuthSignUpStep
@@ -52,26 +54,38 @@ class CognitoService @Inject constructor(
         val options = AuthSignUpOptions.builder()
             .userAttribute(AuthUserAttributeKey.email(), email)
             .build()
-        return if (Amplify.Auth.signUp(
-                username = username,
-                password = password,
-                options = options
-            ).nextStep.signUpStep == AuthSignUpStep.CONFIRM_SIGN_UP_STEP
-        ) Result.Success(Unit) else Result.Error(DataError.Cognito.SIGN_UP_FIELDS_NOT_VALID)
-
+        return try {
+            if (Amplify.Auth.signUp(
+                    username = username,
+                    password = password,
+                    options = options
+                ).nextStep.signUpStep == AuthSignUpStep.CONFIRM_SIGN_UP_STEP)
+                Result.Success(Unit) else Result.Error(DataError.Cognito.USERNAME_OR_EMAIL_ALREADY_IN_USE)
+        } catch (e: Exception){
+            Log.e("SLM", "Error occurred while signing up user: ${e.message}")
+            Result.Error(DataError.Cognito.USERNAME_OR_EMAIL_ALREADY_IN_USE)
+        }
     }
 
     suspend fun confirmRegister(
         username: String,
         code: String
     ): Result<Unit, DataError.Cognito> {
-        return if (Amplify.Auth.confirmSignUp(
-                username = username,
-                confirmationCode = code
-            ).nextStep.signUpStep == AuthSignUpStep.DONE
-        ) {
-            fetchAndSaveToken()
-        } else Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
+        return try{
+            if (Amplify.Auth.confirmSignUp(
+                    username = username,
+                    confirmationCode = code
+                ).nextStep.signUpStep == AuthSignUpStep.DONE
+            ) {
+                fetchAndSaveToken()
+            } else Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
+        } catch (e: NotAuthorizedException){
+            Log.e("SLM", "Error while code confirmation: ${e.message}")
+            Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
+        }catch (e: CodeMismatchException){
+            Log.e("SLM", "Error while code confirmation: ${e.message}")
+            Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
+        }
     }
 
     suspend fun isUserLogged(): Boolean {
