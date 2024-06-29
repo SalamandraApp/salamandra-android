@@ -52,6 +52,7 @@ import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.salamandraColor
 import com.android.salamandra.ui.theme.secondary
+import com.android.salamandra.ui.theme.tertiary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -97,7 +98,7 @@ private fun ScreenBody(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(secondary),
+            .background(tertiary),
     ) {
         var repeatPassword by remember { mutableStateOf("") }
         var isSamePassword by remember { mutableStateOf(true) }

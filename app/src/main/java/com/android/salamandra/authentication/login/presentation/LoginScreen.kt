@@ -33,8 +33,8 @@ import com.android.salamandra._core.presentation.components.MyCircularProgressba
 import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
-import com.android.salamandra.authentication.verifyAccount.presentation.VerifyCodeState
 import com.android.salamandra.destinations.HomeScreenDestination
+import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.onSecondary
@@ -54,7 +54,7 @@ fun LoginScreen(
     LaunchedEffect(events) {
         when (events) {
             LoginEvent.NavigateToSignUp -> navigator.navigate(RegisterScreenDestination)
-            LoginEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
+            LoginEvent.NavigateUp -> navigator.navigate(ProfileScreenDestination)
             null -> {}
         }
     }

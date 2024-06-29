@@ -9,6 +9,7 @@ import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra.splash.domain.Repository
 import retrofit2.HttpException
+import java.net.ConnectException
 
 class RepositoryImpl(
     private val workoutTemplateDataSource: WorkoutTemplateDataSource,
@@ -23,7 +24,7 @@ class RepositoryImpl(
             when (val uid = dataStoreRepository.getUidFromDatastore()){
                 is Result.Success -> {
                     val wkPreviews = salamandraApiService.getWorkoutPreviews(uid.data)
-                    Result.Success(wkPreviews)
+                    Result.Success(wkPreviews.toDomain())
                 }
                 is Result.Error -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
             }
@@ -32,7 +33,8 @@ class RepositoryImpl(
                 else -> Result.Error(DataError.Network.TOO_MANY_REQUESTS) // TODO Add different types of http exception
             }
 
+        } catch (connectException: ConnectException) {
+            Result.Success(emptyList())
         }
     }
-
 }

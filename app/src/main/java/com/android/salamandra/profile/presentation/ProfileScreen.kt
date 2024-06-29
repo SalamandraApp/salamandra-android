@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Construction
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -110,27 +113,34 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.weight(0.4f))
+        val buttonWeight = 100f
+        val spacerWeights = 1000f - buttonWeight
+
+        Spacer(modifier = Modifier.weight(spacerWeights*1/3))
+        Spacer(modifier = Modifier.size(200.dp))
         Text(
             modifier = Modifier.padding(bottom = 18.dp),
             text = stringResource(R.string.need_to_login),
             color = primaryVariant,
             fontSize = 16.sp,
         )
-        OutlinedButton(
+        Button(
             modifier = Modifier
-                .weight(0.05f)
+                .weight(buttonWeight)
                 .fillMaxWidth(),
-            border = BorderStroke(1.dp, primaryVariant),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = primaryVariant,
+            ),
+            shape = RoundedCornerShape(40),
             onClick = { sendIntent(ProfileIntent.GoToLogin) }
         ) {
             Text(
                 text = stringResource(R.string.login),
-                color = primaryVariant,
-                fontSize = 18.sp
+                color = tertiary,
+                fontSize = 20.sp
             )
         }
-        Spacer(modifier = Modifier.weight(0.4f))
+        Spacer(modifier = Modifier.weight(spacerWeights*2/3))
     }
 }
 

@@ -36,5 +36,5 @@ sealed class LoginIntent: Intent {
 
 sealed class LoginEvent: Event {
     data object NavigateToSignUp: LoginEvent()
-    data object NavigateToHome: LoginEvent()
+    data object NavigateUp: LoginEvent()
 }
