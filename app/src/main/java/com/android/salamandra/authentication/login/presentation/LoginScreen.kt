@@ -33,12 +33,13 @@ import com.android.salamandra._core.presentation.components.MyCircularProgressba
 import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
+import com.android.salamandra.authentication.verifyAccount.presentation.VerifyCodeState
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.primaryVariant
-import com.android.salamandra.ui.theme.secondary
+import com.android.salamandra.ui.theme.tertiary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -77,7 +78,7 @@ private fun ScreenBody(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(secondary),
+            .background(tertiary),
     ) {
         Column (
             modifier = Modifier

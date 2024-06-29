@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra.ui.theme.NormalTypo
+import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.ui.theme.primaryVariant
+import com.android.salamandra.ui.theme.subtitle
+import com.android.salamandra.ui.theme.title
 
 @Composable
 fun MyPasswordTextField(
@@ -53,6 +58,16 @@ fun MyPasswordTextField(
             IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                 Icon(imageVector = img, contentDescription = null)
             }
-        }
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = title,
+            focusedBorderColor = primaryVariant,
+            focusedLabelColor = primaryVariant,
+
+            unfocusedTextColor = subtitle,
+            unfocusedBorderColor = onTertiary,
+            unfocusedLabelColor = subtitle,
+
+            )
     )
 }

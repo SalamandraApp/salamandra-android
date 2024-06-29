@@ -92,6 +92,7 @@ val onTertiary = Color(0xff6b6b6b)
 
 
 val title = Color(0xFFFFFFFF)
+val subtitle = Color(0xFFe6e6e6)
 
 val colorError = Color(0xffd84848)
 

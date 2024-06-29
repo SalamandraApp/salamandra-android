@@ -1,12 +1,15 @@
 package com.android.salamandra.authentication.verifyAccount.presentation
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -17,8 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.presentation.asUiText
@@ -28,8 +34,10 @@ import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra._core.presentation.components.MySpacer
 import com.android.salamandra._core.presentation.components.textFields.MyOutlinedTextField
 import com.android.salamandra.destinations.HomeScreenDestination
+import com.android.salamandra.ui.theme.SalamandraTheme
+import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.salamandraColor
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
+import com.android.salamandra.ui.theme.tertiary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -62,7 +70,7 @@ private fun ScreenBody(
     state: VerifyCodeState,
     sendIntent: (VerifyCodeIntent) -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = Modifier.fillMaxSize().background(tertiary), contentAlignment = Alignment.Center) {
         MyColumn(
             modifier = Modifier
                 .offset(y = (-32).dp)
@@ -74,13 +82,19 @@ private fun ScreenBody(
                 value = state.code,
                 hint = stringResource(R.string.confirmation_code),
                 onValueChange = {
-                    sendIntent(VerifyCodeIntent.ChangeCode(it))
-                }
+                    if (it.isDigitsOnly())
+                        sendIntent(VerifyCodeIntent.ChangeCode(it))
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number
+                ),
             )
+
             MySpacer(size = 8)
             Text(
                 text = stringResource(R.string.check_your_email_for_confirmation_code),
-                color = MaterialTheme.colorScheme.onBackground
+                color = onTertiary,
+                fontSize = 14.sp
             )
 
         }
@@ -109,5 +123,16 @@ private fun ScreenBody(
                 error = state.error.asUiText(),
                 onDismiss = { sendIntent(VerifyCodeIntent.CloseError) }
             )
+    }
+}
+
+@Preview
+@Composable
+fun LightPreview() {
+    SalamandraTheme {
+        ScreenBody(
+            state = VerifyCodeState.initial,
+            sendIntent = {},
+        )
     }
 }
