@@ -2,17 +2,20 @@ package com.android.salamandra.profile.presentation
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Construction
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,7 +38,6 @@ import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.tertiary
@@ -74,13 +75,16 @@ private fun ScreenBody(
     ) {
         val signedIn = true
         val mainColor = tertiary
+
+        val infoWeight = 0.6f
+        val bannerWeight = 0.4f
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(mainColor),
             verticalArrangement = Arrangement.Top
         ) {
-            ProfileBanner(bgColor = mainColor, height = 300.dp)
+            ProfileBanner(bgColor = mainColor, modifier = Modifier.weight(bannerWeight))
             FadeLip()
             OutlinedButton(
                 modifier = Modifier
@@ -89,27 +93,29 @@ private fun ScreenBody(
                 onClick = { sendIntent(ProfileIntent.GoToLogin) }) { //TODO change
                 Text(text = "Go to login", color = primary)
             }
+            Spacer(modifier = Modifier.weight(infoWeight))
         }
     }
 }
 
 @Composable
 private fun ProfileBanner(
+    modifier: Modifier = Modifier,
     bgColor: Color,
-    height: Dp
 ) {
-    val bannerPicHeight = 150.dp
-    val bannerInfoHeight = height - bannerPicHeight
+    val bannerPicWeight = 0.35f
+    val bannerPfpWeight = 0.5f
+    val bannerBadgesWeight = 0.15f
+    
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(bgColor)
-            .height(height)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.4f)
+                .weight(bannerPicWeight)
         ) {
             WkTemplatePicture(
                 modifier = Modifier
@@ -118,30 +124,34 @@ private fun ProfileBanner(
             )
         }
 
-        val pfpSize = 120
-        val pfpBorder = 10
-        val leftMargin = 15
+        val sideMargin = 25.dp
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.4f)
+                .weight(bannerPfpWeight),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val pfpWeight = 0.4f
+            val usernameWeight = 0.5f
+            val buttonsWeight = 0.1f
             Column (
                 modifier = Modifier
-                    .weight(0.4f)
-                    .padding(start = leftMargin.dp)
-                    .align(Alignment.CenterVertically)
+                    .weight(pfpWeight)
+                    .padding(start = sideMargin - 10.dp)
             ) {
                 ProfilePicture(
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
                     pad = 10.dp
                 )
             }
+
             Column (
                 modifier = Modifier
-                    .weight(0.6f)
+                    .weight(usernameWeight)
                     .align(Alignment.CenterVertically)
-                    .padding(start = 20.dp)
+                    .padding(horizontal = 10.dp)
             ){
                 Text(
                     text = "Lil Nicolas",
@@ -150,6 +160,7 @@ private fun ProfileBanner(
                     fontSize = 24.sp
                 )
                 Text(
+                    modifier = Modifier.padding(top = 10.dp),
                     text = "@nikki",
                     color = onTertiary,
                     style = SemiTypo,
@@ -163,6 +174,44 @@ private fun ProfileBanner(
                     fontSize = 14.sp
                 )
             }
+            Column (
+                modifier = Modifier
+                    .weight(buttonsWeight)
+                    .align(Alignment.CenterVertically)
+                    .padding(end = sideMargin - 10.dp)
+            ){
+                IconButton(
+                    onClick = {/*TODO*/ },
+                ) {
+                    Icon(
+                        modifier = Modifier.size(50.dp),
+                        imageVector = Icons.Filled.Construction,
+                        tint = onTertiary,
+                        contentDescription = "WIP"
+                    )
+                }
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(bannerBadgesWeight)
+                .align(Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically
+        )
+        {
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = {/*TODO*/ },
+            ) {
+                Icon(
+                    modifier = Modifier.size(25.dp),
+                    imageVector = Icons.Filled.Construction,
+                    tint = onTertiary,
+                    contentDescription = "WIP"
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

@@ -321,9 +321,6 @@ private fun checkFields(state: RegisterState, isSamePassword: Boolean, isUsernam
 
 
 
-@Preview(
-    name = "Custom Device Preview",
-    device = "spec:shape=Normal,width=1280,height=2560,unit=dp,dpi=420")
 @Preview()
 @Composable
 private fun ScreenPreview() {
