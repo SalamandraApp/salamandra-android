@@ -3,6 +3,7 @@ package com.android.salamandra.profile.presentation
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,8 +11,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material3.Icon
@@ -25,10 +28,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.salamandra.R
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
@@ -40,6 +45,7 @@ import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primary
+import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
@@ -73,7 +79,7 @@ private fun ScreenBody(
         currentDestination = ProfileScreenDestination,
         onBottomBarClicked = { sendIntent(ProfileIntent.BottomBarClicked(it)) }
     ) {
-        val signedIn = true
+        val signedIn = false
         val mainColor = tertiary
 
         val infoWeight = 0.6f
@@ -86,15 +92,57 @@ private fun ScreenBody(
         ) {
             ProfileBanner(bgColor = mainColor, modifier = Modifier.weight(bannerWeight))
             FadeLip()
-            OutlinedButton(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                border = BorderStroke(1.dp, primary),
-                onClick = { sendIntent(ProfileIntent.GoToLogin) }) { //TODO change
-                Text(text = "Go to login", color = primary)
-            }
-            Spacer(modifier = Modifier.weight(infoWeight))
+            InfoSection(modifier = Modifier.weight(infoWeight), sendIntent = sendIntent, bgColor = tertiary)
         }
+        if (!signedIn) {
+            NotLoggedInCover ( sendIntent = sendIntent )
+        }
+
+    }
+}
+@Composable
+private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(tertiary.copy(alpha = 0.8f))
+            .padding(horizontal = 60.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(0.4f))
+        Text(
+            modifier = Modifier.padding(bottom = 18.dp),
+            text = stringResource(R.string.need_to_login),
+            color = primaryVariant,
+            fontSize = 16.sp,
+        )
+        OutlinedButton(
+            modifier = Modifier
+                .weight(0.05f)
+                .fillMaxWidth(),
+            border = BorderStroke(1.dp, primaryVariant),
+            onClick = { sendIntent(ProfileIntent.GoToLogin) }
+        ) {
+            Text(
+                text = stringResource(R.string.login),
+                color = primaryVariant,
+                fontSize = 18.sp
+            )
+        }
+        Spacer(modifier = Modifier.weight(0.4f))
+    }
+}
+
+@Composable
+private fun InfoSection (
+    modifier: Modifier = Modifier,
+    bgColor: Color,
+    sendIntent: (ProfileIntent) -> Unit
+) {
+    Column (
+        modifier = modifier.fillMaxWidth(),
+    ){
     }
 }
 
@@ -103,7 +151,7 @@ private fun ProfileBanner(
     modifier: Modifier = Modifier,
     bgColor: Color,
 ) {
-    val bannerPicWeight = 0.35f
+    val bannerPicWeight = 0.40f
     val bannerPfpWeight = 0.5f
     val bannerBadgesWeight = 0.15f
     
@@ -129,11 +177,12 @@ private fun ProfileBanner(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(bannerPfpWeight),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val pfpWeight = 0.4f
             val usernameWeight = 0.5f
-            val buttonsWeight = 0.1f
+            val buttonsWeight = 0.15f
             Column (
                 modifier = Modifier
                     .weight(pfpWeight)
@@ -161,7 +210,7 @@ private fun ProfileBanner(
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
-                    text = "@nikki",
+                    text = "@Xx_Rabotron_xX",
                     color = onTertiary,
                     style = SemiTypo,
                     fontSize = 18.sp
@@ -184,7 +233,17 @@ private fun ProfileBanner(
                     onClick = {/*TODO*/ },
                 ) {
                     Icon(
-                        modifier = Modifier.size(50.dp),
+                        modifier = Modifier.size(30.dp),
+                        imageVector = Icons.Filled.Construction,
+                        tint = onTertiary,
+                        contentDescription = "WIP"
+                    )
+                }
+                IconButton(
+                    onClick = {/*TODO*/ },
+                ) {
+                    Icon(
+                        modifier = Modifier.size(30.dp),
                         imageVector = Icons.Filled.Construction,
                         tint = onTertiary,
                         contentDescription = "WIP"
@@ -205,7 +264,7 @@ private fun ProfileBanner(
                 onClick = {/*TODO*/ },
             ) {
                 Icon(
-                    modifier = Modifier.size(25.dp),
+                    modifier = Modifier.size(30.dp),
                     imageVector = Icons.Filled.Construction,
                     tint = onTertiary,
                     contentDescription = "WIP"

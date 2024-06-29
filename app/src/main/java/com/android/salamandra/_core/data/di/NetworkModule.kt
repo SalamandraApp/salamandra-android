@@ -1,8 +1,14 @@
 package com.android.salamandra._core.data.di
 
 import com.android.salamandra.BuildConfig.BASE_URL
+import com.android.salamandra._core.data.CoreRepositoryImpl
+import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.network.interceptor.AuthInterceptor
+import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
+import com.android.salamandra._core.domain.CoreRepository
+import com.android.salamandra.splash.data.RepositoryImpl
+import com.android.salamandra.splash.domain.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,5 +48,13 @@ object NetworkModule {
     fun provideLoginApiService(retrofit: Retrofit): SalamandraApiService {
         return retrofit.create(SalamandraApiService::class.java)
     }
+    @Singleton
+    @Provides
+    fun provideRepository(
+        cognitoService: CognitoService
+    ): CoreRepository{
+        return CoreRepositoryImpl(cognitoService)
+    }
+
 
 }

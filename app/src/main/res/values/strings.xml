@@ -47,4 +47,5 @@
     <string name="an_error_occured_user_signed_out">An error occured, user signed out</string>
     <string name="workout_not_found">Workout not found</string>
     <string name="username_or_email_already_exists_in_database">Username or email already in use</string>
+    <string name="need_to_login">Authenticate to access your profile</string>
 </resources>
