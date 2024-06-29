@@ -29,6 +29,7 @@ fun DataError.asUiText(): UiText {
         DataError.Local.WORKOUT_TEMPLATE_NOT_FOUND -> UiText.StringResource(R.string.workout_not_found)
         DataError.Cognito.USERNAME_OR_EMAIL_ALREADY_IN_USE ->UiText.StringResource(R.string.username_or_email_already_exists_in_database)
         DataError.Datastore.UID_NOT_FOUND -> UiText.StringResource(R.string.user_uid_not_found_in_datastore)
+        DataError.Local.ERROR_INSERTING_WK_TEMPLATES -> UiText.StringResource(R.string.a_problem_occurred_while_saving_workouts_in_local)
     }
 }
 

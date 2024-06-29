@@ -6,7 +6,7 @@ CREATE TABLE WorkoutTemplateEntity (
     name TEXT NOT NULL,
     description TEXT,
     dateCreated TEXT AS Date,
-    onlyPreviewAvailable TEXT AS Boolean
+    onlyPreviewAvailable TEXT AS Boolean NOT NULL
 );
 
 getWkById:

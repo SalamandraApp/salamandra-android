@@ -29,7 +29,7 @@ class SplashViewModel @Inject constructor(
             if (!coreRepository.isUserLogged() || !featureRepository.isLocalDbEmpty())
                 sendEvent(SplashEvent.NavigateToHome) //User not logged in or database with data
             else{
-                featureRepository.getWkPreviewsFromRemote()
+                featureRepository.getWkPreviewsFromRemoteAndStoreInLocal()
                 sendEvent(SplashEvent.NavigateToHome)
             }
 

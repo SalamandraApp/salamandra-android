@@ -19,6 +19,7 @@ import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra.destinations.EditWkScreenDestination
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.home.presentation.HomeEvent
+import com.android.salamandra.home.presentation.HomeScreenNavArgs
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.secondary
 import com.ramcosta.composedestinations.annotation.Destination

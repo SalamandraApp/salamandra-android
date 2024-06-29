@@ -1,28 +1,16 @@
 package com.android.salamandra.home.data
 
-import com.android.salamandra._core.data.cognito.CognitoService
-import com.android.salamandra._core.domain.error.DataError
-import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.Exercise
+import com.android.salamandra._core.data.network.SalamandraApiService
+import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
+import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra.home.domain.Repository
+import kotlinx.coroutines.flow.Flow
 
-class RepositoryImpl(private val cognitoService: CognitoService): Repository {
-    override suspend fun getExercise(term: String): List<Exercise>? {
-        return emptyList() //TODO
-//        runCatching {
-//            salamandraApiService.searchExercise(term)
-//        }
-//            .onSuccess {
-//                return it.toDomain()
-//            }
-//            .onFailure {
-//                Log.i("Jaime", "An error ocurred while using apiService, ${it.message}")
-//            }
-//        return null
-    }
+class RepositoryImpl(
+    private val workoutTemplateDataSource: WorkoutTemplateDataSource,
+    private val salamandraApiService: SalamandraApiService
+) : Repository {
 
-    override suspend fun logout(): Result<Unit, DataError.Cognito> {
-        TODO("Not yet implemented")
-    }
+    override fun getWkPreviews(): Flow<List<WorkoutPreview>> = workoutTemplateDataSource.getAllWkPreviews()
 
 }

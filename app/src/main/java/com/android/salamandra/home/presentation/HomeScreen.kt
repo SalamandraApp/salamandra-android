@@ -56,6 +56,7 @@ import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
+import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 

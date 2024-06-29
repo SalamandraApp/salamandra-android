@@ -1,6 +1,5 @@
 package com.android.salamandra.splash.data
 
-import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.domain.DataStoreRepository
@@ -19,12 +18,16 @@ class RepositoryImpl(
 
     override suspend fun isLocalDbEmpty() = workoutTemplateDataSource.isWkTemplateEntityEmpty()
 
-    override suspend fun getWkPreviewsFromRemote(): Result<List<WorkoutPreview>, DataError.Network> {
+    override suspend fun getWkPreviewsFromRemoteAndStoreInLocal(): Result<Unit, DataError> {
         return try {
             when (val uid = dataStoreRepository.getUidFromDatastore()){
                 is Result.Success -> {
                     val wkPreviews = salamandraApiService.getWorkoutPreviews(uid.data)
-                    Result.Success(wkPreviews.toDomain())
+                    when(val insertionInLocal = workoutTemplateDataSource.insertWkPreviewList(wkPreviews.toDomain())){
+                        is Result.Success -> Result.Success(Unit)
+                        is Result.Error -> Result.Error(insertionInLocal.error)
+                    }
+
                 }
                 is Result.Error -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
             }
@@ -34,7 +37,7 @@ class RepositoryImpl(
             }
 
         } catch (connectException: ConnectException) {
-            Result.Success(emptyList())
+            Result.Success(Unit)
         }
     }
 }
