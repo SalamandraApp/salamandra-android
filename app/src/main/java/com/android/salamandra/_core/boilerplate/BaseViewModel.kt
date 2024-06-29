@@ -44,7 +44,6 @@ abstract class BaseViewModel<S : State, I: Intent, E: Event> (initialState: S, p
     protected fun sendEvent(event: E){
         val success = _events.trySend(event)
         if (success.isFailure) Log.e("SLM", "Send event failed")
-        else Log.e("SLM", "Event sent: ${event.toString()}")
     }
 
     fun dispatch(intent: I) { //This is the method used to push intents to the pipeline

@@ -21,9 +21,11 @@ class CognitoService @Inject constructor(
         email: String,
         password: String
     ): Result<Unit, DataError.Cognito> {
+        logout()
         try {
             return if (Amplify.Auth.signIn(email, password).isSignedIn) {
                 fetchAndSaveToken()
+                return Result.Success(Unit)
             } else {
                 Result.Error(DataError.Cognito.INVALID_EMAIL_OR_PASSWORD)
             }
@@ -33,11 +35,17 @@ class CognitoService @Inject constructor(
         }
     }
 
-    private suspend fun fetchAndSaveToken(): Result<Unit, DataError.Cognito> = try {
+    private suspend fun fetchAndSaveToken(): Result<String, DataError.Cognito> = try {
         val cognitoAuthSession =
             Amplify.Auth.fetchAuthSession() as AWSCognitoAuthSession
+
         dataStore.saveToken(cognitoAuthSession.accessToken!!)
-        Result.Success(Unit)
+        val userId = cognitoAuthSession.userSubResult.value
+        if (userId != null) {
+            dataStore.saveUid(userId)
+            Result.Success(userId)
+        } else
+            Result.Error(DataError.Cognito.SESSION_FETCH)
 
     } catch (e: Exception) {
         Log.e("SLM", "Error using Cognito for sign in: " + e.message.orEmpty())
@@ -59,9 +67,10 @@ class CognitoService @Inject constructor(
                     username = username,
                     password = password,
                     options = options
-                ).nextStep.signUpStep == AuthSignUpStep.CONFIRM_SIGN_UP_STEP)
+                ).nextStep.signUpStep == AuthSignUpStep.CONFIRM_SIGN_UP_STEP
+            )
                 Result.Success(Unit) else Result.Error(DataError.Cognito.USERNAME_OR_EMAIL_ALREADY_IN_USE)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e("SLM", "Error occurred while signing up user: ${e.message}")
             Result.Error(DataError.Cognito.USERNAME_OR_EMAIL_ALREADY_IN_USE)
         }
@@ -70,8 +79,8 @@ class CognitoService @Inject constructor(
     suspend fun confirmRegister(
         username: String,
         code: String
-    ): Result<Unit, DataError.Cognito> {
-        return try{
+    ): Result<String, DataError.Cognito> {
+        return try {
             if (Amplify.Auth.confirmSignUp(
                     username = username,
                     confirmationCode = code
@@ -79,10 +88,10 @@ class CognitoService @Inject constructor(
             ) {
                 fetchAndSaveToken()
             } else Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
-        } catch (e: NotAuthorizedException){
+        } catch (e: NotAuthorizedException) {
             Log.e("SLM", "Error while code confirmation: ${e.message}")
             Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
-        }catch (e: CodeMismatchException){
+        } catch (e: CodeMismatchException) {
             Log.e("SLM", "Error while code confirmation: ${e.message}")
             Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
         }
@@ -95,11 +104,12 @@ class CognitoService @Inject constructor(
     }
 
     suspend fun logout(): Result<Unit, DataError.Cognito> {
-        return when(val signOut = Amplify.Auth.signOut()) {
+        return when (val signOut = Amplify.Auth.signOut()) {
             is AWSCognitoAuthSignOutResult.CompleteSignOut -> {
                 Log.i("SLM", "Signed out successfully")
                 Result.Success(Unit)
             }
+
             is AWSCognitoAuthSignOutResult.PartialSignOut -> {
                 signOut.hostedUIError?.let {
                     Log.e("AuthQuickStart", "HostedUI Error", it.exception)
@@ -112,6 +122,7 @@ class CognitoService @Inject constructor(
                 }
                 Result.Error(DataError.Cognito.SIGN_OUT_FAILED_USER_NOT_SIGNED_IN)
             }
+
             is AWSCognitoAuthSignOutResult.FailedSignOut -> {
                 Log.e("SLM", "Sign out Failed", signOut.exception)
                 Result.Error(DataError.Cognito.SIGN_OUT_FAILED_USER_SIGNED_IN)

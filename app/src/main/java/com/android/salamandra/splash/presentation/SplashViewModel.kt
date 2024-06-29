@@ -30,6 +30,7 @@ class SplashViewModel @Inject constructor(
                 sendEvent(SplashEvent.NavigateToHome) //User not logged in or database with data
             else{
                 featureRepository.getWkPreviewsFromRemote()
+                sendEvent(SplashEvent.NavigateToHome)
             }
 
         }

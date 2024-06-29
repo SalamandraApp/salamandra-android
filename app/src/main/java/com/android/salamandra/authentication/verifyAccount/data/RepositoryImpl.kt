@@ -9,5 +9,13 @@ class RepositoryImpl(private val cognitoService: CognitoService): Repository {
     override suspend fun confirmRegister(
         username: String,
         code: String,
-    ): Result<Unit, DataError.Cognito> = cognitoService.confirmRegister(username, code)
+    ): Result<Unit, DataError.Cognito> {
+        return when (val register = cognitoService.confirmRegister(username, code)){
+            is Result.Success -> {
+                //todo make call to backend to create user
+                Result.Success(Unit)
+            }
+            is Result.Error -> Result.Error(register.error)
+        }
+    }
 }

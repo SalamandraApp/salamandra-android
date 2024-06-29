@@ -21,7 +21,7 @@ data class SingleExercise(
 ) {
     fun toDomain(): Exercise {
         return Exercise(
-            UUID.fromString(id),
+            exId = id,
             name = name,
             mainMuscleGroup = MuscleGroup.Chest,
             secondaryMuscleGroup = MuscleGroup.Chest,
