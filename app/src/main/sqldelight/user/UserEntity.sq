@@ -1,0 +1,15 @@
+import java.util.Date;
+
+CREATE TABLE UserEntity (
+     id TEXT NOT NULL PRIMARY KEY,
+     username TEXT NOT NULL,
+     email TEXT NOT NULL,
+     displayName TEXT,
+     dateJoined TEXT AS Date NOT NULL,
+     dateOfBirth TEXT AS Date,
+     height INTEGER,
+     weight REAL,
+     gender INTEGER,
+     fitnessGoal INTEGER,
+     fitnessLevel INTEGER
+);

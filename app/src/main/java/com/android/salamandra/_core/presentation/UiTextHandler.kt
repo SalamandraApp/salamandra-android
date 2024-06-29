@@ -28,6 +28,7 @@ fun DataError.asUiText(): UiText {
         DataError.Cognito.SIGN_OUT_FAILED_USER_NOT_SIGNED_IN -> UiText.StringResource(R.string.an_error_occured_user_signed_out)
         DataError.Local.WORKOUT_TEMPLATE_NOT_FOUND -> UiText.StringResource(R.string.workout_not_found)
         DataError.Cognito.USERNAME_OR_EMAIL_ALREADY_IN_USE ->UiText.StringResource(R.string.username_or_email_already_exists_in_database)
+        DataError.Datastore.UID_NOT_FOUND -> UiText.StringResource(R.string.user_uid_not_found_in_datastore)
     }
 }
 

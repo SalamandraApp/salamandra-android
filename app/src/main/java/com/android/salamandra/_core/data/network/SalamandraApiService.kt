@@ -11,7 +11,7 @@ interface SalamandraApiService {
     @GET("exercises")
     suspend fun searchExercise(@Query("name") term: String): ExerciseResponse
 
-    @GET("workoutPreviews") //TODO adjust the name of this endpoint
-    suspend fun getWorkoutPreviews(): List<WorkoutPreview>
+    @GET("users/{userId}/workout-templates")
+    suspend fun getWorkoutPreviews(@Path("userId") userId: String): List<WorkoutPreview>
 
 }

@@ -7,7 +7,7 @@ import java.util.Date
 import java.util.UUID
 
 data class User(
-    val uid: UUID,
+    val uid: String,
     val username: String,
     val email: String,
     val displayName: String?,
