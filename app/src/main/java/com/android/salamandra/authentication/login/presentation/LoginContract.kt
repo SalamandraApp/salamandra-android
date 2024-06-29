@@ -31,6 +31,7 @@ sealed class LoginIntent: Intent {
     data class ChangeEmail(val email: String): LoginIntent()
     data class ChangePassword(val password: String): LoginIntent()
     data object GoToSignup: LoginIntent()
+    data object GoToHomeNoSignIn: LoginIntent()
 }
 
 sealed class LoginEvent: Event {

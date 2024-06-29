@@ -25,4 +25,5 @@ sealed class SplashIntent: Intent {
 }
 
 sealed class SplashEvent: Event {
+    data object NavigateToHome: SplashEvent()
 }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 
 
@@ -68,7 +69,7 @@ class EditWkViewModel @Inject constructor(
 
     private fun addExerciseToTemplate(exercise: Exercise){
         val position = state.value.wkTemplate.elements.size + 1
-        val wkTemplateElement = WkTemplateElement(exercise = exercise, position = position)
+        val wkTemplateElement = WkTemplateElement(templateElementId = UUID.randomUUID(), exercise = exercise, position = position)
         _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = it.wkTemplate.elements + wkTemplateElement)) }
     }
 }
