@@ -64,7 +64,7 @@ class WorkoutTemplateDataSourceImplTest {
 
     @Test
     fun whenInsertingWKTheFlowIsUpdated() = runTest {
-        val wkFlow = dataSource.getAllWk()
+        val wkFlow = dataSource.getAllWkPreviews()
 
         wkFlow.test {
             // Initial state should be empty

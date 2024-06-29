@@ -18,7 +18,8 @@ sealed interface DataError : RootError {
     }
 
     enum class Local: DataError {
-        WORKOUT_TEMPLATE_NOT_FOUND
+        WORKOUT_TEMPLATE_NOT_FOUND,
+        ERROR_INSERTING_WK_TEMPLATES
     }
 
     enum class Datastore: DataError{

@@ -1,6 +1,8 @@
 package com.android.salamandra.home.data.di
 
 import com.android.salamandra._core.data.cognito.CognitoService
+import com.android.salamandra._core.data.network.SalamandraApiService
+import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra.home.data.RepositoryImpl
 import com.android.salamandra.home.domain.Repository
 import dagger.Module
@@ -15,8 +17,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRepository(
-        cognitoService: CognitoService
+        workoutTemplateDataSource: WorkoutTemplateDataSource,
+        salamandraApiService: SalamandraApiService
     ): Repository{
-       return RepositoryImpl(cognitoService)
+       return RepositoryImpl(workoutTemplateDataSource, salamandraApiService)
     }
 }

@@ -6,12 +6,12 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.android.salamandra.R
+import com.android.salamandra.destinations.DirectionDestination
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
-import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
 enum class BottomBarDestinations(
-    val direction: DirectionDestinationSpec,
+    val direction: DirectionDestination,
     val icon: ImageVector,
     @StringRes val label: Int
 ) {

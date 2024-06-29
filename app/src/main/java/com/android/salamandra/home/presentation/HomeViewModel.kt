@@ -30,11 +30,17 @@ class HomeViewModel @Inject constructor(
 
             is HomeIntent.Loading -> onLoading(intent.isLoading)
 
-            is HomeIntent.Logout -> onLogout()
-
             is HomeIntent.NewWk -> sendEvent(HomeEvent.NavigateToEditWk)
 
             is HomeIntent.BottomBarClicked -> sendEvent(HomeEvent.BottomBarClicked(intent.destination))
+        }
+    }
+
+    init {
+        ioLaunch {
+            repository.getWkPreviews().collect{ newList ->
+                _state.update { it.copy(wkPreviewList = newList) }
+            }
         }
     }
 
@@ -42,13 +48,9 @@ class HomeViewModel @Inject constructor(
 
     private fun onCloseError() = _state.update { it.copy(error = null) }
 
-
     private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 
-    private fun onLogout() {
-        ioLaunch { repository.logout() }
-        sendEvent(HomeEvent.Logout)
-    }
+
 }
 
 

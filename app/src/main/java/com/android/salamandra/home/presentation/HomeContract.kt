@@ -4,6 +4,7 @@ import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.boilerplate.Intent
+import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
@@ -29,7 +30,6 @@ sealed class HomeIntent : Intent {
     data class Loading(val isLoading: Boolean) : HomeIntent()
     data class Error(val error: RootError) : HomeIntent()
     data object CloseError : HomeIntent()
-    data object Logout : HomeIntent()
     data object NewWk: HomeIntent()
     data class BottomBarClicked(val destination: DirectionDestinationSpec): HomeIntent()
 }
@@ -39,3 +39,7 @@ sealed class HomeEvent : Event {
     data object NavigateToEditWk: HomeEvent()
     data class BottomBarClicked(val destination: DirectionDestinationSpec): HomeEvent()
 }
+
+data class HomeScreenNavArgs(
+    val dummy: Int? = null
+): NavArgs

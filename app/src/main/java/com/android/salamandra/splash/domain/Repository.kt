@@ -7,5 +7,5 @@ import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 
 interface Repository {
     suspend fun isLocalDbEmpty(): Boolean
-    suspend fun getWkPreviewsFromRemote(): Result<List<WorkoutPreview>, DataError.Network>
+    suspend fun getWkPreviewsFromRemoteAndStoreInLocal(): Result<Unit, DataError>
 }
