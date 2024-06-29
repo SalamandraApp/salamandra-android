@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,11 +46,13 @@ import com.android.salamandra.authentication.commons.presentation.textfields.MyA
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
 import com.android.salamandra.authentication.login.presentation.LoginIntent
 import com.android.salamandra.destinations.LoginScreenDestination
+import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.colorError
+import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.salamandraColor
 import com.android.salamandra.ui.theme.secondary
@@ -73,7 +77,7 @@ fun RegisterScreen(
                     state.username
                 )
             )
-
+            RegisterEvent.NavigateToProfile -> navigator.navigate(ProfileScreenDestination)
             null -> {}
         }
     }
@@ -111,7 +115,7 @@ private fun ScreenBody(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val nFields = 4
-            val textFieldWeight = 100f
+            val textFieldWeight = 120f
             val buttonWeight = 100f
             val betweenFieldsWeight = 50f
             val middlePadWeight = 50f
@@ -308,6 +312,9 @@ private fun ScreenBody(
             }
             Spacer(modifier = Modifier.weight(verticalPadWeight))
 
+        }
+        IconButton(modifier = Modifier.align(Alignment.TopStart).padding(start = 12.dp, top = 12.dp), onClick = { sendIntent(RegisterIntent.GoToHomeNoRegister) }) {
+            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close login", tint = onSecondary)
         }
         if (state.error != null)
             ErrorDialog(

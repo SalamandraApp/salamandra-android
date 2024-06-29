@@ -39,8 +39,10 @@ sealed class RegisterIntent: Intent {
     data class ChangeUsername(val username: String): RegisterIntent()
     data object OnRegister: RegisterIntent()
     data object GoToSignIn: RegisterIntent()
+    data object GoToHomeNoRegister: RegisterIntent()
 }
 sealed class RegisterEvent: Event {
     data object NavigateToLogin: RegisterEvent()
     data object NavigateToVerifyCode: RegisterEvent()
+    data object NavigateToProfile: RegisterEvent()
 }

@@ -38,6 +38,7 @@ class RegisterViewModel @Inject constructor(
             is RegisterIntent.OnRegister -> onRegister()
 
             RegisterIntent.GoToSignIn -> sendEvent(RegisterEvent.NavigateToLogin)
+            RegisterIntent.GoToHomeNoRegister -> sendEvent(RegisterEvent.NavigateToProfile)
         }
     }
 
