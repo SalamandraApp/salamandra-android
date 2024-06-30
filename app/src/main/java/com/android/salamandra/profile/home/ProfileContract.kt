@@ -1,12 +1,9 @@
-package com.android.salamandra.profile.presentation
+package com.android.salamandra.profile.home
 
 import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.boilerplate.Intent
-import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
-import com.android.salamandra.home.presentation.HomeEvent
-import com.android.salamandra.home.presentation.HomeIntent
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
 

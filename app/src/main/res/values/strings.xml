@@ -8,7 +8,7 @@
     <string name="already_have_an_account_log_in">Already have an account? Log-in</string>
     <string name="log_in">Log-in</string>
     <string name="register">Register</string>
-    <string name="username_shouldn_t_be_empty">Username shouldn\'t be empty</string>
+    <string name="invalid_username">Only a-Z, 0-9, _ and .</string>
     <string name="user_name">User name</string>
     <string name="passwords_must_coincide">Passwords must coincide</string>
     <string name="repeat_password">Repeat password</string>

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -45,13 +44,8 @@ import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.MyCircularProgressbar
 import com.android.salamandra._core.presentation.components.MyImageLogo
-import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
-import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
-import com.android.salamandra.authentication.register.presentation.RegisterIntent
-import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
-import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.onSecondary
@@ -148,9 +142,6 @@ private fun ScreenBody(
                         style = NormalTypo
                     )
                 },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Email
-                ),
                 singleLine = true,
                 shape = RoundedCornerShape(40),
                 colors = textFieldColors
