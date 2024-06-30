@@ -20,7 +20,7 @@ import org.junit.Test
 import kotlin.math.exp
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class EditWkViewModelTest {
+class EditWkSettingsViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

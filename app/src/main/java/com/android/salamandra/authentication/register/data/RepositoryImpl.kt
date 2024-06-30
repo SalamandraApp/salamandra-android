@@ -10,12 +10,13 @@ class RepositoryImpl(private val cognitoService: CognitoService): Repository {
         email: String,
         password: String,
         username: String
-    ): Result<Unit, DataError.Cognito> =
-        cognitoService.register(
+    ): Result<Unit, DataError.Cognito> {
+        return cognitoService.register(
             email,
             password,
             username
         )
+    }
 
 
 }
