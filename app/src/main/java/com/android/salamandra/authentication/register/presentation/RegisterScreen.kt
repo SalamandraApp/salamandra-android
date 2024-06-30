@@ -75,7 +75,7 @@ fun RegisterScreen(
             RegisterEvent.NavigateToLogin -> navigator.navigate(LoginScreenDestination)
             RegisterEvent.NavigateToVerifyCode -> navigator.navigate(
                 VerifyCodeScreenDestination(
-                    VerifyCodeNavArgs(username = state.email)
+                    VerifyCodeNavArgs(username = state.username, email = state.email)
                 )
             )
             RegisterEvent.NavigateToProfile -> navigator.navigate(ProfileScreenDestination)

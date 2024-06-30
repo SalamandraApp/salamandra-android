@@ -39,5 +39,6 @@ sealed class VerifyCodeEvent: Event {
 }
 
 data class VerifyCodeNavArgs(
-    val username: String
+    val username: String,
+    val email: String
 )

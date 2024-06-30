@@ -39,7 +39,7 @@ class VerifyCodeViewModel @Inject constructor(
 
     init {
         val navArgs: VerifyCodeNavArgs = savedStateHandle.navArgs()
-        _state.update { it.copy(username = navArgs.username) }
+        _state.update { it.copy(username = navArgs.username, email = navArgs.email) }
     }
 
 
