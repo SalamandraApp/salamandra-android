@@ -40,3 +40,4 @@ sealed class VerifyCodeEvent: Event {
 
 data class VerifyCodeNavArgs(
     val username: String
+)
