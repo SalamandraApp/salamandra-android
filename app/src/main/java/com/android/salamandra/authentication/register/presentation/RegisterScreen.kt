@@ -78,7 +78,7 @@ fun RegisterScreen(
             RegisterEvent.NavigateToLogin -> navigator.navigate(LoginScreenDestination)
             RegisterEvent.NavigateToVerifyCode -> navigator.navigate(
                 VerifyCodeScreenDestination(
-                    VerifyCodeNavArgs(username = state.username, email = state.email)
+                    VerifyCodeNavArgs(username = state.username, email = state.email, password = state.password)
                 )
             )
             RegisterEvent.NavigateToProfile -> navigator.navigate(ProfileScreenDestination)
@@ -107,7 +107,7 @@ private fun ScreenBody(
             .fillMaxSize()
             .background(tertiary),
     ) {
-        var repeatPassword by remember { mutableStateOf("") }
+        var repeatPassword by remember { mutableStateOf("1234Qwerty#a") }
         var isSamePassword by remember { mutableStateOf(true) }
         var isUsernameValid by remember { mutableStateOf(true) }
 

@@ -39,7 +39,7 @@ class VerifyCodeViewModel @Inject constructor(
 
     init {
         val navArgs: VerifyCodeNavArgs = savedStateHandle.navArgs()
-        _state.update { it.copy(username = navArgs.username, email = navArgs.email) }
+        _state.update { it.copy(username = navArgs.username, email = navArgs.email, password = navArgs.password) }
     }
 
 
@@ -52,7 +52,9 @@ class VerifyCodeViewModel @Inject constructor(
             when (val confirmation =
                 repository.confirmRegister(
                     username = state.value.username,
-                    code = state.value.code
+                    code = state.value.code,
+                    email = state.value.email,
+                    password = state.value.password
                 )) {
                 is Result.Error -> _state.update { it.copy(error = confirmation.error) }
                 is Result.Success -> sendEvent(VerifyCodeEvent.NavigateToHome)

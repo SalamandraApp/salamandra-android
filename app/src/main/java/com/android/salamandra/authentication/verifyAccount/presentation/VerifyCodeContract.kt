@@ -14,6 +14,7 @@ data class VerifyCodeState(
     val username: String,
     val email: String,
     val code: String,
+    val password: String,
 ) : State {
     companion object {
         val initial: VerifyCodeState = VerifyCodeState(
@@ -22,6 +23,7 @@ data class VerifyCodeState(
             username = "",
             email = "",
             code = "",
+            password = ""
         )
     }
 }
@@ -40,5 +42,6 @@ sealed class VerifyCodeEvent: Event {
 
 data class VerifyCodeNavArgs(
     val username: String,
-    val email: String
+    val email: String,
+    val password: String
 )

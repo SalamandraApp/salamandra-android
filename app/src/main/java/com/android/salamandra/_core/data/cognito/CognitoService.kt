@@ -1,6 +1,7 @@
 package com.android.salamandra._core.data.cognito
 
 import android.util.Log
+import aws.sdk.kotlin.services.cognitoidentity.model.CognitoIdentityException
 import aws.sdk.kotlin.services.cognitoidentity.model.NotAuthorizedException
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
@@ -20,12 +21,11 @@ class CognitoService @Inject constructor(
     suspend fun login(
         email: String,
         password: String
-    ): Result<Unit, DataError.Cognito> {
+    ): Result<String, DataError.Cognito> {
         logout()
         try {
             return if (Amplify.Auth.signIn(email, password).isSignedIn) {
-                fetchAndSaveToken()
-                return Result.Success(Unit)
+                return fetchAndSaveToken()
             } else {
                 Result.Error(DataError.Cognito.INVALID_EMAIL_OR_PASSWORD)
             }
@@ -58,7 +58,7 @@ class CognitoService @Inject constructor(
         password: String,
         username: String
     ): Result<Unit, DataError.Cognito> { //throws exception
-
+        logout()
         val options = AuthSignUpOptions.builder()
             .userAttribute(AuthUserAttributeKey.email(), email)
             .build()
@@ -78,7 +78,9 @@ class CognitoService @Inject constructor(
 
     suspend fun confirmRegister(
         username: String,
-        code: String
+        code: String,
+        email: String,
+        password: String
     ): Result<String, DataError.Cognito> {
         return try {
             if (Amplify.Auth.confirmSignUp(
@@ -86,12 +88,9 @@ class CognitoService @Inject constructor(
                     confirmationCode = code
                 ).nextStep.signUpStep == AuthSignUpStep.DONE
             ) {
-                fetchAndSaveToken()
+                login(email = email, password = password)
             } else Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
-        } catch (e: NotAuthorizedException) {
-            Log.e("SLM", "Error while code confirmation: ${e.message}")
-            Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
-        } catch (e: CodeMismatchException) {
+        } catch (e: Exception) {
             Log.e("SLM", "Error while code confirmation: ${e.message}")
             Result.Error(DataError.Cognito.WRONG_CONFIRMATION_CODE)
         }

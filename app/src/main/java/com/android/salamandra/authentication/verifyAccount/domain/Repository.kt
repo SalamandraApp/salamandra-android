@@ -8,5 +8,7 @@ interface Repository {
     suspend fun confirmRegister(
         username: String,
         code: String,
+        email: String,
+        password: String
     ): Result<Unit, DataError>
 }

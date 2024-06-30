@@ -36,8 +36,8 @@ class RepositoryImpl(
         } catch (httpException: HttpException){
             Result.Error(retrofitExceptionHandler.handleHTTPException(httpException))
 
-        } catch (connectException: ConnectException) {
-//            Result.Error(retrofitExceptionHandler.handleNoConnectionException(connectException))
+        } catch (e: Exception){
+            //Result.Error(retrofitExceptionHandler.handleNoConnectionException(connectException))
             Result.Success(Unit) //TODO change
         }
     }

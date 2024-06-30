@@ -10,6 +10,7 @@ import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import retrofit2.HttpException
 import java.net.ConnectException
+import java.net.SocketTimeoutException
 import java.util.Date
 
 class RepositoryImpl(
@@ -21,8 +22,10 @@ class RepositoryImpl(
     override suspend fun confirmRegister(
         username: String,
         code: String,
+        email: String,
+        password: String
     ): Result<Unit, DataError> {
-        return when (val register = cognitoService.confirmRegister(username, code)){
+        return when (val register = cognitoService.confirmRegister(username = username, code = code, email = email, password = password)){
             is Result.Success -> {
                 try {
                     salamandraApiService.createUser(CreateUserRequest(id = register.data, username = username, dateJoined = dateAdapter.encode(Date())))
@@ -30,7 +33,7 @@ class RepositoryImpl(
                 } catch (httpException: HttpException){
                     Result.Error(retrofitExceptionHandler.handleHTTPException(httpException))
 
-                } catch (connectException: ConnectException) {
+                } catch (e: Exception){
                     //Result.Error(retrofitExceptionHandler.handleNoConnectionException(connectException))
                     Result.Success(Unit) //TODO change
                 }
