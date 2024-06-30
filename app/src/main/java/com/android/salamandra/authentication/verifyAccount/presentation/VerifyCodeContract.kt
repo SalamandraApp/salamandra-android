@@ -11,6 +11,7 @@ data class VerifyCodeState(
     val loading: Boolean,
     val error: RootError?,
     val username: String,
+    val email: String,
     val code: String,
 ) : State {
     companion object {
@@ -18,7 +19,8 @@ data class VerifyCodeState(
             loading = false,
             error = null,
             username = "",
-            code = ""
+            email = "",
+            code = "",
         )
     }
 }
@@ -27,6 +29,7 @@ sealed class VerifyCodeIntent: Intent {
     data class Loading(val isLoading: Boolean): VerifyCodeIntent()
     data class Error(val error: RootError): VerifyCodeIntent()
     data class SetUsername(val username: String): VerifyCodeIntent()
+    data class SetEmail(val email: String): VerifyCodeIntent()
     data object CloseError: VerifyCodeIntent()
     data object ConfirmCode: VerifyCodeIntent()
     data class ChangeCode(val code: String): VerifyCodeIntent()

@@ -12,16 +12,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,24 +32,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
-import com.android.salamandra._core.presentation.components.MyColumn
 import com.android.salamandra._core.presentation.components.MyImageLogo
-import com.android.salamandra._core.presentation.components.MySpacer
-import com.android.salamandra._core.presentation.components.textFields.MyOutlinedTextField
-import com.android.salamandra.authentication.login.presentation.LoginIntent
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onTertiary
-import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.primaryVariant
-import com.android.salamandra.ui.theme.salamandraColor
-import com.android.salamandra.ui.theme.subtitle
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
@@ -66,7 +53,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 fun VerifyCodeScreen(
     navigator: DestinationsNavigator,
     viewModel: VerifyCodeViewModel = hiltViewModel(),
-    username: String
+    username: String,
+    email: String
 ) {
     val state by viewModel.state.collectAsState()
     val events by viewModel.events.collectAsState(initial = null)
@@ -78,6 +66,8 @@ fun VerifyCodeScreen(
     }
 
     viewModel.dispatch(VerifyCodeIntent.SetUsername(username = username))
+    viewModel.dispatch(VerifyCodeIntent.SetEmail(email= email))
+
     ScreenBody(
         state = state,
         sendIntent = viewModel::dispatch
@@ -117,18 +107,22 @@ private fun ScreenBody(
                 .weight(middlePadWeight)
                 .fillMaxWidth())
             OtpTextField(
-                modifier = Modifier
-                    .weight(textFieldWeight)
-                    .fillMaxWidth(),
+                modifier = Modifier.weight(textFieldWeight),
                 otpText = state.code,
                 onOtpTextChange = { value, otpInputFilled ->
                     sendIntent(VerifyCodeIntent.ChangeCode(value))
                 }
             )
+            val checkMessage =
+                        stringResource(id = R.string.check) +
+                        " " + state.email +
+                        " " + stringResource(id = R.string.for_confirmation_code)
             Text(
-                text = stringResource(R.string.check_your_email_for_confirmation_code),
+                modifier = Modifier.padding(top = 14.dp),
+                text = checkMessage,
                 color = onTertiary,
-                fontSize = 14.sp
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.weight(middlePadWeight))
 
@@ -163,10 +157,10 @@ private fun OtpTextField(
     otpCount: Int = 6,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
-    Row (
-        modifier = modifier
-    ){
+    Row (modifier = modifier){
         BasicTextField(
+            modifier = Modifier
+                .align(Alignment.CenterVertically),
             value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
             onValueChange = {
                 if (it.text.length <= otpCount) {
@@ -176,16 +170,16 @@ private fun OtpTextField(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             decorationBox = {
                 Row(
-                    modifier = Modifier.fillMaxSize(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     repeat(otpCount) { index ->
                         CharView(
-                            modifier = Modifier.weight(1f),
                             index = index,
-                            text = otpText
+                            text = otpText,
                         )
+                        if (index != otpCount - 1)
+                            Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             }
@@ -201,31 +195,35 @@ private fun CharView(
 ) {
     val isFocused = text.length == index
     val char = when {
-        index == text.length -> "0"
+        index == text.length -> "-"
         index > text.length -> ""
         else -> text[index].toString()
     }
-    Text(
-        modifier = Modifier
-            .width(40.dp)
-            .fillMaxHeight()
+    val borderPixels = if (isFocused) { 2.dp } else { 1.dp }
+    Column (
+        modifier = modifier
             .border(
-                1.dp, when {
-                    isFocused -> primary
+                borderPixels, when {
+                    isFocused -> primaryVariant.copy(alpha = 0.7f)
                     else -> onTertiary
                 }, RoundedCornerShape(8.dp)
             )
-            .padding(2.dp),
-        text = char,
-        fontSize = 20.sp,
-        //style = title,
-        color = if (isFocused) {
-            primary
-        } else {
-            title
-        },
-        textAlign = TextAlign.Center
-    )
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.Center
+    ){
+        Text(
+            modifier = Modifier
+                .width(40.dp),
+            text = char,
+            fontSize = 35.sp,
+            color = if (isFocused) {
+                primaryVariant
+            } else {
+                title
+            },
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 

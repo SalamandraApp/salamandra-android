@@ -29,6 +29,7 @@ class VerifyCodeViewModel @Inject constructor(
 
             is VerifyCodeIntent.ConfirmCode -> onVerifyCode()
             is VerifyCodeIntent.SetUsername -> _state.update { it.copy(username = intent.username) }
+            is VerifyCodeIntent.SetEmail-> _state.update { it.copy(email = intent.email) }
         }
     }
 
