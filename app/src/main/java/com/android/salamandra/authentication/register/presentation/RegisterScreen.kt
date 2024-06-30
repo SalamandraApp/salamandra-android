@@ -45,6 +45,7 @@ import com.android.salamandra._core.presentation.components.MyImageLogo
 import com.android.salamandra.authentication.commons.presentation.textfields.MyAuthTextField
 import com.android.salamandra.authentication.commons.presentation.textfields.MyPasswordTextField
 import com.android.salamandra.authentication.login.presentation.LoginIntent
+import com.android.salamandra.authentication.verifyAccount.presentation.VerifyCodeNavArgs
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.VerifyCodeScreenDestination
@@ -74,8 +75,7 @@ fun RegisterScreen(
             RegisterEvent.NavigateToLogin -> navigator.navigate(LoginScreenDestination)
             RegisterEvent.NavigateToVerifyCode -> navigator.navigate(
                 VerifyCodeScreenDestination(
-                    state.username,
-                    state.email,
+                    VerifyCodeNavArgs(username = state.email)
                 )
             )
             RegisterEvent.NavigateToProfile -> navigator.navigate(ProfileScreenDestination)
@@ -127,7 +127,7 @@ private fun ScreenBody(
                     nFields * textFieldWeight -
                     2 * middlePadWeight -
                     (nFields - 1) * betweenFieldsWeight -
-                    buttonWeight)/2
+                    buttonWeight) / 2
 
 
             Spacer(modifier = Modifier.weight(verticalPadWeight))
@@ -297,7 +297,7 @@ private fun ScreenBody(
                 color = salamandraColor,
             )
             Spacer(modifier = Modifier.weight(middlePadWeight))
-            Box (
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(buttonWeight)
@@ -329,7 +329,6 @@ private fun checkFields(state: RegisterState, isSamePassword: Boolean, isUsernam
     state.isEmailValid && state.passwordFormatError == null && isSamePassword && isUsernameValid && state.email != "" && state.password != "" && state.username != ""
 
 
-
 @Preview()
 @Composable
 private fun ScreenPreview() {
@@ -339,4 +338,3 @@ private fun ScreenPreview() {
             sendIntent = {},
         )
     }
-}

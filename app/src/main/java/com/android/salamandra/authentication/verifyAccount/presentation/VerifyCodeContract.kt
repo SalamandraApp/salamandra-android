@@ -3,6 +3,7 @@ package com.android.salamandra.authentication.verifyAccount.presentation
 import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.boilerplate.Intent
+import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
 
@@ -28,8 +29,6 @@ data class VerifyCodeState(
 sealed class VerifyCodeIntent: Intent {
     data class Loading(val isLoading: Boolean): VerifyCodeIntent()
     data class Error(val error: RootError): VerifyCodeIntent()
-    data class SetUsername(val username: String): VerifyCodeIntent()
-    data class SetEmail(val email: String): VerifyCodeIntent()
     data object CloseError: VerifyCodeIntent()
     data object ConfirmCode: VerifyCodeIntent()
     data class ChangeCode(val code: String): VerifyCodeIntent()
@@ -38,3 +37,6 @@ sealed class VerifyCodeIntent: Intent {
 sealed class VerifyCodeEvent: Event {
     data object NavigateToHome: VerifyCodeEvent()
 }
+
+data class VerifyCodeNavArgs(
+    val username: String

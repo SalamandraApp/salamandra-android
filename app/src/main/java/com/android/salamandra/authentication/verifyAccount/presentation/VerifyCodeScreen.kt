@@ -48,13 +48,11 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
-@Destination
+@Destination(navArgsDelegate = VerifyCodeNavArgs::class)
 @Composable
 fun VerifyCodeScreen(
     navigator: DestinationsNavigator,
     viewModel: VerifyCodeViewModel = hiltViewModel(),
-    username: String,
-    email: String
 ) {
     val state by viewModel.state.collectAsState()
     val events by viewModel.events.collectAsState(initial = null)
@@ -64,9 +62,6 @@ fun VerifyCodeScreen(
             null -> {}
         }
     }
-
-    viewModel.dispatch(VerifyCodeIntent.SetUsername(username = username))
-    viewModel.dispatch(VerifyCodeIntent.SetEmail(email= email))
 
     ScreenBody(
         state = state,
