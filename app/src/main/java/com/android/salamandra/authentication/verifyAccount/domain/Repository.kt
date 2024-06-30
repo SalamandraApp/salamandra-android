@@ -5,5 +5,8 @@ import com.android.salamandra._core.domain.error.Result
 
 
 interface Repository {
-    suspend fun confirmRegister(username: String, code: String): Result<Unit, DataError.Cognito>
+    suspend fun confirmRegister(
+        username: String,
+        code: String,
+    ): Result<Unit, DataError>
 }

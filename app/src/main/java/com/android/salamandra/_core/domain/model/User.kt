@@ -9,7 +9,6 @@ import java.util.UUID
 data class User(
     val uid: String,
     val username: String,
-    val email: String,
     val displayName: String?,
     val dateJoined: Date,
     val dateOfBirth: Date?,

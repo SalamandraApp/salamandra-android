@@ -1,4 +1,4 @@
-package com.android.salamandra.profile.home
+package com.android.salamandra.profile.presentation
 
 import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.boilerplate.Intent

@@ -1,4 +1,4 @@
-package com.android.salamandra.profile.home
+package com.android.salamandra.profile.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

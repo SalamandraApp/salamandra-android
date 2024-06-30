@@ -1,4 +1,4 @@
-package com.android.salamandra.profile.home
+package com.android.salamandra.profile.presentation
 
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.RootError

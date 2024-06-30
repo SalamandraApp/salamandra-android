@@ -4,6 +4,7 @@ sealed interface DataError : RootError {
     enum class Network : DataError {
         REQUEST_TIMEOUT,
         TOO_MANY_REQUESTS,
+        NO_CONNECTION,
         UNKNOWN
     }
 

@@ -1,6 +1,7 @@
 package com.android.salamandra.splash.data.di
 
 import com.android.salamandra._core.data.cognito.CognitoService
+import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.domain.CoreRepository
@@ -21,8 +22,9 @@ object NetworkModule {
     fun provideRepository(
         workoutTemplateDataSource: WorkoutTemplateDataSource,
         salamandraApiService: SalamandraApiService,
-        dataStoreRepository: DataStoreRepository
+        dataStoreRepository: DataStoreRepository,
+        retrofitExceptionHandler: RetrofitExceptionHandler
     ): Repository {
-       return RepositoryImpl(workoutTemplateDataSource, salamandraApiService, dataStoreRepository)
+       return RepositoryImpl(workoutTemplateDataSource, salamandraApiService, dataStoreRepository, retrofitExceptionHandler)
     }
 }

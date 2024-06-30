@@ -1,5 +1,6 @@
 package com.android.salamandra.splash.data
 
+import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.domain.DataStoreRepository
@@ -13,7 +14,8 @@ import java.net.ConnectException
 class RepositoryImpl(
     private val workoutTemplateDataSource: WorkoutTemplateDataSource,
     private val salamandraApiService: SalamandraApiService,
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val retrofitExceptionHandler: RetrofitExceptionHandler
 ): Repository {
 
     override suspend fun isLocalDbEmpty() = workoutTemplateDataSource.isWkTemplateEntityEmpty()
@@ -32,12 +34,11 @@ class RepositoryImpl(
                 is Result.Error -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
             }
         } catch (httpException: HttpException){
-            when(httpException.code()){
-                else -> Result.Error(DataError.Network.TOO_MANY_REQUESTS) // TODO Add different types of http exception
-            }
+            Result.Error(retrofitExceptionHandler.handleHTTPException(httpException))
 
         } catch (connectException: ConnectException) {
-            Result.Success(Unit)
+//            Result.Error(retrofitExceptionHandler.handleNoConnectionException(connectException))
+            Result.Success(Unit) //TODO change
         }
     }
 }

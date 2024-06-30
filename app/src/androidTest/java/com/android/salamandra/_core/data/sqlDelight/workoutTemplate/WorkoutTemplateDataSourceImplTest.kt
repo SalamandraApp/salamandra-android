@@ -6,7 +6,7 @@ import app.cash.turbine.test
 import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra.SalamandraLocalDB.Companion.Schema
 import com.android.salamandra._core.data.sqlDelight.BooleanAdapter
-import com.android.salamandra._core.data.sqlDelight.DateAdapter
+import com.android.salamandra._core.data.DateAdapter
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi

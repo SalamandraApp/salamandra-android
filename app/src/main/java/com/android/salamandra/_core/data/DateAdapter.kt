@@ -1,4 +1,4 @@
-package com.android.salamandra._core.data.sqlDelight
+package com.android.salamandra._core.data
 
 import app.cash.sqldelight.ColumnAdapter
 import java.text.SimpleDateFormat

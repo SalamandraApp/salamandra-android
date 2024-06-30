@@ -51,4 +51,5 @@
     <string name="need_to_login">Authenticate to access your profile</string>
     <string name="user_uid_not_found_in_datastore">User uid not found in DataStore</string>
     <string name="a_problem_occurred_while_saving_workouts_in_local">A problem occurred while saving workouts in local</string>
+    <string name="you_have_no_internet_connection">You have no internet connection.</string>
 </resources>
