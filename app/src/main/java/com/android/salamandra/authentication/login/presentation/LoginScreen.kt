@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,10 +27,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +51,7 @@ import com.android.salamandra.authentication.register.presentation.RegisterInten
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
+import com.android.salamandra.destinations.VerifyCodeScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.onSecondary
@@ -66,6 +74,7 @@ fun LoginScreen(
     LaunchedEffect(events) {
         when (events) {
             LoginEvent.NavigateToSignUp -> navigator.navigate(RegisterScreenDestination)
+            //LoginEvent.NavigateToSignUp -> navigator.navigate(VerifyCodeScreenDestination(""))
             LoginEvent.NavigateUp -> navigator.navigate(ProfileScreenDestination)
             null -> {}
         }
@@ -123,6 +132,7 @@ private fun ScreenBody(
             MyImageLogo()
             Spacer(modifier = Modifier.weight(middlePadWeight))
 
+            // -------------------------------- USERNAME
             OutlinedTextField(
                 modifier = Modifier
                     .weight(textFieldWeight)
@@ -146,15 +156,37 @@ private fun ScreenBody(
                 colors = textFieldColors
             )
 
+            // -------------------------------- PASSWORD
             Spacer(modifier = Modifier.weight(betweenFieldsWeight))
-            MyPasswordTextField(
+            var passwordVisibility by remember { mutableStateOf(false) }
+            val img = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+            OutlinedTextField(
                 modifier = Modifier
                     .weight(textFieldWeight)
                     .fillMaxWidth(),
                 value = state.password,
-                hint = stringResource(R.string.password),
-                onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) }
+                onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.password),
+                        fontSize = 16.sp,
+                        style = NormalTypo
+                    )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Password
+                ),
+                shape = RoundedCornerShape(40),
+                singleLine = true,
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                        Icon(imageVector = img, contentDescription = null)
+                    }
+                },
+                colors = textFieldColors
             )
+
             Text(
                 text = stringResource(R.string.don_t_have_an_account_register),
                 color = primaryVariant,
@@ -182,7 +214,9 @@ private fun ScreenBody(
             }
             Spacer(modifier = Modifier.weight(verticalPadWeight))
         }
-        IconButton(modifier = Modifier.align(Alignment.TopStart).padding(start = 12.dp, top = 12.dp), onClick = { sendIntent(LoginIntent.GoToHomeNoSignIn) }) {
+        IconButton(modifier = Modifier
+            .align(Alignment.TopStart)
+            .padding(start = 12.dp, top = 12.dp), onClick = { sendIntent(LoginIntent.GoToHomeNoSignIn) }) {
             Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close login", tint = onSecondary)
         }
         if (state.error != null)
