@@ -1,23 +1,15 @@
 package com.android.salamandra._core.data.network.response
 
-import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.User
-import com.android.salamandra._core.domain.model.enums.Equipment
-import com.android.salamandra._core.domain.model.enums.ExerciseType
-import com.android.salamandra._core.domain.model.enums.FitnessGoal
-import com.android.salamandra._core.domain.model.enums.FitnessLevel
-import com.android.salamandra._core.domain.model.enums.Gender
-import com.android.salamandra._core.domain.model.enums.MuscleGroup
 import com.android.salamandra._core.domain.model.enums.toFitnessGoal
 import com.android.salamandra._core.domain.model.enums.toFitnessLevel
 import com.android.salamandra._core.domain.model.enums.toGender
 import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 
-data class CreateUserResponse(
+data class UserResponse(
     @SerializedName("id") val id: String,
     @SerializedName("username") val username: String,
     @SerializedName("display_name") val displayName: String,

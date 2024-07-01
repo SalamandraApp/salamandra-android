@@ -70,8 +70,7 @@ fun LoginScreen(
     LaunchedEffect(events) {
         when (events) {
             LoginEvent.NavigateToSignUp -> navigator.navigate(RegisterScreenDestination)
-            //LoginEvent.NavigateToSignUp -> navigator.navigate(VerifyCodeScreenDestination(""))
-            LoginEvent.NavigateUp -> navigator.navigate(ProfileScreenDestination)
+            LoginEvent.NavigateToHome -> navigator.navigate(ProfileScreenDestination)
             null -> {}
         }
     }
