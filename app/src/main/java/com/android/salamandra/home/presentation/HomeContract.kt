@@ -31,12 +31,14 @@ sealed class HomeIntent : Intent {
     data class Error(val error: RootError) : HomeIntent()
     data object CloseError : HomeIntent()
     data object NewWk: HomeIntent()
+    data class SeeWk(val wkTemplateId: String): HomeIntent()
     data class BottomBarClicked(val destination: DirectionDestinationSpec): HomeIntent()
 }
 
 sealed class HomeEvent : Event {
     data object Logout : HomeEvent()
     data object NavigateToEditWk: HomeEvent()
+    data class NavigateToSeeWk(val wkTemplateId: String): HomeEvent()
     data class BottomBarClicked(val destination: DirectionDestinationSpec): HomeEvent()
 }
 

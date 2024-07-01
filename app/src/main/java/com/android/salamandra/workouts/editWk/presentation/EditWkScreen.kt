@@ -28,6 +28,8 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.DragIndicator
+import androidx.compose.material.icons.outlined.PersonOff
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -57,6 +59,7 @@ import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.MyRow
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
+import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
@@ -64,6 +67,7 @@ import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.colorError
+import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
@@ -166,7 +170,7 @@ private fun ScreenBody(
                 Spacer(modifier = Modifier.size(5.dp))
             }
             items(state.wkTemplate.elements) {
-                WkElementComponent(
+                EditWkElementComponent(
                     wkElement = it,
                     fgColor = secondary,
                     startPad = startPad,
@@ -242,53 +246,12 @@ fun EditWkFixedBanner(
                 )
             }
         }
-        Row(
+        WkTemplateViewLabels(
             modifier = Modifier
-                .fillMaxWidth()
                 .weight(labelWeight)
-                .padding(start = 10.dp, end = 10.dp, bottom = 6.dp)
                 .align(Alignment.Start),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            val columnLabelColor = onTertiary.copy(alpha = 0.6f)
-            // EXERCISE NAME
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[0])
-                    .padding(start = 10.dp),
-                text = stringResource(R.string.exercise),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-            // SETS
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[1]),
-                text = stringResource(R.string.sets),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-            // REPS
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[2]),
-                text = stringResource(R.string.reps),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-            // WEIGHT
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[3] + columnWeightVector[4]),
-                text = stringResource(R.string.weight_kg),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-        }
+            columnWeightVector = columnWeightVector,
+        )
     }
 }
 
@@ -302,9 +265,9 @@ fun EditWkBigBanner(
     if (columnWeightVector.size != 5) {
         throw IllegalArgumentException("The length of the float array must be 5.")
     }
-    val topWeight =     170f
-    val titleWeight =   500f
-    val tagWeight =     150f
+    val topWeight =     175f
+    val titleWeight =   400f
+    val tagWeight =     125f
     val buttonsWeight = 200f
     val labelWeight =   100f
     Column(
@@ -460,11 +423,11 @@ fun EditWkBigBanner(
                 imageVector = Icons.Outlined.Construction,
                 contentDescription = "Construction icon",
                 modifier = Modifier.size(20.dp),
-                tint = onTertiary,
+                tint = colorMessage,
             )
             Text(
-                text = "WIP",
-                color = onTertiary,
+                text = "WIP (tags)",
+                color = colorMessage,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(start = 8.dp),
                 style = TitleTypo,
@@ -498,8 +461,8 @@ fun EditWkBigBanner(
                 modifier = Modifier.padding(start = 10.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Construction,
-                    tint = onTertiary,
+                    imageVector = Icons.Outlined.PersonOff,
+                    tint = colorMessage,
                     contentDescription = "Toggle workout publicity"
                 )
             }
@@ -507,8 +470,8 @@ fun EditWkBigBanner(
                 onClick = {/*TODO*/ },
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Construction,
-                    tint = onTertiary,
+                    imageVector = Icons.Outlined.Share,
+                    tint = colorMessage,
                     contentDescription = "Share workout"
                 )
             }
@@ -538,58 +501,17 @@ fun EditWkBigBanner(
                 }
             }
         }
-        Row(
+        WkTemplateViewLabels(
             modifier = Modifier
-                .fillMaxWidth()
                 .weight(labelWeight)
-                .padding(start = 10.dp, end = 10.dp, bottom = 6.dp)
                 .align(Alignment.Start),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            val columnLabelColor = onTertiary.copy(alpha = 0.6f)
-            // EXERCISE NAME
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[0])
-                    .padding(start = 10.dp),
-                text = stringResource(R.string.exercise),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-            // SETS
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[1]),
-                text = stringResource(R.string.sets),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-            // REPS
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[2]),
-                text = stringResource(R.string.reps),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-            // WEIGHT
-            Text(
-                modifier = Modifier
-                    .weight(columnWeightVector[3] + columnWeightVector[4]),
-                text = stringResource(R.string.weight_kg),
-                color = columnLabelColor,
-                fontSize = 14.sp,
-                style = SemiTypo
-            )
-        }
+            columnWeightVector = columnWeightVector,
+        )
     }
 }
 
 @Composable
-private fun WkElementComponent(
+private fun EditWkElementComponent(
     modifier: Modifier = Modifier,
     wkElement: WkTemplateElement,
     columnWeightVector: FloatArray,

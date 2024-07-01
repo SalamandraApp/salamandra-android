@@ -96,5 +96,5 @@ val subtitle = Color(0xFFe6e6e6)
 
 val colorError = Color(0xffd84848)
 
-val message = Color(0xfffff126)
+val colorMessage = Color(0xfffff126)
 val selectedScreenBottomBar =Color(0xffd3d3d3).copy(alpha = 0.3f)

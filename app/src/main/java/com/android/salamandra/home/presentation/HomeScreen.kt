@@ -1,6 +1,7 @@
 package com.android.salamandra.home.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import com.android.salamandra._core.util.WORKOUT_PREVIEW_LIST
 import com.android.salamandra.destinations.EditWkScreenDestination
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.LoginScreenDestination
+import com.android.salamandra.destinations.SeeWkScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.WkTemplateElementTypo
@@ -56,7 +58,7 @@ import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
-import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
+import com.android.salamandra.workouts.seeWk.presentation.SeeWkNavArgs
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -70,6 +72,8 @@ fun HomeScreen(navigator: DestinationsNavigator, viewModel: HomeViewModel = hilt
         when (events) {
             HomeEvent.Logout -> navigator.navigate(LoginScreenDestination)
             HomeEvent.NavigateToEditWk -> navigator.navigate(EditWkScreenDestination())
+            // TODO, pass the id of the actual wkTemplatePreview id
+            is HomeEvent.NavigateToSeeWk -> navigator.navigate(SeeWkScreenDestination(SeeWkNavArgs(wkTemplateId = "")))
             is HomeEvent.BottomBarClicked -> navigator.navigate((events as HomeEvent.BottomBarClicked).destination)
             null -> {}
         }
@@ -102,7 +106,7 @@ private fun ScreenBody(
             MyViewToggles()
             LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
                 items(state.wkPreviewList) { wkPreview ->
-                    MyWkPreview(wkPreview = wkPreview)
+                    WkPreview(wkPreview = wkPreview, sendIntent = sendIntent)
                     MySpacer(size = 18)
                 }
             }
@@ -250,9 +254,11 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
 
 
 @Composable
-fun MyWkPreview(wkPreview: WorkoutPreview) {
+fun WkPreview(wkPreview: WorkoutPreview, sendIntent: (HomeIntent) -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { sendIntent(HomeIntent.SeeWk(wkTemplateId = wkPreview.wkId)) },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {

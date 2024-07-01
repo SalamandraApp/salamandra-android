@@ -32,6 +32,8 @@ class HomeViewModel @Inject constructor(
 
             is HomeIntent.NewWk -> sendEvent(HomeEvent.NavigateToEditWk)
 
+            is HomeIntent.SeeWk -> sendEvent(HomeEvent.NavigateToSeeWk(intent.wkTemplateId))
+
             is HomeIntent.BottomBarClicked -> sendEvent(HomeEvent.BottomBarClicked(intent.destination))
         }
     }

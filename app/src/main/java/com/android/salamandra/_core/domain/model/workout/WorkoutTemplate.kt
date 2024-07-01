@@ -5,7 +5,7 @@ import java.util.UUID
 
 data class WorkoutTemplate(
     val wkId: String = "",
-    val name: String = "New workout",
+    val name: String = "Workout #5",
     val elements: List<WkTemplateElement> = emptyList(),
     val description: String? = null,
     val dateCreated: Date? = null
