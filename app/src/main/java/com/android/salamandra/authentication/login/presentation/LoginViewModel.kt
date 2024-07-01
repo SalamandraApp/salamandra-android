@@ -35,7 +35,7 @@ class LoginViewModel @Inject constructor(
 
             is LoginIntent.GoToSignup -> sendEvent(LoginEvent.NavigateToSignUp)
 
-            LoginIntent.GoToHomeNoSignIn -> sendEvent(LoginEvent.NavigateUp)
+            LoginIntent.GoToHomeNoSignIn -> sendEvent(LoginEvent.NavigateToHome)
         }
     }
 
@@ -53,7 +53,7 @@ class LoginViewModel @Inject constructor(
             when (val result =
                 repository.login(email = state.value.email, password = state.value.password)) {
                 is Result.Success -> {
-                    sendEvent(LoginEvent.NavigateUp)
+                    sendEvent(LoginEvent.NavigateToHome)
                 }
 
                 is Result.Error -> _state.update { it.copy(error = result.error) }
