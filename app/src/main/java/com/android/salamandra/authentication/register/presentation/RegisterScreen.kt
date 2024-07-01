@@ -4,12 +4,15 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -113,24 +116,16 @@ private fun ScreenBody(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(horizontal = 50.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            val nFields = 4
-            val textFieldWeight = 120f
-            val buttonWeight = 100f
-            val betweenFieldsWeight = 50f
-            val middlePadWeight = 50f
-
-            val textPad = 12.dp
-
-            val verticalPadWeight = (1000f -
-                    nFields * textFieldWeight -
-                    middlePadWeight -
-                    (nFields - 1) * betweenFieldsWeight -
-                    buttonWeight) / 2
-
-
+            val underLogoSpacer = 30.dp
+            val betweenFieldSpacer = 20.dp
+            val overButtonSpacer = 30.dp
+            val buttonHeight = 50.dp
+            val textPad = 10.dp
             val textFieldColors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = title,
                 focusedBorderColor = primaryVariant,
@@ -141,14 +136,13 @@ private fun ScreenBody(
                 unfocusedLabelColor = subtitle,
             )
 
-            Spacer(modifier = Modifier.weight(verticalPadWeight))
             MyImageLogo()
+            Spacer(modifier = Modifier.height(underLogoSpacer))
 
             // -------------------------------- USERNAME
             val allowedChars = "^[a-zA-Z0-9_.]*$"
             OutlinedTextField(
                 modifier = Modifier
-                    .weight(textFieldWeight)
                     .fillMaxWidth(),
                 value = state.username,
                 onValueChange = {
@@ -170,7 +164,7 @@ private fun ScreenBody(
                 Row(
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .weight(betweenFieldsWeight)
+                        .height(betweenFieldSpacer)
                         .padding(top = 4.dp),
                 ) {
                     Icon(
@@ -192,13 +186,12 @@ private fun ScreenBody(
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.weight(betweenFieldsWeight))
+                Spacer(modifier = Modifier.height(betweenFieldSpacer))
             }
 
             // -------------------------------- EMAIL
             OutlinedTextField(
                     modifier = Modifier
-                        .weight(textFieldWeight)
                         .fillMaxWidth(),
             value = state.email,
             onValueChange = {
@@ -222,7 +215,7 @@ private fun ScreenBody(
                 Row(
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .weight(betweenFieldsWeight)
+                        .height(betweenFieldSpacer)
                         .padding(top = 4.dp),
                 ) {
                     Icon(
@@ -244,13 +237,12 @@ private fun ScreenBody(
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.weight(betweenFieldsWeight))
+                Spacer(modifier = Modifier.height(betweenFieldSpacer))
             }
             var passwordVisibility by remember { mutableStateOf(false) }
             val img = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
             OutlinedTextField(
                 modifier = Modifier
-                    .weight(textFieldWeight)
                     .fillMaxWidth(),
                 value = state.password,
                 onValueChange = { sendIntent(RegisterIntent.ChangePassword(it)) },
@@ -279,7 +271,7 @@ private fun ScreenBody(
                 Row(
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .weight(betweenFieldsWeight)
+                        .height(betweenFieldSpacer)
                         .padding(top = 4.dp),
                 ) {
                     Icon(
@@ -301,13 +293,12 @@ private fun ScreenBody(
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.weight(betweenFieldsWeight))
+                Spacer(modifier = Modifier.height(betweenFieldSpacer))
             }
 
 
             OutlinedTextField(
                 modifier = Modifier
-                    .weight(textFieldWeight)
                     .fillMaxWidth(),
                 value = repeatPassword,
                 onValueChange = {
@@ -326,11 +317,6 @@ private fun ScreenBody(
                 shape = RoundedCornerShape(40),
                 singleLine = true,
                 visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                        Icon(imageVector = img, contentDescription = null)
-                    }
-                },
                 colors = textFieldColors
             )
 
@@ -342,7 +328,7 @@ private fun ScreenBody(
                 Row(
                     modifier = Modifier
                         .align(Alignment.Start)
-                        .weight(betweenFieldsWeight)
+                        .height(betweenFieldSpacer)
                         .padding(top = 4.dp),
                 ) {
                     Icon(
@@ -373,7 +359,7 @@ private fun ScreenBody(
                 fontSize = 14.sp,
                 color = salamandraColor,
             )
-            if (isSamePassword) Spacer(modifier = Modifier.weight(middlePadWeight))
+            if (isSamePassword) Spacer(modifier = Modifier.height(overButtonSpacer))
 
             val canRegister = isSamePassword &&
                     isUsernameValid &&
@@ -384,7 +370,7 @@ private fun ScreenBody(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(buttonWeight)
+                    .height(buttonHeight)
                     .border(BorderStroke(2.dp, registerButton), RoundedCornerShape(40))
                     .clickable { if (canRegister) sendIntent(RegisterIntent.OnRegister) },
                 contentAlignment = Alignment.Center
@@ -395,7 +381,6 @@ private fun ScreenBody(
                     color = registerButton,
                 )
             }
-            Spacer(modifier = Modifier.weight(verticalPadWeight))
 
         }
         IconButton(modifier = Modifier

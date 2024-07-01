@@ -4,12 +4,14 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -100,19 +102,14 @@ private fun ScreenBody(
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(horizontal = 50.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            val n = 2 // Text fields
-            val textFieldWeight = 120f
-            val buttonWeight = 100f
-            val betweenFieldsWeight = 50f
-            val middlePadWeight = 50f
 
-            val verticalPadWeight = (1000f -
-                    n * textFieldWeight -
-                    middlePadWeight -
-                    (n - 1) * betweenFieldsWeight -
-                    buttonWeight) / 2
+            val underLogoSpacer = 30.dp
+            val betweenFieldSpacer = 20.dp
+            val overButtonSpacer = 30.dp
+            val buttonHeight = 50.dp
             val textFieldColors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = title,
                 focusedBorderColor = primaryVariant,
@@ -122,13 +119,12 @@ private fun ScreenBody(
                 unfocusedBorderColor = onTertiary,
                 unfocusedLabelColor = subtitle,
             )
-            Spacer(modifier = Modifier.weight(verticalPadWeight))
             MyImageLogo()
 
+            Spacer(modifier = Modifier.height(underLogoSpacer))
             // -------------------------------- USERNAME
             OutlinedTextField(
                 modifier = Modifier
-                    .weight(textFieldWeight)
                     .fillMaxWidth(),
                 value = state.email,
                 onValueChange = {
@@ -147,12 +143,11 @@ private fun ScreenBody(
             )
 
             // -------------------------------- PASSWORD
-            Spacer(modifier = Modifier.weight(betweenFieldsWeight))
+            Spacer(modifier = Modifier.height(betweenFieldSpacer))
             var passwordVisibility by remember { mutableStateOf(false) }
             val img = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
             OutlinedTextField(
                 modifier = Modifier
-                    .weight(textFieldWeight)
                     .fillMaxWidth(),
                 value = state.password,
                 onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) },
@@ -186,12 +181,11 @@ private fun ScreenBody(
                     .align(Alignment.End)
                     .padding(vertical = textPad)
             )
-
-            Spacer(modifier = Modifier.weight(middlePadWeight))
+            Spacer(modifier = Modifier.height(overButtonSpacer))
             Box (
                 modifier = Modifier
+                    .height(buttonHeight)
                     .fillMaxWidth()
-                    .weight(buttonWeight)
                     .border(BorderStroke(2.dp, primaryVariant), RoundedCornerShape(40))
                     .clickable { sendIntent(LoginIntent.Login) },
                 contentAlignment = Alignment.Center
@@ -202,7 +196,6 @@ private fun ScreenBody(
                     color = primaryVariant,
                 )
             }
-            Spacer(modifier = Modifier.weight(verticalPadWeight))
         }
         IconButton(modifier = Modifier
             .align(Alignment.TopStart)
