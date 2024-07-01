@@ -101,13 +101,12 @@ private fun ScreenBody(
     state: RegisterState,
     sendIntent: (RegisterIntent) -> Unit,
 ) {
-    val errorMessageHeight = 20.dp
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(tertiary),
     ) {
-        var repeatPassword by remember { mutableStateOf("1234Qwerty#a") }
+        var repeatPassword by remember { mutableStateOf("") }
         var isSamePassword by remember { mutableStateOf(true) }
         var isUsernameValid by remember { mutableStateOf(true) }
 
@@ -127,7 +126,7 @@ private fun ScreenBody(
 
             val verticalPadWeight = (1000f -
                     nFields * textFieldWeight -
-                    2 * middlePadWeight -
+                    middlePadWeight -
                     (nFields - 1) * betweenFieldsWeight -
                     buttonWeight) / 2
 
@@ -144,7 +143,6 @@ private fun ScreenBody(
 
             Spacer(modifier = Modifier.weight(verticalPadWeight))
             MyImageLogo()
-            Spacer(modifier = Modifier.weight(middlePadWeight))
 
             // -------------------------------- USERNAME
             val allowedChars = "^[a-zA-Z0-9_.]*$"

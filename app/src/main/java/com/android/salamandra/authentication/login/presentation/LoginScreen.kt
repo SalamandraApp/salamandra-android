@@ -110,7 +110,7 @@ private fun ScreenBody(
 
             val verticalPadWeight = (1000f -
                     n * textFieldWeight -
-                    2 * middlePadWeight -
+                    middlePadWeight -
                     (n - 1) * betweenFieldsWeight -
                     buttonWeight) / 2
             val textFieldColors = OutlinedTextFieldDefaults.colors(
@@ -124,7 +124,6 @@ private fun ScreenBody(
             )
             Spacer(modifier = Modifier.weight(verticalPadWeight))
             MyImageLogo()
-            Spacer(modifier = Modifier.weight(middlePadWeight))
 
             // -------------------------------- USERNAME
             OutlinedTextField(

@@ -20,9 +20,9 @@ data class RegisterState(
         val initial: RegisterState = RegisterState(
             loading = false,
             error = null,
-            username = "vzkz",
-            email = "jaimevzkz1+@gmail.com",
-            password = "1234Qwerty#",
+            username = "",
+            email = "",
+            password = "",
             isEmailValid = true,
             passwordFormatError = null
         )
