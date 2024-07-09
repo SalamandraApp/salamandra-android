@@ -20,6 +20,8 @@ class ProfileViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher) : 
             is ProfileIntent.BottomBarClicked -> sendEvent(ProfileEvent.BottomBarClicked(intent.destination))
 
             ProfileIntent.GoToLogin -> sendEvent(ProfileEvent.NavigateToLogin)
+
+            ProfileIntent.GoToSettings -> sendEvent(ProfileEvent.NavigateToSettings)
         }
     }
     private fun onError(error: RootError) = _state.update { it.copy(error = error) }

@@ -22,9 +22,11 @@ data  class SettingsState(
 sealed class SettingsIntent: Intent {
     data class Error(val error: RootError): SettingsIntent()
     data object CloseError: SettingsIntent()
+    data object NavigateUp: SettingsIntent()
 }
 
 sealed class SettingsEvent: Event{
+    data object NavigateUp: SettingsEvent()
 }
 
 data class SettingsNavArgs(

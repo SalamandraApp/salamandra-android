@@ -1,7 +1,7 @@
 package com.android.salamandra.workouts.seeWk.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,19 +14,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
+import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Construction
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.PersonOff
+import androidx.compose.material.icons.outlined.DragIndicator
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayCircle
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -40,25 +45,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.MyRow
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
+import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.ui.theme.NormalTypo
-import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.colorError
+import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
@@ -67,8 +76,10 @@ import com.android.salamandra.ui.theme.secondaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
+import com.android.salamandra.workouts.editWk.presentation.EditWkState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
 
 @Destination(navArgsDelegate = SeeWkNavArgs::class)
 @Composable
@@ -78,6 +89,7 @@ fun SeeWkScreen(navigator: DestinationsNavigator, viewModel: SeeWkViewModel = hi
     LaunchedEffect(events) {
         when (events) {
             SeeWkEvent.NavigateBack -> navigator.navigateUp()
+            // TODO: navigate to EditWk
             null -> {}
         }
     }
@@ -94,8 +106,8 @@ private fun ScreenBody(
     sendIntent: (SeeWkIntent) -> Unit
 ) {
     val mainColor = tertiary
-    val bannerHeight = 320.dp
-    val fixedBannerHeight = 100.dp
+    val bannerHeight = 240.dp
+    val fixedBannerHeight = 80.dp
 
     val scrollThreshold: Float
     val bannerHeightPx: Float
@@ -117,38 +129,16 @@ private fun ScreenBody(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(mainColor)
     ) {
-        Column {
-
-            SeeWkFixedBanner(
-                modifier = Modifier.height(fixedBannerHeight),
-                state = state,
-                sendIntent = sendIntent,
-                columnWeightVector = columnWeights,
-                backgroundColor = mainColor
-            )
-            FadeLip()
-            SeeWkBigBanner(
-                modifier = Modifier.height(bannerHeight),
-                state = state,
-                sendIntent = sendIntent,
-                columnWeightVector = columnWeights,
-                backgroundColor = mainColor
-            )
-            FadeLip()
-        }
-        /*
         if (scrolledPast.value) {
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
                     .zIndex(1f),
-            ){
+            ) {
                 SeeWkFixedBanner(
-                    modifier = Modifier
-                        .height(fixedBannerHeight),
+                    modifier = Modifier.height(fixedBannerHeight),
                     columnWeightVector = columnWeights,
                     state = state,
                     sendIntent = sendIntent,
@@ -167,7 +157,7 @@ private fun ScreenBody(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val startPad = 15.dp
+            val startPad = 20.dp
             item {
                 SeeWkBigBanner(
                     modifier = Modifier.height(bannerHeight),
@@ -182,18 +172,17 @@ private fun ScreenBody(
             items(state.wkTemplate.elements) {
                 SeeWkElementComponent(
                     wkElement = it,
-                    fgColor = secondary,
+                    fgColor = tertiary,
                     startPad = startPad,
                     columnWeightVector = columnWeights
                 )
             }
         }
-     */
     }
 }
 
 @Composable
-private fun SeeWkBigBanner(
+fun SeeWkBigBanner(
     modifier: Modifier = Modifier,
     state: SeeWkState,
     sendIntent: (SeeWkIntent) -> Unit,
@@ -204,295 +193,285 @@ private fun SeeWkBigBanner(
     if (columnWeightVector.size != 5) {
         throw IllegalArgumentException("The length of the float array must be 5.")
     }
-    val topWeight =     175f
-    val titleWeight =   400f
-    val tagWeight =     125f
-    val buttonsWeight = 200f
-    val labelWeight =   100f
+    val wTopSection = 800f
+    val wPlaceholder = 200f
+
+    val dpOutMargin = 20.dp
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor)
     ) {
-
-        BannerTopRow(
-            modifier = Modifier.weight(topWeight).align(Alignment.Start),
+        BigBannerTop(
+            modifier = Modifier
+                .weight(wTopSection)
+                .fillMaxWidth(),
             sendIntent = sendIntent,
-            state = state
+            state = state,
+            backgroundColor = backgroundColor,
+            dpOutMargin = dpOutMargin
         )
-
-        val sideMargin = 20
-        val topMargin = sideMargin / 2;
-        Row(
+        BigBannerBottom(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(titleWeight)
-                .align(Alignment.Start),
-        )
-        {
-            val textWeight = 0.6f
-            val picWeight = 0.5f
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(textWeight),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = sideMargin.dp, vertical = topMargin.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(secondary)
-                        .fillMaxWidth()
-                )
-                {
-                    BasicTextField(
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .padding(vertical = 6.dp),
-                        singleLine = true,
-                        enabled = true,
-                        value = state.wkTemplate.name,
-                        textStyle = TitleTypo.copy(color = title, fontSize = 20.sp),
-                        onValueChange = {  }
-                    )
-                }
-                val description = state.wkTemplate.description
-                val textToShow = description ?: "Description..."
-                val textColor =
-                    if (description.isNullOrEmpty()) title.copy(alpha = 0.5f) else title
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = sideMargin.dp)
-                        .padding(bottom = topMargin.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(secondary)
-                        .fillMaxWidth()
-                    //.fillMaxHeight()
-
-                ) {
-                    BasicTextField(
-                        modifier = Modifier
-                            .padding(12.dp),
-                        singleLine = true,
-                        enabled = true,
-                        value = textToShow,
-                        textStyle = TitleTypo.copy(color = textColor, fontSize = 14.sp),
-                        onValueChange = {  }
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .weight(tagWeight)
-                        .fillMaxWidth()
-                        .padding(horizontal = sideMargin.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Construction,
-                        contentDescription = "Construction icon",
-                        modifier = Modifier.size(20.dp),
-                        tint = onTertiary,
-                    )
-                    Text(
-                        text = "WIP",
-                        color = onTertiary,
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(start = 8.dp),
-                        style = TitleTypo,
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .weight(picWeight)
-                    .padding(horizontal = sideMargin.dp)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                WkTemplatePicture(
-                    modifier = Modifier.aspectRatio(1f),
-                    shape = RoundedCornerShape(5)
-                )
-            }
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(tagWeight)
-                .align(Alignment.End),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Construction,
-                contentDescription = "Construction icon",
-                modifier = Modifier.size(20.dp),
-                tint = onTertiary,
-            )
-            Text(
-                text = "WIP (tags)",
-                color = onTertiary,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(start = 8.dp),
-                style = TitleTypo,
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(buttonsWeight)
-                .align(Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
-        )
-        {
-            MyRow(
-                modifier = Modifier.clickable
-                {
-                    if (false) {/*TODO*/
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Delete Wk",
-                    tint = colorError,
-                    modifier = Modifier.padding(20.dp, end = 5.dp)
-                )
-                Text(text = "WIP", color = colorError, style = NormalTypo, fontSize = 14.sp)
-            }
-            IconButton(
-                onClick = {/*TODO*/ },
-                modifier = Modifier.padding(start = 10.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.PersonOff,
-                    tint = onTertiary,
-                    contentDescription = "Toggle workout publicity"
-                )
-            }
-            IconButton(
-                onClick = {/*TODO*/ },
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Share,
-                    tint = onTertiary,
-                    contentDescription = "Share workout"
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .padding(end = 20.dp)
-                    .clip(RoundedCornerShape(20))
-                    .background(secondaryVariant)
-            ) {
-                TextButton(
-                    //enabled = !state.showSearchExercise,
-                    enabled = false,
-                    onClick = {  }
-                ) {
-                    MyRow {
-                        Icon(
-                            imageVector = Icons.Outlined.Add,
-                            contentDescription = "Add Exercise",
-                            tint = onSecondaryVariant
-                        )
-                    }
-                    Text(
-                        text = "ADD EXERCISE",
-                        color = onSecondaryVariant,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-        }
-        WkTemplateViewLabels(
-            modifier = Modifier
-                .weight(labelWeight)
-                .align(Alignment.Start),
+                .weight(wPlaceholder)
+                .padding(horizontal = dpOutMargin - 8.dp),
+            sendIntent = sendIntent,
             columnWeightVector = columnWeightVector,
         )
     }
 }
 
 @Composable
-private fun BannerTopRow(
+fun BigBannerBottom(
     modifier: Modifier = Modifier,
     sendIntent: (SeeWkIntent) -> Unit,
-    state: SeeWkState
+    columnWeightVector: FloatArray,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
+    Row (
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
-    )
-    {
+    ){
         IconButton(
-            onClick = {sendIntent(SeeWkIntent.NavigateBack) },
-            modifier = Modifier.padding(10.dp)
+            onClick = { },
         ) {
             Icon(
-                modifier = Modifier.size(25.dp),
-                imageVector = Icons.Outlined.ArrowBackIosNew,
-                tint = onTertiary,
-                contentDescription = "Close screen"
+                imageVector = Icons.Filled.Edit,
+                tint = colorMessage,
+                contentDescription = "Edit Template"
             )
         }
-        Spacer(modifier = Modifier.weight(1f))
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
-        )
-        {
+
+        IconButton(
+            onClick = { },
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Share,
+                tint = colorMessage,
+                contentDescription = "Share Template"
+            )
+        }
+        TextButton(
+            onClick = { }) {
+            MyRow {
+                Icon(
+                    imageVector = Icons.Outlined.BarChart,
+                    tint = colorMessage,
+                    contentDescription = "Go to monitoring"
+                )
+            }
             Text(
-                modifier = Modifier
-                    .padding(vertical = 6.dp),
-                text = state.wkTemplate.name,
-                style = TitleTypo.copy(color = title, fontSize = 20.sp),
+                text = "Workout Stats",
+                color = colorMessage,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(
+            onClick = { },
+        ) {
+            Icon(
+                modifier = Modifier.size(40.dp),
+                imageVector = Icons.Outlined.PlayCircle,
+                tint = colorMessage,
+                // tint = primaryVariant,
+                contentDescription = "Execute Template"
             )
         }
 
+    }
+    Spacer(modifier = Modifier.height(12.dp))
+    WkTemplateViewLabels(columnWeightVector = columnWeightVector)
+}
 
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(
-            onClick = {/*TODO*/ },
-            modifier = Modifier.padding(horizontal = 10.dp)
+@Composable
+fun BigBannerTop(
+    modifier: Modifier = Modifier,
+    sendIntent: (SeeWkIntent) -> Unit,
+    state: SeeWkState,
+    backgroundColor: Color,
+    dpOutMargin: Dp,
+) {
+
+    Row (
+        modifier = modifier
+    ) {
+        val pictureSection = 370f
+        val textSection = 630f
+        Column (
+            modifier = Modifier
+                .weight(textSection)
+                .fillMaxHeight()
         ) {
-            Icon(
-                modifier = Modifier.size(35.dp),
-                imageVector = Icons.Outlined.PlayCircle,
-                tint = primaryVariant,
-                contentDescription = "Search workout"
+            Spacer(modifier = Modifier.height(dpOutMargin))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dpOutMargin - 15.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = { sendIntent(SeeWkIntent.NavigateBack) },
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBackIosNew,
+                        tint = onTertiary,
+                        contentDescription = "Close screen"
+                    )
+                }
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 5.dp)
+                        .weight(1f),
+                    text = state.wkTemplate.name,
+                    style = TitleTypo.copy(color = title, fontSize = 18.sp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .padding(start = dpOutMargin, end = dpOutMargin, top = 7.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .weight(1f),
+                    text = "Placeholder text for template description (max 2 lines) more text mote tet",
+                    style = SemiTypo.copy(color = onTertiary, fontSize = 12.sp),
+                    minLines = 2,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            TagRow(modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .padding(start = dpOutMargin, end = dpOutMargin, top = 7.dp),
+                textColor = backgroundColor
+            )
+        }
+        Column (
+            modifier = Modifier
+                .weight(pictureSection)
+                .fillMaxHeight(),
+            // verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            WkTemplatePicture(
+                modifier = Modifier
+                    .padding(top = dpOutMargin, end = dpOutMargin)
+                    .aspectRatio(1f),
+                shape = RoundedCornerShape(5),
             )
         }
     }
 }
 
+
 @Composable
-private fun SeeWkFixedBanner(
+fun TagRow (
+    modifier: Modifier = Modifier,
+    textColor: Color,
+) {
+    Row (
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                val items = listOf("#mytag1", "#tag2", "#thistag3", "#tag4")
+                items(items.size) { index ->
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .clip(RoundedCornerShape(40.dp))
+                            .background(colorMessage)
+                            // .background(onTertiary.copy(0.5f))
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
+                            text = items[index], style = SemiTypo.copy(color = textColor, fontSize = 12.sp)
+                        )
+                    }
+                }
+            }
+            FadeLip(vertical = true, modifier = Modifier.align(Alignment.CenterEnd))
+        }
+    }
+}
+
+
+
+@Composable
+fun SeeWkFixedBanner(
     state: SeeWkState,
     sendIntent: (SeeWkIntent) -> Unit,
     modifier: Modifier = Modifier,
     columnWeightVector: FloatArray,
     backgroundColor: Color
 ) {
-
-    val topWeight =     175f
+    val topWeight =     180f
     val labelWeight =   100f
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor)
     ) {
-        BannerTopRow(
-            modifier = Modifier.align(Alignment.Start),
-            sendIntent = sendIntent,
-            state = state)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(topWeight)
+                .align(Alignment.Start),
+            verticalAlignment = Alignment.CenterVertically
+        )
+        {
+            IconButton(
+                onClick = {/*TODO*/ },
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.ArrowBackIosNew,
+                    tint = onTertiary,
+                    contentDescription = "Close screen"
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
+            BasicTextField(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .padding(vertical = 6.dp),
+                singleLine = true,
+                enabled = false,
+                value = state.wkTemplate.name,
+                textStyle = TitleTypo.copy(color = title, fontSize = 18.sp),
+                onValueChange = { }
+            )
+
+
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = {/*TODO*/ },
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Icon(
+                    modifier = Modifier.size(30.dp),
+                    imageVector = Icons.Outlined.PlayCircle,
+                    tint = primaryVariant,
+                    contentDescription = "Execute template"
+                )
+            }
+        }
         WkTemplateViewLabels(
             modifier = Modifier
                 .weight(labelWeight)
@@ -503,7 +482,7 @@ private fun SeeWkFixedBanner(
 }
 
 @Composable
-private fun SeeWkElementComponent(
+fun SeeWkElementComponent(
     modifier: Modifier = Modifier,
     wkElement: WkTemplateElement,
     columnWeightVector: FloatArray,
@@ -511,15 +490,115 @@ private fun SeeWkElementComponent(
     fgColor: Color
 ) {
 
+    if (columnWeightVector.size != 5) {
+        throw IllegalArgumentException("The length of the float array must be 5.")
+    }
+    val nameColor = onSecondaryVariant
+    val valuesColor = onSecondaryVariant
+    val valueStyle = NormalTypo.copy(
+        color = valuesColor,
+        textAlign = TextAlign.Center,
+    )
+    val valueBoxColor = secondaryVariant
+    val valueBoxSize = 17.dp
+
+    Row(
+        modifier = modifier
+            .height(50.dp)
+            .fillMaxWidth()
+            .background(fgColor),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // EXERCISE NAME
+        Text(
+            modifier = Modifier
+                .weight(columnWeightVector[0])
+                .padding(start = startPad),
+            text = wkElement.exercise.name,
+            style = SemiTypo,
+            color = nameColor,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        val elements = listOf(
+            wkElement.sets.toString(),
+            wkElement.reps.toString(),
+            wkElement.weight.toString()
+        )
+        val columnWeights = listOf(
+            columnWeightVector[1],
+            columnWeightVector[2],
+            columnWeightVector[3]
+        )
+        val onValueChangeHandlers = listOf<(String) -> Unit>(
+            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle sets change*/ } },
+            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle reps change*/ } },
+            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle weight change*/ } }
+        )
+
+        elements.forEachIndexed { index, value ->
+            Box(
+                modifier = Modifier
+                    .weight(columnWeights[index])
+                    .padding(end = 5.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    BasicTextField(
+                        singleLine = true,
+                        enabled = false,
+                        value = value,
+                        textStyle = valueStyle,
+                        onValueChange = onValueChangeHandlers[index],
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number
+                        )
+                    )
+                }
+            }
+        }
+
+        Box (modifier = Modifier.weight(columnWeightVector[4])) {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    modifier = Modifier.size(18.dp),
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Move Exercise",
+                    // tint = onTertiary.copy(alpha = 0.5f),
+                    tint = colorMessage
+                )
+            }
+        }
+    }
 }
 
 @Preview()
 @Composable
-private fun ScreenPreview() {
-    SalamandraTheme {
-        ScreenBody(
-            state = SeeWkState.initial,
-            sendIntent = {}
-        )
-    }
+private fun SeeWkPreview() {
+    ScreenBody(
+        state = SeeWkState.initial.copy(
+            wkTemplate = WORKOUT_TEMPLATE,
+        ),
+        sendIntent = {}
+    )
 }
+
+
+@Preview()
+@Composable
+fun FixedBannerPreview() {
+    val columnWeights: FloatArray = floatArrayOf(0.5f, 0.1f, 0.1f, 0.15f, 0.1f)
+
+    SeeWkFixedBanner(
+        modifier = Modifier.height(80.dp),
+        state = SeeWkState.initial,
+        sendIntent = {},
+        columnWeightVector = columnWeights,
+        backgroundColor = tertiary
+    )
+}
+
+

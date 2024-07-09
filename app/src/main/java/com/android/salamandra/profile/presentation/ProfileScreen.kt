@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Construction
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,9 +41,11 @@ import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
+import com.android.salamandra.destinations.SettingsScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
+import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
@@ -57,6 +62,7 @@ fun ProfileScreen(navigator: DestinationsNavigator, viewModel: ProfileViewModel 
         when (events) {
             is ProfileEvent.BottomBarClicked -> navigator.navigate((events as ProfileEvent.BottomBarClicked).destination)
             ProfileEvent.NavigateToLogin -> navigator.navigate(LoginScreenDestination)
+            ProfileEvent.NavigateToSettings -> navigator.navigate(SettingsScreenDestination())
             null -> {}
         }
     }
@@ -87,7 +93,11 @@ private fun ScreenBody(
                 .background(mainColor),
             verticalArrangement = Arrangement.Top
         ) {
-            ProfileBanner(bgColor = mainColor, modifier = Modifier.weight(bannerWeight))
+            ProfileBanner(
+                sendIntent = sendIntent,
+                bgColor = mainColor,
+                modifier = Modifier.weight(bannerWeight)
+            )
             FadeLip()
             InfoSection(modifier = Modifier.weight(infoWeight), sendIntent = sendIntent, bgColor = tertiary)
         }
@@ -154,6 +164,7 @@ private fun InfoSection (
 private fun ProfileBanner(
     modifier: Modifier = Modifier,
     bgColor: Color,
+    sendIntent: (ProfileIntent) -> Unit
 ) {
     val bannerPicWeight = 0.40f
     val bannerPfpWeight = 0.5f
@@ -184,9 +195,9 @@ private fun ProfileBanner(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            val pfpWeight = 0.4f
-            val usernameWeight = 0.5f
-            val buttonsWeight = 0.15f
+            val pfpWeight = 0.35f
+            val usernameWeight = 0.55f
+            val buttonsWeight = 0.1f
             Column (
                 modifier = Modifier
                     .weight(pfpWeight)
@@ -207,17 +218,21 @@ private fun ProfileBanner(
                     .padding(horizontal = 10.dp)
             ){
                 Text(
-                    text = "Lil Nicolas",
+                    text = "Super Cool Display Name",
                     color = title,
                     style = TitleTypo,
-                    fontSize = 24.sp
+                    fontSize = 20.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
-                    text = "@Xx_Rabotron_xX",
+                    text = "@username123456789123456789",
                     color = onTertiary,
                     style = SemiTypo,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
@@ -234,13 +249,13 @@ private fun ProfileBanner(
                     .padding(end = sideMargin - 10.dp)
             ){
                 IconButton(
-                    onClick = {/*TODO*/ },
+                    onClick = {sendIntent(ProfileIntent.GoToSettings)},
                 ) {
                     Icon(
                         modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Filled.Construction,
+                        imageVector = Icons.Filled.Settings,
                         tint = onTertiary,
-                        contentDescription = "WIP"
+                        contentDescription = "Profile Settings"
                     )
                 }
                 IconButton(
@@ -248,8 +263,8 @@ private fun ProfileBanner(
                 ) {
                     Icon(
                         modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Filled.Construction,
-                        tint = onTertiary,
+                        imageVector = Icons.Filled.Edit,
+                        tint = colorMessage,
                         contentDescription = "WIP"
                     )
                 }
@@ -270,7 +285,7 @@ private fun ProfileBanner(
                 Icon(
                     modifier = Modifier.size(30.dp),
                     imageVector = Icons.Filled.Construction,
-                    tint = onTertiary,
+                    tint = colorMessage,
                     contentDescription = "WIP"
                 )
             }

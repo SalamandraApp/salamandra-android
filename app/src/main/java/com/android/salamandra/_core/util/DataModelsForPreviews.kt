@@ -9,7 +9,7 @@ import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import java.util.UUID
 
-val WORKOUT_PREVIEW = WorkoutPreview(wkId = "", name = "Upper Body Hypertrophy")
+val WORKOUT_PREVIEW = WorkoutPreview(wkId = "", name = "Upper Body Hypertrophy Summer Training 2024")
 val WORKOUT_PREVIEW2 = WorkoutPreview(wkId = "", name = "Legs")
 
 val WORKOUT_PREVIEW_LIST =
@@ -17,7 +17,7 @@ val WORKOUT_PREVIEW_LIST =
 
 val EXERCISE = Exercise(
     "",
-    name = "Incline Bench press",
+    name = "Incline Bench Press",
     mainMuscleGroup = MuscleGroup.Chest,
     secondaryMuscleGroup = MuscleGroup.Chest,
     necessaryEquipment = Equipment.Barbell,
@@ -30,7 +30,7 @@ val WORKOUT_TEMPLATE_ELEMENT = WkTemplateElement(
     position = 1,
 )
 
-val WORKOUT_TEMPLATE = WorkoutTemplate(wkId = "", elements = List(21) { WORKOUT_TEMPLATE_ELEMENT })
+val WORKOUT_TEMPLATE = WorkoutTemplate(wkId = "", elements = List(20) { WORKOUT_TEMPLATE_ELEMENT })
 
 
 //val EXERCISE_LIST = listOf(EXERCISE, EXERCISE.copy(name = "Push ups"), EXERCISE.copy(name = "Dumbbell Bench press"), EXERCISE.copy(name = "Cable fly"))

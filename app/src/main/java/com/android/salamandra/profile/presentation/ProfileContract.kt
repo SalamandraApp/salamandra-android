@@ -24,9 +24,11 @@ sealed class ProfileIntent: Intent {
     data object CloseError: ProfileIntent()
     data class BottomBarClicked(val destination: DirectionDestinationSpec): ProfileIntent()
     data object GoToLogin: ProfileIntent()
+    data object GoToSettings: ProfileIntent()
 }
 
 sealed class ProfileEvent: Event{
     data class BottomBarClicked(val destination: DirectionDestinationSpec): ProfileEvent()
     data object NavigateToLogin: ProfileEvent()
+    data object NavigateToSettings: ProfileEvent()
 }

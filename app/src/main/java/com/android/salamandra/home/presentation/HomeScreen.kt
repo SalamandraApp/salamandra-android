@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,6 +55,7 @@ import com.android.salamandra.destinations.SeeWkScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.WkTemplateElementTypo
+import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
@@ -137,14 +139,14 @@ fun MyViewToggles() {
             ) {
                 Icon(
                     imageVector = Icons.Outlined.SwapVert,
-                    tint = onSecondary,
+                    tint = colorMessage,
                     contentDescription = "Add workout"
                 )
             }
             Text(
-                text = "WIP",
+                text = "Name",
                 style = WkTemplateElementTypo,
-                color = onSecondary,
+                color = colorMessage,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(start = 8.dp)
             )
@@ -161,8 +163,8 @@ fun MyViewToggles() {
             ) {
                 Icon(
                     imageVector = Icons.Outlined.GridView,
-                    tint = onSecondary,
-                    contentDescription = "Info"
+                    tint = colorMessage,
+                    contentDescription = "Template display toggle"
                 )
             }
         }
@@ -196,10 +198,12 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
 
                 Text(
                     text = stringResource(R.string.your_workouts),
+                    //text = "LONG LONG LONG LONG",
                     color = title,
                     fontSize = 22.sp,
                     style = TitleTypo,
-                    modifier = Modifier.padding(start = 18.dp)
+                    modifier = Modifier.padding(start = 18.dp),
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
@@ -212,7 +216,7 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Search,
-                        tint = title,
+                        tint = colorMessage,
                         contentDescription = "Search workout"
                     )
                 }
@@ -239,11 +243,11 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
                 imageVector = Icons.Outlined.Construction,
                 contentDescription = "Construction icon",
                 modifier = Modifier.size(20.dp),
-                tint = primaryVariant,
+                tint = colorMessage,
             )
             Text(
                 text = "WIP",
-                color = primaryVariant,
+                color = colorMessage,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(start = 8.dp),
                 style = TitleTypo,
@@ -257,6 +261,7 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
 fun WkPreview(wkPreview: WorkoutPreview, sendIntent: (HomeIntent) -> Unit) {
     Row(
         modifier = Modifier
+            .padding(end = 40.dp)
             .fillMaxWidth()
             .clickable { sendIntent(HomeIntent.SeeWk(wkTemplateId = wkPreview.wkId)) },
         horizontalArrangement = Arrangement.Start,
@@ -265,8 +270,20 @@ fun WkPreview(wkPreview: WorkoutPreview, sendIntent: (HomeIntent) -> Unit) {
         WkTemplatePicture(size = 50, shape = RoundedCornerShape(10))
         MySpacer(size = 18)
         Column {
-            Text(text = wkPreview.name, color = title, fontSize = 15.sp)
-            Text(text = "WIP", color = onSecondary, fontSize = 12.sp)
+            Text(
+                text = wkPreview.name,
+                color = title,
+                fontSize = 15.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = "WIP",
+                color = colorMessage,
+                fontSize = 12.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

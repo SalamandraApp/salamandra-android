@@ -22,13 +22,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NewLabel
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.DragIndicator
-import androidx.compose.material.icons.outlined.PersonOff
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -308,7 +308,8 @@ fun EditWkBigBanner(
                 Icon(
                     modifier = Modifier.size(30.dp),
                     imageVector = Icons.Outlined.CheckCircle,
-                    tint = primaryVariant,
+                    tint = colorMessage,
+                    // tint = primaryVariant,
                     contentDescription = "Search workout"
                 )
             }
@@ -333,7 +334,9 @@ fun EditWkBigBanner(
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = sideMargin.dp, vertical = topMargin.dp)
+                        .padding(start = sideMargin.dp)
+                        .padding(vertical = topMargin.dp)
+                        .border(5.dp, secondary, shape = RoundedCornerShape(10.dp))
                         .clip(RoundedCornerShape(10.dp))
                         .background(secondary)
                         .fillMaxWidth()
@@ -341,27 +344,28 @@ fun EditWkBigBanner(
                 {
                     BasicTextField(
                         modifier = Modifier
-                            .padding(start = 12.dp)
+                            .padding(start = 10.dp)
                             .padding(vertical = 6.dp),
                         singleLine = true,
                         enabled = true,
                         value = state.wkTemplate.name,
                         textStyle = TitleTypo.copy(color = title, fontSize = 20.sp),
+
                         onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
                     )
                 }
                 val description = state.wkTemplate.description
-                val textToShow = description ?: "Description..."
+                val textToShow = description ?: ""
                 val textColor =
                     if (description.isNullOrEmpty()) title.copy(alpha = 0.5f) else title
                 Box(
                     modifier = Modifier
-                        .padding(horizontal = sideMargin.dp)
+                        .padding(start = sideMargin.dp)
                         .padding(bottom = topMargin.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(secondary)
                         .fillMaxWidth()
-                        //.fillMaxHeight()
+                        .fillMaxHeight()
 
                 ) {
                     BasicTextField(
@@ -371,29 +375,16 @@ fun EditWkBigBanner(
                         enabled = true,
                         value = textToShow,
                         textStyle = TitleTypo.copy(color = textColor, fontSize = 14.sp),
-                        onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .weight(tagWeight)
-                        .fillMaxWidth()
-                        .padding(horizontal = sideMargin.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Construction,
-                        contentDescription = "Construction icon",
-                        modifier = Modifier.size(20.dp),
-                        tint = onTertiary,
-                    )
-                    Text(
-                        text = "WIP",
-                        color = onTertiary,
-                        fontSize = 18.sp,
-                        modifier = Modifier.padding(start = 8.dp),
-                        style = TitleTypo,
+                        onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
+                        decorationBox = { innerTextField ->
+                            if (textToShow.isEmpty()) {
+                                Text(
+                                    text = "Description...",
+                                    style = TitleTypo.copy(color = title.copy(alpha = 0.5f), fontSize = 14.sp)
+                                )
+                            }
+                            innerTextField()  // This is where the actual text field content will be placed
+                        }
                     )
                 }
             }
@@ -420,13 +411,13 @@ fun EditWkBigBanner(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Outlined.Construction,
-                contentDescription = "Construction icon",
+                imageVector = Icons.Filled.NewLabel,
+                contentDescription = "tag icon",
                 modifier = Modifier.size(20.dp),
                 tint = colorMessage,
             )
             Text(
-                text = "WIP (tags)",
+                text = "WIP",
                 color = colorMessage,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(start = 8.dp),
@@ -451,30 +442,22 @@ fun EditWkBigBanner(
                 Icon(
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = "Delete Wk",
-                    tint = colorError,
+                    tint = colorMessage,
                     modifier = Modifier.padding(20.dp, end = 5.dp)
                 )
-                Text(text = "WIP", color = colorError, style = NormalTypo, fontSize = 14.sp)
+                Text(text = "Remove", color = colorMessage, style = NormalTypo, fontSize = 14.sp)
             }
             IconButton(
                 onClick = {/*TODO*/ },
                 modifier = Modifier.padding(start = 10.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.PersonOff,
-                    tint = colorMessage,
-                    contentDescription = "Toggle workout publicity"
-                )
-            }
-            IconButton(
-                onClick = {/*TODO*/ },
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Share,
+                    imageVector = Icons.Filled.Settings,
                     tint = colorMessage,
                     contentDescription = "Share workout"
                 )
             }
+
             Spacer(modifier = Modifier.weight(1f))
             Box(
                 modifier = Modifier
@@ -532,7 +515,7 @@ private fun EditWkElementComponent(
     Row(
         modifier = modifier
             .padding(horizontal = 10.dp, vertical = 6.dp)
-            .border(2.dp, valueBoxColor.copy(alpha = 0.5f), RoundedCornerShape(15.dp))
+            //.border(2.dp, valueBoxColor.copy(alpha = 0.5f), RoundedCornerShape(15.dp))
             .clip(RoundedCornerShape(15.dp))
             .fillMaxWidth()
             .background(fgColor),
@@ -572,14 +555,15 @@ private fun EditWkElementComponent(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(valueBoxSize)
                         .clip(RoundedCornerShape(5.dp))
-                        .background(valueBoxColor),
+                        //.background(valueBoxColor) TODO
+                        .height(valueBoxSize),
                     contentAlignment = Alignment.Center
                 ) {
                     BasicTextField(
                         singleLine = true,
-                        enabled = true,
+                        // TODO
+                        enabled = false,
                         value = value,
                         textStyle = valueStyle,
                         onValueChange = onValueChangeHandlers[index],
@@ -597,7 +581,8 @@ private fun EditWkElementComponent(
                     modifier = Modifier.size(18.dp),
                     imageVector = Icons.Outlined.DragIndicator,
                     contentDescription = "Move Exercise",
-                    tint = onTertiary
+                    tint = colorMessage,
+                    // tint = onTertiary,
                 )
             }
         }

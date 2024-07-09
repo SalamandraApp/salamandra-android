@@ -6,6 +6,7 @@ import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.workouts.editWk.presentation.EditWkEvent
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 
