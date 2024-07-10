@@ -1,9 +1,11 @@
 package com.android.salamandra.authentication.login.data.di
 
 
+import com.android.salamandra._core.data.cognito.CognitoService
+import com.android.salamandra._core.data.network.RetrofitExceptionHandler
+import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra.authentication.login.data.RepositoryImpl
 import com.android.salamandra.authentication.login.domain.Repository
-import com.android.salamandra._core.data.cognito.CognitoService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,8 +19,10 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRepository(
-        cognitoService: CognitoService
+        cognitoService: CognitoService,
+        salamandraApiService: SalamandraApiService,
+        retrofitExceptionHandler: RetrofitExceptionHandler
     ): Repository {
-        return RepositoryImpl(cognitoService)
+        return RepositoryImpl(cognitoService, salamandraApiService, retrofitExceptionHandler)
     }
 }

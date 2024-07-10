@@ -5,5 +5,5 @@ import com.android.salamandra._core.domain.error.Result
 
 
 interface Repository {
-    suspend fun login(email: String, password: String): Result<Unit, DataError.Cognito>
+    suspend fun login(email: String, password: String): Result<Unit, DataError>
 }
