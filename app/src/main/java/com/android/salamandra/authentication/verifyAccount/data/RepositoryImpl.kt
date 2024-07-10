@@ -11,6 +11,7 @@ import com.android.salamandra._core.domain.error.Result
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
+import java.time.LocalDate
 import java.util.Date
 
 class RepositoryImpl(
@@ -18,26 +19,34 @@ class RepositoryImpl(
     private val salamandraApiService: SalamandraApiService,
     private val dateAdapter: DateAdapter,
     private val retrofitExceptionHandler: RetrofitExceptionHandler
-): Repository {
+) : Repository {
     override suspend fun confirmRegister(
         username: String,
         code: String,
         email: String,
         password: String
     ): Result<Unit, DataError> {
-        return when (val register = cognitoService.confirmRegister(username = username, code = code, email = email, password = password)){
+        return when (val register = cognitoService.confirmRegister(
+            username = username,
+            code = code,
+            email = email,
+            password = password
+        )) {
             is Result.Success -> {
                 try {
-                    salamandraApiService.createUser(CreateUserRequest(id = register.data, username = username, dateJoined = dateAdapter.encode(Date())))
+                    salamandraApiService.createUser(
+                        CreateUserRequest(
+                            id = register.data,
+                            username = username,
+                            dateJoined = dateAdapter.encode(LocalDate.now())
+                        )
+                    )
                     Result.Success(Unit)
-                } catch (httpException: HttpException){
-                    Result.Error(retrofitExceptionHandler.handleHTTPException(httpException))
-
-                } catch (e: Exception){
-                    //Result.Error(retrofitExceptionHandler.handleNoConnectionException(connectException))
-                    Result.Success(Unit) //TODO change
+                } catch (exception: Exception) {
+                    Result.Error(retrofitExceptionHandler.handleException(exception))
                 }
             }
+
             is Result.Error -> Result.Error(register.error)
         }
     }

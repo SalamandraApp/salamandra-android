@@ -1,11 +1,11 @@
-import java.util.Date;
+import java.time.LocalDate;
 import kotlin.Boolean;
 
 CREATE TABLE WorkoutTemplateEntity (
     id TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
-    dateCreated TEXT AS Date,
+    dateCreated TEXT AS LocalDate,
     onlyPreviewAvailable TEXT AS Boolean NOT NULL
 );
 

@@ -13,23 +13,20 @@ class RepositoryImpl(
     private val cognitoService: CognitoService,
     private val salamandraApiService: SalamandraApiService,
     private val retrofitExceptionHandler: RetrofitExceptionHandler
-): Repository {
+) : Repository {
 
     override suspend fun login(email: String, password: String): Result<Unit, DataError> {
-        return when(val login = cognitoService.login(email, password)){
+        return when (val login = cognitoService.login(email, password)) {
             is Result.Success -> {
                 return try {
                     val userData = salamandraApiService.getUserData(login.data).toDomain()
+                    //TODO save user locally
                     Result.Success(Unit)
-                } catch (httpException: HttpException){
-                    Result.Error(retrofitExceptionHandler.handleHTTPException(httpException))
-
-                } catch (e: Exception){
-                    //Result.Error(retrofitExceptionHandler.handleNoConnectionException(connectException))
-                    Log.e("SLM", e.message.toString())
-                    Result.Success(Unit) //TODO change
+                } catch (exception: Exception) {
+                    Result.Error(retrofitExceptionHandler.handleException(exception))
                 }
             }
+
             is Result.Error -> Result.Error(login.error)
         }
     }

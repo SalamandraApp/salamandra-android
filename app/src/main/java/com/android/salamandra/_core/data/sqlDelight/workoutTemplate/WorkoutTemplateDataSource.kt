@@ -5,7 +5,7 @@ import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import kotlinx.coroutines.flow.Flow
 import workout.WorkoutTemplateEntity
-import java.util.Date
+import java.time.LocalDate
 
 interface WorkoutTemplateDataSource {
     suspend fun getWkByID(id: String): Result<WorkoutTemplateEntity, DataError.Local>
@@ -18,7 +18,7 @@ interface WorkoutTemplateDataSource {
         id: String,
         name: String,
         description: String?,
-        dateCreated: Date?,
+        dateCreated: LocalDate?,
         onlyPreviewAvailable: Boolean
     ): Result<Unit, DataError.Local>
 

@@ -1,5 +1,6 @@
 package com.android.salamandra.splash.data
 
+import android.util.Log
 import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
@@ -16,29 +17,27 @@ class RepositoryImpl(
     private val salamandraApiService: SalamandraApiService,
     private val dataStoreRepository: DataStoreRepository,
     private val retrofitExceptionHandler: RetrofitExceptionHandler
-): Repository {
+) : Repository {
 
     override suspend fun isLocalDbEmpty() = workoutTemplateDataSource.isWkTemplateEntityEmpty()
 
     override suspend fun getWkPreviewsFromRemoteAndStoreInLocal(): Result<Unit, DataError> {
         return try {
-            when (val uid = dataStoreRepository.getUidFromDatastore()){
+            when (val uid = dataStoreRepository.getUidFromDatastore()) {
                 is Result.Success -> {
                     val wkPreviews = salamandraApiService.getWorkoutPreviews(uid.data)
-                    when(val insertionInLocal = workoutTemplateDataSource.insertWkPreviewList(wkPreviews.toDomain())){
+                    when (val insertionInLocal =
+                        workoutTemplateDataSource.insertWkPreviewList(wkPreviews.toDomain())) {
                         is Result.Success -> Result.Success(Unit)
                         is Result.Error -> Result.Error(insertionInLocal.error)
                     }
 
                 }
+
                 is Result.Error -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
             }
-        } catch (httpException: HttpException){
-            Result.Error(retrofitExceptionHandler.handleHTTPException(httpException))
-
-        } catch (e: Exception){
-            //Result.Error(retrofitExceptionHandler.handleNoConnectionException(connectException))
-            Result.Success(Unit) //TODO change
+        } catch (exception: Exception) {
+            Result.Error(retrofitExceptionHandler.handleException(exception))
         }
     }
 }

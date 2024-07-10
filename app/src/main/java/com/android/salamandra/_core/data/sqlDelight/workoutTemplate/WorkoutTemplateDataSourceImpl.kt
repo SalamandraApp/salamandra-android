@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import workout.WorkoutTemplateEntity
-import java.util.Date
+import java.time.LocalDate
 import javax.inject.Inject
 
 class WorkoutTemplateDataSourceImpl @Inject constructor(
@@ -45,7 +45,7 @@ class WorkoutTemplateDataSourceImpl @Inject constructor(
         id: String,
         name: String,
         description: String?,
-        dateCreated: Date?,
+        dateCreated: LocalDate?,
         onlyPreviewAvailable: Boolean
     ): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {

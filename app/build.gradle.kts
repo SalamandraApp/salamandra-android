@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "com.android.salamandra"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -51,8 +51,8 @@ android {
             isMinifyEnabled = false
             isDebuggable = true
             android.buildFeatures.buildConfig = true
-//            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3000/" + "\"") //Use this url when using virtual emulator
-             buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:3000/" + "\"") //Use this url when using physical emulator
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3000/" + "\"") //Use this url when using virtual emulator
+//             buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:3000/" + "\"") //Use this url when using physical emulator
         }
     }
     compileOptions {
