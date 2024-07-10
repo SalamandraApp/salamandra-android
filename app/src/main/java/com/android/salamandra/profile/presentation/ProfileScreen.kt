@@ -82,7 +82,6 @@ private fun ScreenBody(
         currentDestination = ProfileScreenDestination,
         onBottomBarClicked = { sendIntent(ProfileIntent.BottomBarClicked(it)) }
     ) {
-        val signedIn = false
         val mainColor = tertiary
 
         val infoWeight = 0.6f
@@ -101,7 +100,7 @@ private fun ScreenBody(
             FadeLip()
             InfoSection(modifier = Modifier.weight(infoWeight), sendIntent = sendIntent, bgColor = tertiary)
         }
-        if (!signedIn) {
+        if (!state.isSignedIn) {
             NotLoggedInCover ( sendIntent = sendIntent )
         }
 

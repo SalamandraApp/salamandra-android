@@ -1,6 +1,6 @@
 package com.android.salamandra.authentication.verifyAccount.data
 
-import com.android.salamandra._core.data.DateAdapter
+import com.android.salamandra._core.data.adapter.DateAdapter
 import com.android.salamandra.authentication.verifyAccount.domain.Repository
 import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.data.network.RetrofitExceptionHandler
@@ -8,11 +8,7 @@ import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.network.request.CreateUserRequest
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
-import retrofit2.HttpException
-import java.net.ConnectException
-import java.net.SocketTimeoutException
 import java.time.LocalDate
-import java.util.Date
 
 class RepositoryImpl(
     private val cognitoService: CognitoService,

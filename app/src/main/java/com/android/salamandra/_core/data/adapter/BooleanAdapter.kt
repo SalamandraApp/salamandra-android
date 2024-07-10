@@ -1,9 +1,6 @@
-package com.android.salamandra._core.data.sqlDelight
+package com.android.salamandra._core.data.adapter
 
 import app.cash.sqldelight.ColumnAdapter
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 class BooleanAdapter @Inject constructor(): ColumnAdapter<Boolean, String> {

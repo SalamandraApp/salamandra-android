@@ -4,17 +4,22 @@ import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
+import com.android.salamandra._core.domain.model.User
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
 
 data class ProfileState(
     val loading: Boolean,
-    val error: RootError?
+    val error: RootError?,
+    val userData: User?,
+    val isSignedIn: Boolean
 ) : State {
     companion object {
         val initial: ProfileState = ProfileState(
             loading = false,
-            error = null
+            error = null,
+            userData = null,
+            isSignedIn = false
         )
     }
 }

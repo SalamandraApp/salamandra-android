@@ -23,10 +23,12 @@ sealed class SettingsIntent: Intent {
     data class Error(val error: RootError): SettingsIntent()
     data object CloseError: SettingsIntent()
     data object NavigateUp: SettingsIntent()
+    data object Logout: SettingsIntent()
 }
 
 sealed class SettingsEvent: Event{
     data object NavigateUp: SettingsEvent()
+    data object NavigateToHome: SettingsEvent()
 }
 
 data class SettingsNavArgs(

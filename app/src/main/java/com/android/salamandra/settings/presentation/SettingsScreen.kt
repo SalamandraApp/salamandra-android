@@ -51,6 +51,7 @@ fun SettingsScreen(navigator: DestinationsNavigator, viewModel: SettingsViewMode
     LaunchedEffect(events) {
         when (events) {
             SettingsEvent.NavigateUp -> navigator.navigateUp()
+            SettingsEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
             null -> {}
         }
     }
@@ -88,10 +89,10 @@ private fun ScreenBody(
                     .padding(horizontal = 50.dp)
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorMessage,
+                    containerColor = primaryVariant,
                 ),
                 shape = RoundedCornerShape(40),
-                onClick = { }
+                onClick = { sendIntent(SettingsIntent.Logout)}
             ) {
                 Text(
                     text = "Logout",

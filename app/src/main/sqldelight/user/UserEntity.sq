@@ -1,15 +1,31 @@
-import java.util.Date;
+import java.time.LocalDate;
 
 CREATE TABLE UserEntity (
      id TEXT NOT NULL PRIMARY KEY,
      username TEXT NOT NULL,
-     email TEXT NOT NULL,
      displayName TEXT,
-     dateJoined TEXT AS Date NOT NULL,
-     dateOfBirth TEXT AS Date,
+     dateJoined TEXT AS LocalDate NOT NULL,
+     dateOfBirth TEXT AS LocalDate,
      height INTEGER,
      weight REAL,
      gender INTEGER,
      fitnessGoal INTEGER,
      fitnessLevel INTEGER
 );
+
+getUserById:
+SELECT *
+FROM UserEntity
+WHERE id = :id;
+
+insertUser:
+INSERT OR REPLACE
+INTO UserEntity
+VALUES (?,?,?,?,?,?,?,?,?,?);
+
+deleteUserById:
+DELETE FROM UserEntity
+WHERE id = :id;
+
+clearDatabase:
+DELETE FROM UserEntity;

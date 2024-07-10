@@ -5,6 +5,7 @@ import com.android.salamandra.authentication.login.domain.Repository
 import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
+import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import retrofit2.HttpException
@@ -12,7 +13,8 @@ import retrofit2.HttpException
 class RepositoryImpl(
     private val cognitoService: CognitoService,
     private val salamandraApiService: SalamandraApiService,
-    private val retrofitExceptionHandler: RetrofitExceptionHandler
+    private val retrofitExceptionHandler: RetrofitExceptionHandler,
+    private val localDB: LocalDbRepository
 ) : Repository {
 
     override suspend fun login(email: String, password: String): Result<Unit, DataError> {
@@ -20,8 +22,7 @@ class RepositoryImpl(
             is Result.Success -> {
                 return try {
                     val userData = salamandraApiService.getUserData(login.data).toDomain()
-                    //TODO save user locally
-                    Result.Success(Unit)
+                    localDB.insertUser(userData)
                 } catch (exception: Exception) {
                     Result.Error(retrofitExceptionHandler.handleException(exception))
                 }

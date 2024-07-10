@@ -1,12 +1,7 @@
-package com.android.salamandra._core.data
+package com.android.salamandra._core.data.adapter
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import app.cash.sqldelight.ColumnAdapter
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 class DateAdapter @Inject constructor(): ColumnAdapter<LocalDate, String> {

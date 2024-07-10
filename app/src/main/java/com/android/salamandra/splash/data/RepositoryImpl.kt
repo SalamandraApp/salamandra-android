@@ -3,8 +3,8 @@ package com.android.salamandra.splash.data
 import android.util.Log
 import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
-import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.domain.DataStoreRepository
+import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
@@ -13,13 +13,13 @@ import retrofit2.HttpException
 import java.net.ConnectException
 
 class RepositoryImpl(
-    private val workoutTemplateDataSource: WorkoutTemplateDataSource,
+    private val localDb: LocalDbRepository,
     private val salamandraApiService: SalamandraApiService,
     private val dataStoreRepository: DataStoreRepository,
     private val retrofitExceptionHandler: RetrofitExceptionHandler
 ) : Repository {
 
-    override suspend fun isLocalDbEmpty() = workoutTemplateDataSource.isWkTemplateEntityEmpty()
+    override suspend fun isLocalDbEmpty() = localDb.isWkTemplateEntityEmpty()
 
     override suspend fun getWkPreviewsFromRemoteAndStoreInLocal(): Result<Unit, DataError> {
         return try {
@@ -27,7 +27,7 @@ class RepositoryImpl(
                 is Result.Success -> {
                     val wkPreviews = salamandraApiService.getWorkoutPreviews(uid.data)
                     when (val insertionInLocal =
-                        workoutTemplateDataSource.insertWkPreviewList(wkPreviews.toDomain())) {
+                        localDb.insertWkPreviewList(wkPreviews.toDomain())) {
                         is Result.Success -> Result.Success(Unit)
                         is Result.Error -> Result.Error(insertionInLocal.error)
                     }

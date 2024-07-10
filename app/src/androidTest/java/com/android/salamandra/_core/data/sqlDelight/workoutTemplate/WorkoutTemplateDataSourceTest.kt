@@ -5,8 +5,8 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import app.cash.turbine.test
 import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra.SalamandraLocalDB.Companion.Schema
-import com.android.salamandra._core.data.sqlDelight.BooleanAdapter
-import com.android.salamandra._core.data.DateAdapter
+import com.android.salamandra._core.data.adapter.BooleanAdapter
+import com.android.salamandra._core.data.adapter.DateAdapter
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,25 +16,26 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import user.UserEntity
 import workout.WorkoutTemplateEntity
+import java.time.LocalDate
 import java.util.Date
 
-//@RunWith(AndroidJUnit5::class)
 @OptIn(ExperimentalCoroutinesApi::class)
-class WorkoutTemplateDataSourceImplTest {
+class WorkoutTemplateDataSourceTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule
     val coroutineRule = CoroutineRule(testDispatcher)
 
-    private lateinit var dataSource: WorkoutTemplateDataSourceImpl
+    private lateinit var dataSource: WorkoutTemplateDataSource
     private lateinit var db: SalamandraLocalDB
 
     private val id = "123"
     private val name = "Push up"
     private val description = "This is a dummy description"
-    private val dateCreated = Date(1719567576560)
+    private val dateCreated = LocalDate.parse("2024-02-02")
     private val onlyPreviewAvailable = false
     private val expectedWorkoutTemplateEntity = WorkoutTemplateEntity(id, name, description, dateCreated, onlyPreviewAvailable)
 
@@ -45,8 +46,8 @@ class WorkoutTemplateDataSourceImplTest {
             InstrumentationRegistry.getInstrumentation().targetContext,
             "test.db"
         )
-        db = SalamandraLocalDB(driver, WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()))
-        dataSource = WorkoutTemplateDataSourceImpl(db, testDispatcher)
+        db = SalamandraLocalDB(driver, UserEntity.Adapter(DateAdapter(), DateAdapter()), WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()))
+        dataSource = WorkoutTemplateDataSource(db, testDispatcher)
     }
 
     @Test

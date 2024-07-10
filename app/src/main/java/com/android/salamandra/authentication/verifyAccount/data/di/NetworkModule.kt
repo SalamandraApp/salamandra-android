@@ -1,6 +1,6 @@
 package com.android.salamandra.authentication.verifyAccount.data.di
 
-import com.android.salamandra._core.data.DateAdapter
+import com.android.salamandra._core.data.adapter.DateAdapter
 import com.android.salamandra.authentication.verifyAccount.data.RepositoryImpl
 import com.android.salamandra.authentication.verifyAccount.domain.Repository
 import com.android.salamandra._core.data.cognito.CognitoService

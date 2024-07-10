@@ -5,8 +5,9 @@ import com.android.salamandra._core.data.CoreRepositoryImpl
 import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.network.interceptor.AuthInterceptor
-import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.domain.CoreRepository
+import com.android.salamandra._core.domain.DataStoreRepository
+import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra.splash.data.RepositoryImpl
 import com.android.salamandra.splash.domain.Repository
 import dagger.Module
@@ -51,9 +52,11 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRepository(
-        cognitoService: CognitoService
+        cognitoService: CognitoService,
+        dataStoreRepository: DataStoreRepository,
+        localDbRepository: LocalDbRepository
     ): CoreRepository{
-        return CoreRepositoryImpl(cognitoService)
+        return CoreRepositoryImpl(cognitoService, dataStoreRepository, localDbRepository)
     }
 
 
