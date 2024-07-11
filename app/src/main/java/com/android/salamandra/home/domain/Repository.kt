@@ -9,4 +9,6 @@ import kotlinx.coroutines.flow.Flow
 interface Repository {
 
     fun getWkPreviews(): Flow<List<WorkoutPreview>>
+    suspend fun isLocalDbEmpty(): Boolean
+    suspend fun getWkPreviewsFromRemoteAndStoreInLocal(): Result<Unit, DataError>
 }

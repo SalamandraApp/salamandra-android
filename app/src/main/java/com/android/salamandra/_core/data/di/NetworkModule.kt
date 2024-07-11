@@ -8,8 +8,6 @@ import com.android.salamandra._core.data.network.interceptor.AuthInterceptor
 import com.android.salamandra._core.domain.CoreRepository
 import com.android.salamandra._core.domain.DataStoreRepository
 import com.android.salamandra._core.domain.LocalDbRepository
-import com.android.salamandra.splash.data.RepositoryImpl
-import com.android.salamandra.splash.domain.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,9 +44,10 @@ object NetworkModule {
     }
 
     @Provides
-    fun provideLoginApiService(retrofit: Retrofit): SalamandraApiService {
+    fun provideSalamandraApiService(retrofit: Retrofit): SalamandraApiService {
         return retrofit.create(SalamandraApiService::class.java)
     }
+
     @Singleton
     @Provides
     fun provideRepository(
@@ -58,6 +57,4 @@ object NetworkModule {
     ): CoreRepository{
         return CoreRepositoryImpl(cognitoService, dataStoreRepository, localDbRepository)
     }
-
-
 }

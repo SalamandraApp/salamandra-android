@@ -25,7 +25,6 @@ class SeeWkViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher, save
 
     init {
         val navArgs: SeeWkNavArgs = savedStateHandle.navArgs()
-        // TODO, check db with template id
         _state.update { it.copy(wkTemplate = WorkoutTemplate()) }
     }
 }
