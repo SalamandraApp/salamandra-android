@@ -16,24 +16,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.NewLabel
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.DragIndicator
-import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -57,22 +64,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.presentation.components.FadeLip
-import com.android.salamandra._core.presentation.components.MyRow
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
-import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
-import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.colorError
-import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.secondaryVariant
+import com.android.salamandra.ui.theme.subtitle
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
@@ -85,7 +89,7 @@ fun EditWkScreen(navigator: DestinationsNavigator, viewModel: EditWkViewModel = 
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            EditWkEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
+            EditWkEvent.NavigateUp -> navigator.navigateUp()
             null -> {}
         }
     }
@@ -103,7 +107,7 @@ private fun ScreenBody(
 ) {
     val mainColor = tertiary
     val bannerHeight = 320.dp
-    val fixedBannerHeight = 100.dp
+    val fixedBannerHeight = 70.dp
 
     val scrollThreshold: Float
     val bannerHeightPx: Float
@@ -142,7 +146,7 @@ private fun ScreenBody(
                     columnWeightVector = columnWeights,
                     state = state,
                     sendIntent = sendIntent,
-                    backgroundColor = tertiary
+                    bgColor = tertiary
                 )
                 FadeLip()
             }
@@ -187,70 +191,31 @@ fun EditWkFixedBanner(
     sendIntent: (EditWkIntent) -> Unit,
     modifier: Modifier = Modifier,
     columnWeightVector: FloatArray,
-    backgroundColor: Color) {
-    val topWeight =     180f
-    val labelWeight =   100f
+    bgColor: Color) {
+
+    val dpSideMargin = 20.dp
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(backgroundColor)
+            .background(bgColor)
+            .padding(horizontal = dpSideMargin),
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(topWeight)
-                .align(Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+        EditWkBannerTopRow(
+            modifier = Modifier.weight(1f),
+            sendIntent = sendIntent,
+            state = state,
+            middleContent = {
+                Text(
+                    text = state.wkTemplate.name,
+                    color = title,
+                    fontSize = 16.sp,
+                    style = TitleTypo,
+                )
+            }
         )
-        {
-            IconButton(
-                onClick = {/*TODO*/ },
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Close,
-                    tint = onTertiary,
-                    contentDescription = "Close screen"
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(secondary)
-            )
-            {
-                BasicTextField(
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .padding(vertical = 6.dp),
-                    singleLine = true,
-                    enabled = true,
-                    value = state.wkTemplate.name,
-                    textStyle = TitleTypo.copy(color = title, fontSize = 20.sp),
-                    onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
-                )
-            }
-
-
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {/*TODO*/ },
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Outlined.CheckCircle,
-                    tint = primaryVariant,
-                    contentDescription = "Search workout"
-                )
-            }
-        }
         WkTemplateViewLabels(
-            modifier = Modifier
-                .weight(labelWeight)
-                .align(Alignment.Start),
-            columnWeightVector = columnWeightVector,
+            columnWeightVector = columnWeightVector
         )
     }
 }
@@ -265,231 +230,297 @@ fun EditWkBigBanner(
     if (columnWeightVector.size != 5) {
         throw IllegalArgumentException("The length of the float array must be 5.")
     }
-    val topWeight =     175f
-    val titleWeight =   400f
-    val tagWeight =     125f
-    val buttonsWeight = 200f
-    val labelWeight =   100f
+    val wTopRow     = 180f
+    val wTitle      = 500f
+    val wTags       = 150f
+    val wButtons    = 180f
+    val wLabels     = 100f
+
+    val dpSideMargin = 20.dp
+    val dpInBetweenMargin = 15.dp
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor)
+            .padding(horizontal = dpSideMargin)
     ) {
-        Row(
+        EditWkBannerTopRow(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(topWeight)
-                .align(Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+                .weight(wTopRow),
+            sendIntent = sendIntent,
+            state = state,
+            middleContent = {
+                Text(
+                    text = stringResource(R.string.edit_workout),
+                    color = onTertiary,
+                    fontSize = 16.sp,
+                    style = TitleTypo,
+                )
+            }
         )
-        {
-            IconButton(
-                onClick = {/*TODO*/ },
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Close,
-                    tint = onTertiary,
-                    contentDescription = "Search workout"
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(R.string.edit_workout),
-                color = onTertiary,
-                fontSize = 16.sp,
-                style = TitleTypo,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {/*TODO*/ },
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Outlined.CheckCircle,
-                    tint = colorMessage,
-                    // tint = primaryVariant,
-                    contentDescription = "Search workout"
-                )
-            }
-        }
-        val sideMargin = 20
-        val topMargin = sideMargin / 2;
-        Row(
+        BannerTitleRow(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(titleWeight)
-                .align(Alignment.Start),
+                .weight(wTitle)
+                .padding(bottom = dpInBetweenMargin),
+            sendIntent = sendIntent,
+            state = state
         )
-        {
-            val textWeight = 0.6f
-            val picWeight = 0.5f
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(textWeight),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Box(
-                    modifier = Modifier
-                        .padding(start = sideMargin.dp)
-                        .padding(vertical = topMargin.dp)
-                        .border(5.dp, secondary, shape = RoundedCornerShape(10.dp))
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(secondary)
-                        .fillMaxWidth()
-                )
-                {
-                    BasicTextField(
-                        modifier = Modifier
-                            .padding(start = 10.dp)
-                            .padding(vertical = 6.dp),
-                        singleLine = true,
-                        enabled = true,
-                        value = state.wkTemplate.name,
-                        textStyle = TitleTypo.copy(color = title, fontSize = 20.sp),
-
-                        onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
-                    )
-                }
-                val description = state.wkTemplate.description
-                val textToShow = description ?: ""
-                val textColor =
-                    if (description.isNullOrEmpty()) title.copy(alpha = 0.5f) else title
-                Box(
-                    modifier = Modifier
-                        .padding(start = sideMargin.dp)
-                        .padding(bottom = topMargin.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(secondary)
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-
-                ) {
-                    BasicTextField(
-                        modifier = Modifier
-                            .padding(12.dp),
-                        singleLine = true,
-                        enabled = true,
-                        value = textToShow,
-                        textStyle = TitleTypo.copy(color = textColor, fontSize = 14.sp),
-                        onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
-                        decorationBox = { innerTextField ->
-                            if (textToShow.isEmpty()) {
-                                Text(
-                                    text = "Description...",
-                                    style = TitleTypo.copy(color = title.copy(alpha = 0.5f), fontSize = 14.sp)
-                                )
-                            }
-                            innerTextField()  // This is where the actual text field content will be placed
-                        }
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .weight(picWeight)
-                    .padding(horizontal = sideMargin.dp)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                WkTemplatePicture(
-                    modifier = Modifier.aspectRatio(1f),
-                    shape = RoundedCornerShape(5)
-                )
-            }
-        }
-        Row(
+        EditTagRow(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(tagWeight)
-                .align(Alignment.End),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Filled.NewLabel,
-                contentDescription = "tag icon",
-                modifier = Modifier.size(20.dp),
-                tint = colorMessage,
-            )
-            Text(
-                text = "WIP",
-                color = colorMessage,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(start = 8.dp),
-                style = TitleTypo,
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(buttonsWeight)
-                .align(Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(bottom = dpInBetweenMargin)
+                .weight(wTags),
+            state = state,
+            sendIntent = sendIntent
         )
-        {
-            MyRow(
-                modifier = Modifier.clickable
-                {
-                    if (!state.showSearchExercise) {/*TODO*/
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Delete Wk",
-                    tint = colorMessage,
-                    modifier = Modifier.padding(20.dp, end = 5.dp)
-                )
-                Text(text = "Remove", color = colorMessage, style = NormalTypo, fontSize = 14.sp)
-            }
-            IconButton(
-                onClick = {/*TODO*/ },
-                modifier = Modifier.padding(start = 10.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    tint = colorMessage,
-                    contentDescription = "Share workout"
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .padding(end = 20.dp)
-                    .clip(RoundedCornerShape(20))
-                    .background(secondaryVariant)
-            ) {
-                TextButton(
-                    enabled = !state.showSearchExercise,
-                    onClick = { sendIntent(EditWkIntent.ShowSearchExercise(true)) }) {
-                    MyRow {
-                        Icon(
-                            imageVector = Icons.Outlined.Add,
-                            contentDescription = "Add Exercise",
-                            tint = onSecondaryVariant
-                        )
-                    }
-                    Text(
-                        text = "ADD EXERCISE",
-                        color = onSecondaryVariant,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-        }
+        ButtonsRowBanner(
+            modifier = Modifier
+                .weight(wButtons)
+                .padding(bottom = dpInBetweenMargin / 2),
+            state = state,
+            sendIntent = sendIntent
+        )
         WkTemplateViewLabels(
             modifier = Modifier
-                .weight(labelWeight)
-                .align(Alignment.Start),
+                .weight(wLabels),
             columnWeightVector = columnWeightVector,
         )
+    }
+}
+
+@Composable
+private fun ButtonsRowBanner (
+    modifier: Modifier = Modifier,
+    state: EditWkState,
+    sendIntent: (EditWkIntent) -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    )
+    {
+        Icon(
+            imageVector = Icons.Outlined.Delete,
+            contentDescription = "Delete Wk",
+            tint = colorError,
+        )
+        Text(
+            modifier = Modifier.padding(start = 5.dp),
+            text = "Delete",
+            color = colorError,
+            style = SemiTypo,
+            fontSize = 14.sp
+        )
+        IconButton(
+            onClick = {/*TODO*/ },
+            modifier = Modifier.padding(start = 10.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.FolderOpen,
+                tint = onTertiary,
+                contentDescription = "Folder workout"
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        ExtendedFloatingActionButton(
+            containerColor = primaryVariant.copy(0.3f),
+            contentColor = primaryVariant,
+            elevation = FloatingActionButtonDefaults.elevation(8.dp),
+            onClick = { sendIntent(EditWkIntent.ShowSearchExercise(true)) }) {
+            Icon(
+                imageVector = Icons.Outlined.Add,
+                contentDescription = "Add Exercise",
+            )
+            Text(
+                text = "ADD EXERCISE",
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun BannerTitleRow(
+    modifier: Modifier = Modifier,
+    sendIntent: (EditWkIntent) -> Unit,
+    state: EditWkState
+) {
+    Row (
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        Column (
+            modifier = Modifier
+                .fillMaxHeight()
+                .weight(1f)
+                .padding(end = 20.dp)
+        ) {
+            val textFieldColors = TextFieldDefaults.colors(
+                focusedTextColor = title,
+                focusedContainerColor = secondary,
+                unfocusedTextColor = subtitle,
+                unfocusedContainerColor = secondary.copy(0.5f),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            )
+            TextField(
+                modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                singleLine = true,
+                enabled = true,
+                value = state.wkTemplate.name,
+                textStyle = TitleTypo.copy(fontSize = 16.sp),
+                colors = textFieldColors,
+                onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+
+            val textToShow = state.wkTemplate.description ?: ""
+            TextField(
+                modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                enabled = true,
+                value = textToShow,
+                placeholder = {
+                    if (textToShow.isEmpty()) {
+                        Text("Description...", style = TitleTypo)
+                    }
+                },
+                minLines = 2,
+                maxLines = 2,
+                textStyle = TitleTypo.copy(fontSize = 14.sp),
+                colors = textFieldColors,
+                onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
+            )
+
+        }
+        Column (
+            modifier = Modifier
+                .fillMaxHeight()
+        ) {
+            WkTemplatePicture(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f),
+                shape = RoundedCornerShape(5)
+            )
+        }
+    }
+}
+
+@Composable
+private fun EditWkBannerTopRow (
+    modifier: Modifier = Modifier,
+    sendIntent: (EditWkIntent) -> Unit,
+    state: EditWkState,
+    middleContent: @Composable () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    )
+    {
+        Box(modifier = Modifier
+            .clickable { sendIntent(EditWkIntent.NavigateUp) }
+        ) {
+            Icon(
+                modifier = Modifier.size(27.dp),
+                imageVector = Icons.Outlined.Close,
+                tint = onTertiary,
+                contentDescription = "Search workout"
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        middleContent()
+        Spacer(modifier = Modifier.weight(1f))
+        Box(modifier = Modifier
+            .clickable { /*TODO*/ }
+        ) {
+            Icon(
+                modifier = Modifier.size(27.dp),
+                tint = primaryVariant,
+                imageVector = Icons.Outlined.CheckCircle,
+                contentDescription = "Search workout"
+            )
+        }
+    }
+}
+
+@Composable
+private fun EditTagRow(
+    modifier: Modifier = Modifier,
+    sendIntent: (EditWkIntent) -> Unit,
+    state: EditWkState
+) {
+    Row (
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val wTags = 800f
+        val wButton = 200f
+        Box (
+            modifier = Modifier
+                .weight(wTags)
+                .padding(end = 15.dp)
+        ) {
+            val borderColor = onTertiary.copy(0.8f)
+            val items = listOf("#mytag1", "#tag2", "#thistag3", "#tag4")
+            LazyRow {
+                items(items.size) { index ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(end = if (index == items.size - 1) 0.dp else 10.dp)
+                            .border(1.dp, borderColor, shape = RoundedCornerShape(50)),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Box(modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                            .clickable { }
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(15.dp),
+                                imageVector = Icons.Filled.Close,
+                                tint = onTertiary,
+                                contentDescription = "Leading Icon"
+                            )
+                        }
+                        Text(
+                            text = items[index],
+                            color = onTertiary,
+                            style = SemiTypo,
+                            fontSize = 13.sp
+                        )
+                        Box(modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                            .clickable { }
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(15.dp),
+                                imageVector = Icons.Filled.Edit,
+                                tint = onTertiary,
+                                contentDescription = "Trailing Icon"
+                            )
+                        }
+                    }
+                }
+            }
+            if (items.size >=3)
+                FadeLip(vertical = true, modifier = Modifier.align(Alignment.CenterEnd))
+        }
+        FloatingActionButton(
+            modifier = Modifier.weight(wButton),
+            containerColor = secondary,
+            contentColor = primaryVariant,
+            elevation = FloatingActionButtonDefaults.elevation(8.dp),
+            onClick = { sendIntent(EditWkIntent.ShowSearchExercise(true)) }) {
+            Icon(
+                imageVector = Icons.Outlined.Add,
+                contentDescription = "Add Exercise",
+            )
+        }
     }
 }
 
@@ -574,31 +605,54 @@ private fun EditWkElementComponent(
                 }
             }
         }
-
         Box (modifier = Modifier.weight(columnWeightVector[4])) {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
-                    modifier = Modifier.size(18.dp),
-                    imageVector = Icons.Outlined.DragIndicator,
+                    imageVector = Icons.Outlined.MoreVert,
                     contentDescription = "Move Exercise",
-                    tint = colorMessage,
-                    // tint = onTertiary,
+                    tint = onTertiary,
                 )
             }
         }
     }
 }
 
+@Preview
+@Composable
+private fun MainBannerRowPreview() {
+    Column (
+        modifier = Modifier
+            .height(150.dp)
+            .background(tertiary)
+    ) {
+        BannerTitleRow(
+            sendIntent = {},
+            state = EditWkState.initial.copy(wkTemplate = WORKOUT_TEMPLATE)
+        )
+    }
+}
+
 
 @Preview
 @Composable
-private fun ScreenPreview() {
-    SalamandraTheme {
-        ScreenBody(
-            state = EditWkState.initial.copy(
-                wkTemplate = WORKOUT_TEMPLATE,
-            ),
-            sendIntent = {},
-        )
-    }
+private fun EditWkFixedBannerPreview() {
+    val columnWeights: FloatArray = floatArrayOf(0.5f, 0.1f, 0.1f, 0.15f, 0.1f)
+    EditWkFixedBanner(
+        modifier = Modifier.height(70.dp),
+        state = EditWkState.initial.copy(wkTemplate = WORKOUT_TEMPLATE),
+        sendIntent = {},
+        columnWeightVector = columnWeights,
+        bgColor = tertiary
+    )
+}
+
+@Preview
+@Composable
+private fun EditWkPreview() {
+    ScreenBody(
+        state = EditWkState.initial.copy(
+            wkTemplate = WORKOUT_TEMPLATE,
+        ),
+        sendIntent = {},
+    )
 }

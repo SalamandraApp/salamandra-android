@@ -38,11 +38,11 @@ sealed class EditWkIntent: Intent {
     data class ChangeSearchTerm(val newTerm: String): EditWkIntent()
     data object SearchExercise: EditWkIntent()
     data class AddExerciseToTemplate(val exercise: Exercise): EditWkIntent()
-    data object NavigateBack: EditWkIntent()
+    data object NavigateUp: EditWkIntent()
 }
 
 sealed class EditWkEvent: Event{
-    data object NavigateToHome: EditWkEvent()
+    data object NavigateUp: EditWkEvent()
 }
 
 data class EditWkNavArgs(

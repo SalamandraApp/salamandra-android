@@ -2,6 +2,7 @@ package com.android.salamandra.profile.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,12 +10,20 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.MilitaryTech
+import androidx.compose.material.icons.filled.ModelTraining
+import androidx.compose.material.icons.filled.MonitorWeight
+import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,9 +36,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,8 +59,11 @@ import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.colorMessage
+import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
+import com.android.salamandra.ui.theme.secondary
+import com.android.salamandra.ui.theme.subtitle
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
@@ -93,12 +109,19 @@ private fun ScreenBody(
             verticalArrangement = Arrangement.Top
         ) {
             ProfileBanner(
+                state = state,
                 sendIntent = sendIntent,
                 bgColor = mainColor,
                 modifier = Modifier.weight(bannerWeight)
             )
             FadeLip()
-            InfoSection(modifier = Modifier.weight(infoWeight), sendIntent = sendIntent, bgColor = tertiary)
+            InfoSection(
+                modifier = Modifier
+                    .weight(infoWeight),
+                sendIntent = sendIntent,
+                state = state,
+                bgColor = tertiary
+            )
         }
         if (!state.isSignedIn) {
             NotLoggedInCover ( sendIntent = sendIntent )
@@ -111,16 +134,15 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(tertiary.copy(alpha = 0.8f))
+            .background(tertiary.copy(alpha = 0.9f))
             .padding(horizontal = 60.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val buttonWeight = 100f
+        val buttonWeight = 70f
         val spacerWeights = 1000f - buttonWeight
 
-        Spacer(modifier = Modifier.weight(spacerWeights*1/3))
-        Spacer(modifier = Modifier.size(200.dp))
+        Spacer(modifier = Modifier.weight(spacerWeights*2/5))
         Text(
             modifier = Modifier.padding(bottom = 18.dp),
             text = stringResource(R.string.need_to_login),
@@ -143,7 +165,7 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
                 fontSize = 20.sp
             )
         }
-        Spacer(modifier = Modifier.weight(spacerWeights*2/3))
+        Spacer(modifier = Modifier.weight(spacerWeights*3/5))
     }
 }
 
@@ -151,11 +173,164 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
 private fun InfoSection (
     modifier: Modifier = Modifier,
     bgColor: Color,
-    sendIntent: (ProfileIntent) -> Unit
+    sendIntent: (ProfileIntent) -> Unit,
+    state: ProfileState
 ) {
-    Column (
+    val dpSideMargin = 20.dp
+    val dpVerticalPadding = 20.dp
+    LazyColumn (
         modifier = modifier.fillMaxWidth(),
     ){
+        item {
+            BasicInfo(
+                modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+                    .padding(vertical = dpVerticalPadding, horizontal = dpSideMargin),
+                sendIntent = sendIntent,
+                state = state,
+            )
+        }
+    }
+}
+
+@Composable
+private fun BasicInfo (
+    modifier: Modifier = Modifier,
+    sendIntent: (ProfileIntent) -> Unit,
+    state: ProfileState
+) {
+    val dpInsidePadding = 10.dp
+    val dpBoxMargin = 10.dp
+    val iconColor = onSecondary
+    val textColor = subtitle
+
+    val weightAnnotatedString = buildAnnotatedString {
+        append("Weight: ")
+        withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
+            append(state.userData?.weight?.toString()?: "???")
+            append(" kg")
+        }
+    }
+
+    val fitnessLvlAnnotatedString = buildAnnotatedString {
+        append("Fitness Level: ")
+        withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
+            append(state.userData?.fitnessLevel?.toString()?: "Beginner")
+        }
+    }
+
+    val fitnessGoalAnnotatedString = buildAnnotatedString {
+        append("Fitness Goal: ")
+        withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
+            append(state.userData?.fitnessGoal?.toString()?: "Get in shape")
+        }
+    }
+    Row (
+        modifier = modifier
+    ) {
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+        ){
+            Row (
+                modifier = Modifier
+                    .padding(bottom = dpInsidePadding)
+                    .weight(1f)
+            ){
+                Column (
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = dpInsidePadding / 2)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(secondary)
+                        .padding(dpBoxMargin),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+
+                ) {
+                    Icon(
+                        modifier = Modifier.size(60.dp),
+                        imageVector = Icons.Filled.QueryStats,
+                        tint = iconColor,
+                        contentDescription = "WIP"
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(top = 10.dp),
+                        text = weightAnnotatedString,
+                        color = textColor,
+                        style = SemiTypo,
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Column (
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = dpInsidePadding / 2)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(secondary)
+                        .padding(dpBoxMargin),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(60.dp),
+                        imageVector = Icons.Filled.FitnessCenter,
+                        tint = iconColor,
+                        contentDescription = "WIP"
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(top = 10.dp),
+                        text = "Volume: ???",
+                        color = textColor,
+                        style = SemiTypo,
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+            }
+            Row (
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(secondary),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Column (
+                    modifier = Modifier
+                        .padding(dpBoxMargin)
+                        .padding(start = 20.dp)
+                ) {
+                    Text(
+                        text = fitnessLvlAnnotatedString,
+                        color = textColor,
+                        style = SemiTypo,
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(top = 30.dp),
+                        text = fitnessGoalAnnotatedString,
+                        color = textColor,
+                        style = SemiTypo,
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -163,7 +338,8 @@ private fun InfoSection (
 private fun ProfileBanner(
     modifier: Modifier = Modifier,
     bgColor: Color,
-    sendIntent: (ProfileIntent) -> Unit
+    sendIntent: (ProfileIntent) -> Unit,
+    state: ProfileState
 ) {
     val bannerPicWeight = 0.40f
     val bannerPfpWeight = 0.5f
@@ -209,6 +385,9 @@ private fun ProfileBanner(
                     pad = 10.dp
                 )
             }
+            val displayName = state.userData?.displayName ?: stringResource(R.string.display_name)
+            val username = "@${state.userData?.username ?: "username"}"
+            val date_joined = state.userData?.dateJoined?.let { "Joined $it" } ?: stringResource(R.string.date_joined)
 
             Column (
                 modifier = Modifier
@@ -217,7 +396,7 @@ private fun ProfileBanner(
                     .padding(horizontal = 10.dp)
             ){
                 Text(
-                    text = "Super Cool Display Name",
+                    text = displayName,
                     color = title,
                     style = TitleTypo,
                     fontSize = 20.sp,
@@ -226,7 +405,7 @@ private fun ProfileBanner(
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
-                    text = "@username123456789123456789",
+                    text = username,
                     color = onTertiary,
                     style = SemiTypo,
                     fontSize = 18.sp,
@@ -235,7 +414,7 @@ private fun ProfileBanner(
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
-                    text = "Joined 1-1-2010",
+                    text = date_joined,
                     color = onTertiary,
                     style = SemiTypo,
                     fontSize = 14.sp
@@ -283,7 +462,7 @@ private fun ProfileBanner(
             ) {
                 Icon(
                     modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Filled.Construction,
+                    imageVector = Icons.Filled.MilitaryTech,
                     tint = colorMessage,
                     contentDescription = "WIP"
                 )

@@ -22,15 +22,14 @@ fun WkTemplateViewLabels(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, bottom = 6.dp),
+            .padding(bottom = 6.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         val columnLabelColor = onTertiary.copy(alpha = 0.6f)
         // EXERCISE NAME
         Text(
             modifier = Modifier
-                .weight(columnWeightVector[0])
-                .padding(start = 10.dp),
+                .weight(columnWeightVector[0]),
             text = stringResource(R.string.exercise),
             color = columnLabelColor,
             fontSize = 14.sp,

@@ -53,7 +53,7 @@ class EditWkViewModel @Inject constructor(
 
             is EditWkIntent.AddExerciseToTemplate -> addExerciseToTemplate(intent.exercise)
 
-            EditWkIntent.NavigateBack -> sendEvent(EditWkEvent.NavigateToHome)
+            EditWkIntent.NavigateUp -> sendEvent(EditWkEvent.NavigateUp)
         }
     }
 

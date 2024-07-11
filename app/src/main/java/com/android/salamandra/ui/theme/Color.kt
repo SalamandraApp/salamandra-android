@@ -90,7 +90,7 @@ val onSecondaryVariant = Color(0xffbbbbbb)
 val tertiary = Color(0xff101010)
 val onTertiary = Color(0xff6b6b6b)
 
-
+val bottomBar = Color(0xff0d0d0d)
 val title = Color(0xFFFFFFFF)
 val subtitle = Color(0xFFe6e6e6)
 
