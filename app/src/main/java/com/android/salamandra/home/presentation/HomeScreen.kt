@@ -74,8 +74,14 @@ fun HomeScreen(navigator: DestinationsNavigator, viewModel: HomeViewModel = hilt
         when (events) {
             HomeEvent.Logout -> navigator.navigate(LoginScreenDestination)
             HomeEvent.NavigateToEditWk -> navigator.navigate(EditWkScreenDestination())
-            // TODO, pass the id of the actual wkTemplatePreview id
-            is HomeEvent.NavigateToSeeWk -> navigator.navigate(SeeWkScreenDestination(SeeWkNavArgs(wkTemplateId = "")))
+            is HomeEvent.NavigateToSeeWk -> navigator.navigate(
+                SeeWkScreenDestination(
+                    SeeWkNavArgs(
+                        wkTemplateId = (events as HomeEvent.NavigateToSeeWk).wkTemplateId
+                    )
+                )
+            )
+
             is HomeEvent.BottomBarClicked -> navigator.navigate((events as HomeEvent.BottomBarClicked).destination)
             null -> {}
         }
@@ -174,14 +180,14 @@ fun MyViewToggles() {
 
 @Composable
 fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
-    Box (
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
             .background(backgroundColor)
 
     ) {
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
