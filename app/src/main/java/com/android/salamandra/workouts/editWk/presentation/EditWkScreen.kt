@@ -17,22 +17,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -40,7 +39,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,30 +53,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
+import com.android.salamandra._core.presentation.components.BottomSheet
+import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.TabRowBuilder
+import com.android.salamandra._core.presentation.components.WkElementComponent
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
-import com.android.salamandra.ui.theme.NormalTypo
+import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.colorError
-import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.secondary
-import com.android.salamandra.ui.theme.secondaryVariant
-import com.android.salamandra.ui.theme.subtitle
 import com.android.salamandra.ui.theme.tertiary
+import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -100,6 +99,7 @@ fun EditWkScreen(navigator: DestinationsNavigator, viewModel: EditWkViewModel = 
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenBody(
     state: EditWkState,
@@ -173,16 +173,160 @@ private fun ScreenBody(
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
             }
-            items(state.wkTemplate.elements) {
-                EditWkElementComponent(
-                    wkElement = it,
+            itemsIndexed(state.wkTemplate.elements) { index, element ->
+                WkElementComponent(
+                    wkElement = element,
                     fgColor = secondary,
                     startPad = startPad,
-                    columnWeightVector = columnWeights
+                    onOption = {sendIntent(EditWkIntent.ShowBottomSheet(index))},
+                    columnWeightVector = columnWeights,
                 )
             }
         }
+        if (state.bottomSheet && state.exerciseSelectedIndex != null) {
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = false,
+            )
+            BottomSheet(
+                sheetState = sheetState,
+                onDismiss = { sendIntent(EditWkIntent.HideBottomSheet) },
+                content = {
+                    TabRowBuilder(
+                        contents = listOf(
+                            { EditExercise(index = 0, sendIntent = sendIntent) },
+                            { ExerciseInfo() }
+                        ),
+                        icons = listOf(Icons.Outlined.Edit, Icons.Outlined.FitnessCenter),
+                        titles = listOf("Edit", "Info")
+                    )
+                }
+            )
+        }
     }
+}
+
+@Composable
+fun EditExercise(
+    // TODO, delete placeholder
+    templateElement: WkTemplateElement = WORKOUT_TEMPLATE_ELEMENT,
+    index: Int,
+    sendIntent: (EditWkIntent) -> Unit
+) {
+
+    val keyboardOptions = KeyboardOptions.Default.copy(
+        keyboardType = KeyboardType.Number
+    )
+
+    Text(
+        text = templateElement.exercise.name,
+        fontSize = 22.sp,
+        style = TitleTypo,
+        color = title
+    )
+
+    Row (
+        modifier = Modifier.padding(top = 20.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val labelColor = onTertiary.copy(0.6f)
+        Box (modifier = Modifier.weight(1f)){
+            Text(text = stringResource(R.string.sets), color = labelColor)
+        }
+        Spacer (modifier = Modifier.weight(0.3f))
+        Box (modifier = Modifier.weight(1f)){
+            Text(text = stringResource(R.string.reps), color = labelColor)
+        }
+        Spacer (modifier = Modifier.weight(0.3f))
+        Box (modifier = Modifier.weight(1.2f)){
+            Text(text = stringResource(R.string.weight_kg), color = labelColor)
+        }
+
+    }
+    Row (
+        modifier = Modifier.padding(top = 5.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box (
+            modifier = Modifier.weight(1f)
+        ){
+            TextField(
+                modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                singleLine = true,
+                enabled = true,
+                value = templateElement.sets.toString(),
+                textStyle = TitleTypo.copy(fontSize = 20.sp),
+                colors = textFieldColors(),
+                keyboardOptions = keyboardOptions,
+                onValueChange = {
+                    val newSets = it.toIntOrNull()
+                    if (newSets != null) {
+                        sendIntent(EditWkIntent.ChangeWkElementSets(newSets, index))
+                    }
+                }
+            )
+        }
+        Icon(
+            modifier = Modifier.weight(0.3f),
+            imageVector = Icons.Outlined.Close,
+            tint = onTertiary,
+            contentDescription = "Search workout"
+        )
+        Box (
+                modifier = Modifier.weight(1f)
+        ){
+            TextField(
+                modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                singleLine = true,
+                enabled = true,
+                value = templateElement.reps.toString(),
+                textStyle = TitleTypo.copy(fontSize = 20.sp),
+                colors = textFieldColors(),
+                keyboardOptions = keyboardOptions,
+                onValueChange = {
+                    val newReps = it.toIntOrNull()
+                    if (newReps != null) {
+                        sendIntent(EditWkIntent.ChangeWkElementReps(newReps, index))
+                    }
+                }
+            )
+        }
+        Box (
+            modifier = Modifier.weight(0.3f),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Text(
+                text = "( ",
+                fontSize = 26.sp,
+                color = onTertiary
+            )
+        }
+        Box (
+            modifier = Modifier.weight(1f)
+        ){
+            TextField(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp)),
+                singleLine = true,
+                enabled = true,
+                value = templateElement.weight.toString(),
+                textStyle = TitleTypo.copy(fontSize = 20.sp),
+                colors = textFieldColors(),
+                keyboardOptions = keyboardOptions,
+                onValueChange = {
+                    val newWeight= it.toDoubleOrNull()
+                    if (newWeight != null) {
+                        sendIntent(EditWkIntent.ChangeWkElementWeight(newWeight, index))
+                    }
+                }
+            )
+        }
+        Text(
+            text = " )",
+            fontSize = 26.sp,
+            color = onTertiary
+        )
+    }
+
 }
 
 @Composable
@@ -312,7 +456,7 @@ private fun ButtonsRowBanner (
             fontSize = 14.sp
         )
         IconButton(
-            onClick = {/*TODO*/ },
+            onClick = { sendIntent(EditWkIntent.ShowBottomSheet(0)) },
             modifier = Modifier.padding(start = 10.dp)
         ) {
             Icon(
@@ -357,21 +501,13 @@ private fun BannerTitleRow(
                 .weight(1f)
                 .padding(end = 20.dp)
         ) {
-            val textFieldColors = TextFieldDefaults.colors(
-                focusedTextColor = title,
-                focusedContainerColor = secondary,
-                unfocusedTextColor = subtitle,
-                unfocusedContainerColor = secondary.copy(0.5f),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            )
             TextField(
                 modifier = Modifier.clip(RoundedCornerShape(10.dp)),
                 singleLine = true,
                 enabled = true,
                 value = state.wkTemplate.name,
                 textStyle = TitleTypo.copy(fontSize = 16.sp),
-                colors = textFieldColors,
+                colors = textFieldColors(),
                 onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -389,7 +525,7 @@ private fun BannerTitleRow(
                 minLines = 2,
                 maxLines = 2,
                 textStyle = TitleTypo.copy(fontSize = 14.sp),
-                colors = textFieldColors,
+                colors = textFieldColors(),
                 onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
             )
 
@@ -425,7 +561,6 @@ private fun EditWkBannerTopRow (
             .clickable { sendIntent(EditWkIntent.NavigateUp) }
         ) {
             Icon(
-                modifier = Modifier.size(27.dp),
                 imageVector = Icons.Outlined.Close,
                 tint = onTertiary,
                 contentDescription = "Search workout"
@@ -524,98 +659,6 @@ private fun EditTagRow(
     }
 }
 
-@Composable
-private fun EditWkElementComponent(
-    modifier: Modifier = Modifier,
-    wkElement: WkTemplateElement,
-    columnWeightVector: FloatArray,
-    startPad: Dp,
-    fgColor: Color
-) {
-    if (columnWeightVector.size != 5) {
-        throw IllegalArgumentException("The length of the float array must be 5.")
-    }
-    val nameColor = onSecondaryVariant
-    val valuesColor = onSecondaryVariant
-    val valueStyle = NormalTypo.copy(
-        color = valuesColor,
-        textAlign = TextAlign.Center,
-    )
-    val valueBoxColor = secondaryVariant
-    val valueBoxSize = 17.dp
-    Row(
-        modifier = modifier
-            .padding(horizontal = 10.dp, vertical = 6.dp)
-            //.border(2.dp, valueBoxColor.copy(alpha = 0.5f), RoundedCornerShape(15.dp))
-            .clip(RoundedCornerShape(15.dp))
-            .fillMaxWidth()
-            .background(fgColor),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // EXERCISE NAME
-        Text(
-            modifier = Modifier
-                .weight(columnWeightVector[0])
-                .padding(start = startPad),
-            text = wkElement.exercise.name,
-            style = SemiTypo,
-            color = nameColor
-        )
-        val elements = listOf(
-            wkElement.sets.toString(),
-            wkElement.reps.toString(),
-            wkElement.weight.toString()
-        )
-        val columnWeights = listOf(
-            columnWeightVector[1],
-            columnWeightVector[2],
-            columnWeightVector[3]
-        )
-        val onValueChangeHandlers = listOf<(String) -> Unit>(
-            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle sets change*/ } },
-            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle reps change*/ } },
-            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle weight change*/ } }
-        )
-
-        elements.forEachIndexed { index, value ->
-            Box(
-                modifier = Modifier
-                    .weight(columnWeights[index])
-                    .padding(end = 5.dp),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(5.dp))
-                        //.background(valueBoxColor) TODO
-                        .height(valueBoxSize),
-                    contentAlignment = Alignment.Center
-                ) {
-                    BasicTextField(
-                        singleLine = true,
-                        // TODO
-                        enabled = false,
-                        value = value,
-                        textStyle = valueStyle,
-                        onValueChange = onValueChangeHandlers[index],
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number
-                        )
-                    )
-                }
-            }
-        }
-        Box (modifier = Modifier.weight(columnWeightVector[4])) {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.Outlined.MoreVert,
-                    contentDescription = "Move Exercise",
-                    tint = onTertiary,
-                )
-            }
-        }
-    }
-}
 
 @Preview
 @Composable

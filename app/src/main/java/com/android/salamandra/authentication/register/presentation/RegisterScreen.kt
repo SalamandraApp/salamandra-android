@@ -48,7 +48,7 @@ import com.android.salamandra.R
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.MyCircularProgressbar
-import com.android.salamandra._core.presentation.components.MyImageLogo
+import com.android.salamandra._core.presentation.components.SlmLogo
 import com.android.salamandra.authentication.verifyAccount.presentation.VerifyCodeNavArgs
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
@@ -136,7 +136,7 @@ private fun ScreenBody(
                 unfocusedLabelColor = subtitle,
             )
 
-            MyImageLogo()
+            SlmLogo()
             Spacer(modifier = Modifier.height(underLogoSpacer))
 
             // -------------------------------- USERNAME

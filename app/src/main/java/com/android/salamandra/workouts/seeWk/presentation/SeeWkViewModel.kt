@@ -18,7 +18,9 @@ class SeeWkViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher, save
         when (intent) {
             is SeeWkIntent.Error -> _state.update { it.copy(error = intent.error) }
             is SeeWkIntent.CloseError -> _state.update { it.copy(error = null) }
-            is SeeWkIntent.NavigateUp-> sendEvent(SeeWkEvent.NavigateUp)
+            is SeeWkIntent.NavigateUp -> sendEvent(SeeWkEvent.NavigateUp)
+            SeeWkIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true) }
+            SeeWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false) }
         }
     }
 

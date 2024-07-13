@@ -3,6 +3,8 @@ package com.android.salamandra.home.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,8 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra._core.presentation.components.MyColumn
-import com.android.salamandra._core.presentation.components.MyRow
 import com.android.salamandra.ui.theme.onPrimary
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.primary
@@ -49,7 +49,7 @@ fun SearchScreen(
         contentAlignment = Alignment.TopCenter
     ) {
         val roundedCorner = 20.dp
-        MyColumn(
+        Column(
             modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .padding(top = 12.dp)
@@ -107,7 +107,7 @@ fun SearchResultElement(
     exercise: Exercise,
     onAddExercise: () -> Unit
 ) {
-    MyRow(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)

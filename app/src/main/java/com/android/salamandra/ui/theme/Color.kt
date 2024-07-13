@@ -1,4 +1,7 @@
 package com.android.salamandra.ui.theme
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFFFF6000)
@@ -98,3 +101,15 @@ val colorError = Color(0xffd84848)
 
 val colorMessage = Color(0xfffdf56a).copy(alpha = 0.7f)
 val selectedScreenBottomBar =Color(0xffd3d3d3).copy(alpha = 0.3f)
+
+@Composable
+fun textFieldColors (): TextFieldColors {
+    return TextFieldDefaults.colors(
+        focusedTextColor = title,
+        focusedContainerColor = secondary,
+        unfocusedTextColor = subtitle,
+        unfocusedContainerColor = secondary.copy(0.5f),
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+    )
+}

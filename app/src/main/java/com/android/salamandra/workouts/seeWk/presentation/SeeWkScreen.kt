@@ -19,27 +19,20 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.QueryStats
-import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,25 +43,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
+import com.android.salamandra._core.presentation.components.BottomSheet
+import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.WkElementComponent
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.colorError
-import com.android.salamandra.ui.theme.colorMessage
-import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.secondary
@@ -97,6 +87,7 @@ fun SeeWkScreen(navigator: DestinationsNavigator, viewModel: SeeWkViewModel = hi
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenBody(
     state: SeeWkState,
@@ -104,7 +95,7 @@ private fun ScreenBody(
 ) {
     val mainColor = tertiary
     val bannerHeight = 320.dp
-    val fixedBannerHeight = 80.dp
+    val fixedBannerHeight = 85.dp
 
     val scrollThreshold: Float
     val bannerHeightPx: Float
@@ -168,106 +159,29 @@ private fun ScreenBody(
                 Spacer(modifier = Modifier.size(5.dp))
             }
             items(state.wkTemplate.elements) {
-                SeeWkElementComponent(
+                WkElementComponent(
+                    onOption = {sendIntent(SeeWkIntent.ShowBottomSheet)},
                     wkElement = it,
                     fgColor = tertiary,
-                    columnWeightVector = columnWeights
+                    columnWeightVector = columnWeights,
+                    startPad = 10.dp
                 )
             }
+        }
+        if (state.bottomSheet) {
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = false,
+            )
+            BottomSheet(
+                sheetState = sheetState,
+                onDismiss = {sendIntent(SeeWkIntent.HideBottomSheet)},
+                content = { ExerciseInfo() }
+            )
         }
     }
 }
 
 
-@Composable
-fun SeeWkElementComponent(
-    modifier: Modifier = Modifier,
-    wkElement: WkTemplateElement,
-    columnWeightVector: FloatArray,
-    fgColor: Color
-) {
-
-    if (columnWeightVector.size != 5) {
-        throw IllegalArgumentException("The length of the float array must be 5.")
-    }
-    val nameColor = onSecondaryVariant
-    val valuesColor = onSecondaryVariant
-    val valueStyle = NormalTypo.copy(
-        color = valuesColor,
-        textAlign = TextAlign.Center,
-    )
-
-    Row(
-        modifier = modifier
-            .height(50.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .background(fgColor),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // EXERCISE NAME
-        Text(
-            modifier = Modifier
-                .weight(columnWeightVector[0]),
-            text = wkElement.exercise.name,
-            style = SemiTypo,
-            color = nameColor,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
-        val elements = listOf(
-            wkElement.sets.toString(),
-            wkElement.reps.toString(),
-            wkElement.weight.toString()
-        )
-        val columnWeights = listOf(
-            columnWeightVector[1],
-            columnWeightVector[2],
-            columnWeightVector[3]
-        )
-        val onValueChangeHandlers = listOf<(String) -> Unit>(
-            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle sets change*/ } },
-            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle reps change*/ } },
-            { if (it.all { char -> char.isDigit() }) { /*TODO: Handle weight change*/ } }
-        )
-
-        elements.forEachIndexed { index, value ->
-            Box(
-                modifier = Modifier
-                    .weight(columnWeights[index])
-                    .padding(end = 5.dp),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    BasicTextField(
-                        singleLine = true,
-                        enabled = false,
-                        value = value,
-                        textStyle = valueStyle,
-                        onValueChange = onValueChangeHandlers[index],
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number
-                        )
-                    )
-                }
-            }
-        }
-
-        Box (modifier = Modifier.weight(columnWeightVector[4])) {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    modifier = Modifier.size(18.dp),
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = "Move Exercise",
-                    tint = onTertiary.copy(alpha = 0.5f),
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun SeeWkFixedBanner(
@@ -398,7 +312,7 @@ private fun ButtonsRowBanner (
         Box(
             modifier = Modifier
                 .padding(start = 20.dp)
-                .clickable { }
+                .clickable { sendIntent(SeeWkIntent.ShowBottomSheet) }
         ) {
             Icon(
                 imageVector = Icons.Filled.Share,
@@ -518,7 +432,6 @@ private fun SeeWkBannerTopRow(
             .clickable { sendIntent(SeeWkIntent.NavigateUp) }
         ) {
             Icon(
-                modifier = Modifier.size(27.dp),
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 tint = onTertiary,
                 contentDescription = "Search workout"

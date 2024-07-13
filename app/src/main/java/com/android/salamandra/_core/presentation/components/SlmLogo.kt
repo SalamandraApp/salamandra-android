@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import com.android.salamandra.R
 
 @Composable
-fun MyImageLogo(modifier: Modifier = Modifier) {
+fun SlmLogo(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(id = R.drawable.salamander),
         contentDescription = "App Logo",

@@ -42,8 +42,6 @@ import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.FadeLip
-import com.android.salamandra._core.presentation.components.MyColumn
-import com.android.salamandra._core.presentation.components.MySpacer
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
@@ -103,7 +101,7 @@ private fun ScreenBody(
         onBottomBarClicked = { sendIntent(HomeIntent.BottomBarClicked(it)) }
     ) {
         val mainColor = tertiary;
-        MyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(mainColor),
@@ -115,7 +113,7 @@ private fun ScreenBody(
             LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
                 items(state.wkPreviewList) { wkPreview ->
                     WkPreview(wkPreview = wkPreview, sendIntent = sendIntent)
-                    MySpacer(size = 18)
+                    Spacer(modifier = Modifier.size(18.dp))
                 }
             }
 
@@ -274,7 +272,7 @@ fun WkPreview(wkPreview: WorkoutPreview, sendIntent: (HomeIntent) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         WkTemplatePicture(size = 50, shape = RoundedCornerShape(10))
-        MySpacer(size = 18)
+        Spacer(modifier = Modifier.size(18.dp))
         Column {
             Text(
                 text = wkPreview.name,

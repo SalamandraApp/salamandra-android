@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -45,7 +46,7 @@ import com.android.salamandra.R
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.MyCircularProgressbar
-import com.android.salamandra._core.presentation.components.MyImageLogo
+import com.android.salamandra._core.presentation.components.SlmLogo
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.RegisterScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
@@ -85,6 +86,7 @@ fun LoginScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenBody(
     state: LoginState,
@@ -118,7 +120,7 @@ private fun ScreenBody(
                 unfocusedBorderColor = onTertiary,
                 unfocusedLabelColor = subtitle,
             )
-            MyImageLogo()
+            SlmLogo()
 
             Spacer(modifier = Modifier.height(underLogoSpacer))
             // -------------------------------- USERNAME
@@ -211,7 +213,7 @@ private fun ScreenBody(
 
 @Preview
 @Composable
-fun LightPreview() {
+fun LoginScreenPreview() {
     SalamandraTheme {
         ScreenBody(
             state = LoginState.initial,

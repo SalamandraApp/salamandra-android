@@ -36,10 +36,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
-import com.android.salamandra._core.presentation.components.MyImageLogo
+import com.android.salamandra._core.presentation.components.SlmLogo
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
-import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
@@ -97,7 +96,7 @@ private fun ScreenBody(
                     buttonWeight) / 2
 
             Spacer(modifier = Modifier.weight(verticalPadWeight))
-            MyImageLogo()
+            SlmLogo()
             Spacer(modifier = Modifier
                 .weight(middlePadWeight)
                 .fillMaxWidth())
