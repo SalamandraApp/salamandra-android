@@ -7,6 +7,7 @@ import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.data.adapter.BooleanAdapter
 import com.android.salamandra._core.data.adapter.DateAdapter
 import com.android.salamandra._core.data.LocalDbRepositoryImpl
+import com.android.salamandra._core.data.adapter.IntAdapter
 import com.android.salamandra._core.data.sqlDelight.user.UserDataSource
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.domain.LocalDbRepository
@@ -33,7 +34,7 @@ object LocalDBModule {
 
     @Singleton
     @Provides
-    fun provideSQLDelightDB(driver: SqlDriver, dateAdapter: DateAdapter, booleanAdapter: BooleanAdapter): SalamandraLocalDB {
+    fun provideSQLDelightDB(driver: SqlDriver, dateAdapter: DateAdapter, booleanAdapter: BooleanAdapter, intAdapter: IntAdapter): SalamandraLocalDB {
         return SalamandraLocalDB(
             driver = driver,
             WorkoutTemplateEntityAdapter = WorkoutTemplateEntity.Adapter(
@@ -42,7 +43,12 @@ object LocalDBModule {
             ),
             UserEntityAdapter = UserEntity.Adapter(
                 dateJoinedAdapter = dateAdapter,
-                dateOfBirthAdapter = dateAdapter
+                dateOfBirthAdapter = dateAdapter,
+                heightAdapter = intAdapter,
+                genderAdapter = intAdapter,
+                fitnessLevelAdapter = intAdapter,
+                fitnessGoalAdapter = intAdapter
+
             )
         )
     }

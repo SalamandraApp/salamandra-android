@@ -44,11 +44,11 @@ class UserDataSource @Inject constructor(
                 displayName = user.displayName,
                 dateJoined = user.dateJoined,
                 dateOfBirth = user.dateOfBirth,
-                height = user.height?.toLong(),
+                height = user.height,
                 weight = user.weight,
-                gender = user.gender?.ordinal?.toLong(),
-                fitnessGoal = user.fitnessGoal?.ordinal?.toLong(),
-                fitnessLevel = user.fitnessLevel?.ordinal?.toLong()
+                gender = user.gender?.ordinal,
+                fitnessGoal = user.fitnessGoal?.ordinal,
+                fitnessLevel = user.fitnessLevel?.ordinal
             )
             Result.Success(Unit)
         }

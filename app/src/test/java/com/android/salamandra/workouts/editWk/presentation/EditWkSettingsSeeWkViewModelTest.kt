@@ -47,7 +47,9 @@ class EditWkSettingsSeeWkViewModelTest {
             wkTemplate = WorkoutTemplate(),
             showSearchExercise = false,
             searchTerm = "",
-            exerciseList = emptyList()
+            exerciseList = emptyList(),
+            bottomSheet = false,
+            exerciseSelectedIndex = null
         )
         //Assert
         assert(EditWkState.initial == initialState)

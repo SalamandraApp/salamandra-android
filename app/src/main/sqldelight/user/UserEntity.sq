@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import kotlin.Int;
 
 CREATE TABLE UserEntity (
      id TEXT NOT NULL PRIMARY KEY,
@@ -6,11 +7,11 @@ CREATE TABLE UserEntity (
      displayName TEXT,
      dateJoined TEXT AS LocalDate NOT NULL,
      dateOfBirth TEXT AS LocalDate,
-     height INTEGER,
+     height INTEGER AS Int,
      weight REAL,
-     gender INTEGER,
-     fitnessGoal INTEGER,
-     fitnessLevel INTEGER
+     gender INTEGER AS Int,
+     fitnessGoal INTEGER AS Int,
+     fitnessLevel INTEGER AS Int
 );
 
 getUserById:

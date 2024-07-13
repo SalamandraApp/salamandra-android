@@ -7,6 +7,7 @@ import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra.SalamandraLocalDB.Companion.Schema
 import com.android.salamandra._core.data.adapter.BooleanAdapter
 import com.android.salamandra._core.data.adapter.DateAdapter
+import com.android.salamandra._core.data.adapter.IntAdapter
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
@@ -35,12 +36,14 @@ class UserDataSourceTest{
 
     @Before
     fun setUp() {
+        val dateAdapter = DateAdapter()
+        val intAdapter = IntAdapter()
         val driver = AndroidSqliteDriver(
             Schema,
             InstrumentationRegistry.getInstrumentation().targetContext,
             "test.db"
         )
-        db = SalamandraLocalDB(driver, UserEntity.Adapter(DateAdapter(), DateAdapter()), WorkoutTemplateEntity.Adapter(
+        db = SalamandraLocalDB(driver, UserEntity.Adapter(dateAdapter, dateAdapter, intAdapter, intAdapter, intAdapter, intAdapter), WorkoutTemplateEntity.Adapter(
             DateAdapter(), BooleanAdapter()
         ))
         dataSource = UserDataSource(db, testDispatcher)
@@ -52,11 +55,11 @@ class UserDataSourceTest{
         displayName = EXAMPLE_USER.displayName,
         dateJoined = EXAMPLE_USER.dateJoined,
         dateOfBirth = EXAMPLE_USER.dateOfBirth,
-        height = EXAMPLE_USER.height?.toLong(),
+        height = EXAMPLE_USER.height,
         weight = EXAMPLE_USER.weight,
-        gender = EXAMPLE_USER.gender?.ordinal?.toLong(),
-        fitnessLevel = EXAMPLE_USER.fitnessLevel?.ordinal?.toLong(),
-        fitnessGoal = EXAMPLE_USER.fitnessGoal?.ordinal?.toLong()
+        gender = EXAMPLE_USER.gender?.ordinal,
+        fitnessLevel = EXAMPLE_USER.fitnessLevel?.ordinal,
+        fitnessGoal = EXAMPLE_USER.fitnessGoal?.ordinal
     )
 
     @Test

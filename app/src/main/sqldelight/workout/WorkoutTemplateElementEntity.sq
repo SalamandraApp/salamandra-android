@@ -1,11 +1,13 @@
+import kotlin.Int;
+
 CREATE TABLE WorkoutTemplateElementEntity (
     id TEXT NOT NULL PRIMARY KEY,
     wkTemplateId TEXT NOT NULL,
     exerciseId TEXT NOT NULL,
-    position INTEGER NOT NULL,
-    reps INTEGER NOT NULL,
+    position INTEGER AS Int NOT NULL,
+    reps INTEGER AS Int NOT NULL,
     weight REAL,
-    rest INTEGER NOT NULL,
+    rest INTEGER AS Int NOT NULL,
     FOREIGN KEY (wkTemplateId) REFERENCES WorkoutTemplateEntity(id),
     FOREIGN KEY (exerciseId) REFERENCES ExerciseEntity(id)
 );
