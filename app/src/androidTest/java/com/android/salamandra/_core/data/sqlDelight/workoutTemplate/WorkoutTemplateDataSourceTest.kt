@@ -7,6 +7,7 @@ import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra.SalamandraLocalDB.Companion.Schema
 import com.android.salamandra._core.data.adapter.BooleanAdapter
 import com.android.salamandra._core.data.adapter.DateAdapter
+import com.android.salamandra._core.data.adapter.IntAdapter
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,12 +42,14 @@ class WorkoutTemplateDataSourceTest {
 
     @Before
     fun setUp() {
+        val dateAdapter = DateAdapter()
+        val intAdapter = IntAdapter()
         val driver = AndroidSqliteDriver(
             Schema,
             InstrumentationRegistry.getInstrumentation().targetContext,
             "test.db"
         )
-        db = SalamandraLocalDB(driver, UserEntity.Adapter(DateAdapter(), DateAdapter()), WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()))
+        db = SalamandraLocalDB(driver, UserEntity.Adapter(dateAdapter, dateAdapter, intAdapter, intAdapter, intAdapter, intAdapter), WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()))
         dataSource = WorkoutTemplateDataSource(db, testDispatcher)
     }
 
