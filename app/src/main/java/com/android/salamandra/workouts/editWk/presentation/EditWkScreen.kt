@@ -31,6 +31,8 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -45,6 +47,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +72,7 @@ import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
+import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.colorError
@@ -205,6 +209,7 @@ private fun ScreenBody(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditExercise(
     // TODO, delete placeholder
@@ -216,28 +221,30 @@ fun EditExercise(
     val keyboardOptions = KeyboardOptions.Default.copy(
         keyboardType = KeyboardType.Number
     )
-
-    Text(
-        text = templateElement.exercise.name,
-        fontSize = 22.sp,
-        style = TitleTypo,
-        color = title
-    )
-
+    Row {
+        Text(
+            text = templateElement.exercise.name,
+            fontSize = 22.sp,
+            style = TitleTypo,
+            color = title
+        )
+    }
+    val wSpacer = 0.3f
+    val wField = 1f
+    val labelColor = onTertiary.copy(0.6f)
     Row (
         modifier = Modifier.padding(top = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val labelColor = onTertiary.copy(0.6f)
-        Box (modifier = Modifier.weight(1f)){
+        Box (modifier = Modifier.weight(wField)){
             Text(text = stringResource(R.string.sets), color = labelColor)
         }
-        Spacer (modifier = Modifier.weight(0.3f))
-        Box (modifier = Modifier.weight(1f)){
+        Spacer (modifier = Modifier.weight(wSpacer))
+        Box (modifier = Modifier.weight(wField)){
             Text(text = stringResource(R.string.reps), color = labelColor)
         }
-        Spacer (modifier = Modifier.weight(0.3f))
-        Box (modifier = Modifier.weight(1.2f)){
+        Spacer (modifier = Modifier.weight(wSpacer))
+        Box (modifier = Modifier.weight(wField + wSpacer/2)){
             Text(text = stringResource(R.string.weight_kg), color = labelColor)
         }
 
@@ -247,7 +254,7 @@ fun EditExercise(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box (
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(wField)
         ){
             TextField(
                 modifier = Modifier.clip(RoundedCornerShape(10.dp)),
@@ -260,20 +267,18 @@ fun EditExercise(
                 onValueChange = {
                     val newSets = it.toIntOrNull()
                     if (newSets != null) {
-                        sendIntent(EditWkIntent.ChangeWkElementSets(newSets, index))
+                        // sendIntent(EditWkIntent.ChangeWkElementSets(newSets, index))
                     }
                 }
             )
         }
         Icon(
-            modifier = Modifier.weight(0.3f),
+            modifier = Modifier.weight(wSpacer),
             imageVector = Icons.Outlined.Close,
             tint = onTertiary,
             contentDescription = "Search workout"
         )
-        Box (
-                modifier = Modifier.weight(1f)
-        ){
+        Box (modifier = Modifier.weight(wField)){
             TextField(
                 modifier = Modifier.clip(RoundedCornerShape(10.dp)),
                 singleLine = true,
@@ -285,23 +290,25 @@ fun EditExercise(
                 onValueChange = {
                     val newReps = it.toIntOrNull()
                     if (newReps != null) {
-                        sendIntent(EditWkIntent.ChangeWkElementReps(newReps, index))
+                        // sendIntent(EditWkIntent.ChangeWkElementReps(newReps, index))
                     }
                 }
             )
         }
+        Spacer(modifier = Modifier.weight(wSpacer/2))
         Box (
-            modifier = Modifier.weight(0.3f),
-            contentAlignment = Alignment.CenterEnd
+            modifier = Modifier.weight(wSpacer/2),
+            contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "( ",
+                text = "(",
                 fontSize = 26.sp,
                 color = onTertiary
             )
         }
-        Box (
-            modifier = Modifier.weight(1f)
+        Row (
+            modifier = Modifier.weight(wField),
+            verticalAlignment = Alignment.CenterVertically
         ){
             TextField(
                 modifier = Modifier
@@ -315,18 +322,109 @@ fun EditExercise(
                 onValueChange = {
                     val newWeight= it.toDoubleOrNull()
                     if (newWeight != null) {
-                        sendIntent(EditWkIntent.ChangeWkElementWeight(newWeight, index))
+                        // sendIntent(EditWkIntent.ChangeWkElementWeight(newWeight, index))
                     }
                 }
             )
+
         }
-        Text(
-            text = " )",
-            fontSize = 26.sp,
-            color = onTertiary
-        )
+        Box (
+            modifier = Modifier.weight(wSpacer/2),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = ")",
+                fontSize = 26.sp,
+                color = onTertiary
+            )
+        }
+
     }
 
+    Row (
+        modifier = Modifier.padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val checkColor = onTertiary.copy(0.7f)
+        val checkedReps = remember { mutableStateOf(false) }
+        val checkedWeight = remember { mutableStateOf(false) }
+        val checkBoxColors = CheckboxDefaults.colors(
+            checkedColor = checkColor,
+            uncheckedColor = checkColor,
+            checkmarkColor = tertiary
+        )
+        Text(
+            modifier = Modifier.weight(wField + wSpacer),
+            text = stringResource(R.string.change_through_set),
+            style = NormalTypo,
+            color = checkColor,
+            fontSize = 15.sp
+        )
+        Checkbox(
+            modifier = Modifier.weight(wField),
+            checked = checkedReps.value,
+            onCheckedChange = { checkedReps.value = it },
+            colors = checkBoxColors
+        )
+        Spacer(modifier = Modifier.weight(wSpacer))
+        Checkbox(
+            modifier = Modifier.weight(wField),
+            checked = checkedWeight.value,
+            onCheckedChange = { checkedWeight.value = it },
+            colors = checkBoxColors
+        )
+        Spacer(modifier = Modifier.weight(wSpacer/2))
+
+    }
+
+    Row (
+        modifier = Modifier.padding(top = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(modifier = Modifier.weight(wField)) {
+            Text(text = stringResource(R.string.rest), color = labelColor)
+        }
+    }
+    Row (
+      modifier = Modifier.padding(top = 5.dp)
+    ) {
+        // TODO, placeholder
+        val time = remember { mutableStateOf("0") }
+        TextField(
+            modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(10.dp)),
+            singleLine = true,
+            enabled = true,
+            value = time.value,
+            // value = templateElement.rest.toString(),
+            textStyle = TitleTypo.copy(fontSize = 20.sp),
+            colors = textFieldColors(),
+            keyboardOptions = keyboardOptions,
+            onValueChange = {
+            },
+            placeholder = { Text("MM:SS") }
+        )
+        Spacer(modifier = Modifier.weight(wSpacer))
+        Box(modifier = Modifier.weight(2 * wField + wSpacer)) {
+            ExtendedFloatingActionButton(
+                containerColor = secondary,
+                contentColor = colorError,
+                elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                onClick = { }) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = "Delete exercise",
+                )
+                Text(
+                    text = stringResource(R.string.delete_exercise),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+
+
+    }
 }
 
 @Composable

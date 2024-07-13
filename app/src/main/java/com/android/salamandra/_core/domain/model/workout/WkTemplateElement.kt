@@ -9,6 +9,6 @@ data class WkTemplateElement(
     val position: Int,
     val reps: Int = 8,
     val sets: Int = 4,
-    val weight: Double? = 70.0,
+    val weight: Double? = 270.5,
     val rest: Int = 60,
 )

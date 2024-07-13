@@ -54,7 +54,8 @@ import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.WkTemplateElementTypo
 import com.android.salamandra.ui.theme.colorMessage
-import com.android.salamandra.ui.theme.onSecondary
+import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
@@ -107,9 +108,9 @@ private fun ScreenBody(
                 .background(mainColor),
             verticalArrangement = Arrangement.Top
         ) {
-            MyHomeBanner(sendIntent, mainColor)
+            HomeBanner(sendIntent, mainColor)
             FadeLip()
-            MyViewToggles()
+            ListViewToggles()
             LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
                 items(state.wkPreviewList) { wkPreview ->
                     WkPreview(wkPreview = wkPreview, sendIntent = sendIntent)
@@ -129,12 +130,13 @@ private fun ScreenBody(
 }
 
 @Composable
-fun MyViewToggles() {
+fun ListViewToggles() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {
+        val iconColor = onTertiary
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -143,14 +145,14 @@ fun MyViewToggles() {
             ) {
                 Icon(
                     imageVector = Icons.Outlined.SwapVert,
-                    tint = colorMessage,
+                    tint = iconColor,
                     contentDescription = "Add workout"
                 )
             }
             Text(
                 text = "Name",
                 style = WkTemplateElementTypo,
-                color = colorMessage,
+                color = iconColor,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(start = 8.dp)
             )
@@ -167,7 +169,7 @@ fun MyViewToggles() {
             ) {
                 Icon(
                     imageVector = Icons.Outlined.GridView,
-                    tint = colorMessage,
+                    tint = iconColor,
                     contentDescription = "Template display toggle"
                 )
             }
@@ -177,12 +179,15 @@ fun MyViewToggles() {
 
 
 @Composable
-fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
+fun HomeBanner(
+    sendIntent: (HomeIntent) -> Unit,
+    bgColor: Color
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .background(backgroundColor)
+            .background(bgColor)
 
     ) {
         Row(
@@ -202,7 +207,6 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
 
                 Text(
                     text = stringResource(R.string.your_workouts),
-                    //text = "LONG LONG LONG LONG",
                     color = title,
                     fontSize = 22.sp,
                     style = TitleTypo,
@@ -220,7 +224,7 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Search,
-                        tint = colorMessage,
+                        tint = title,
                         contentDescription = "Search workout"
                     )
                 }
@@ -247,11 +251,11 @@ fun MyHomeBanner(sendIntent: (HomeIntent) -> Unit, backgroundColor: Color) {
                 imageVector = Icons.Outlined.Construction,
                 contentDescription = "Construction icon",
                 modifier = Modifier.size(20.dp),
-                tint = colorMessage,
+                tint = primaryVariant,
             )
             Text(
                 text = "WIP",
-                color = colorMessage,
+                color = primaryVariant,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(start = 8.dp),
                 style = TitleTypo,
@@ -282,8 +286,8 @@ fun WkPreview(wkPreview: WorkoutPreview, sendIntent: (HomeIntent) -> Unit) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "WIP",
-                color = colorMessage,
+                text = "#tag1  #tag2",
+                color = onTertiary,
                 fontSize = 12.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
