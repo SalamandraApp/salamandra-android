@@ -20,11 +20,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import user.UserEntity
+import workout.WorkoutTemplateElementEntity
 import workout.WorkoutTemplateEntity
 import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class UserDataSourceTest{
+class UserDataSourceTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -43,9 +44,26 @@ class UserDataSourceTest{
             InstrumentationRegistry.getInstrumentation().targetContext,
             "test.db"
         )
-        db = SalamandraLocalDB(driver, UserEntity.Adapter(dateAdapter, dateAdapter, intAdapter, intAdapter, intAdapter, intAdapter), WorkoutTemplateEntity.Adapter(
-            DateAdapter(), BooleanAdapter()
-        ))
+        db = SalamandraLocalDB(
+            driver,
+            UserEntityAdapter = UserEntity.Adapter(
+                dateAdapter,
+                dateAdapter,
+                intAdapter,
+                intAdapter,
+                intAdapter,
+                intAdapter
+            ),
+            WorkoutTemplateEntityAdapter = WorkoutTemplateEntity.Adapter(
+                DateAdapter(),
+                BooleanAdapter()
+            ),
+            WorkoutTemplateElementEntityAdapter = WorkoutTemplateElementEntity.Adapter(
+                intAdapter,
+                intAdapter,
+                intAdapter
+            )
+        )
         dataSource = UserDataSource(db, testDispatcher)
     }
 

@@ -31,10 +31,9 @@ class RepositoryImpl(
                         is Result.Success -> Result.Success(Unit)
                         is Result.Error -> Result.Error(insertionInLocal.error)
                     }
-
                 }
 
-                is Result.Error -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
+                is Result.Error -> Result.Error(DataError.Datastore.UID_NOT_FOUND)
             }
         } catch (exception: Exception) {
             Result.Error(retrofitExceptionHandler.handleException(exception))

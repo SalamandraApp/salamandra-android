@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import user.UserEntity
+import workout.WorkoutTemplateElementEntity
 import workout.WorkoutTemplateEntity
 import java.time.LocalDate
 import java.util.Date
@@ -38,7 +39,8 @@ class WorkoutTemplateDataSourceTest {
     private val description = "This is a dummy description"
     private val dateCreated = LocalDate.parse("2024-02-02")
     private val onlyPreviewAvailable = false
-    private val expectedWorkoutTemplateEntity = WorkoutTemplateEntity(id, name, description, dateCreated, onlyPreviewAvailable)
+    private val expectedWorkoutTemplateEntity =
+        WorkoutTemplateEntity(id, name, description, dateCreated, onlyPreviewAvailable)
 
     @Before
     fun setUp() {
@@ -49,14 +51,27 @@ class WorkoutTemplateDataSourceTest {
             InstrumentationRegistry.getInstrumentation().targetContext,
             "test.db"
         )
-        db = SalamandraLocalDB(driver, UserEntity.Adapter(dateAdapter, dateAdapter, intAdapter, intAdapter, intAdapter, intAdapter), WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()))
+        db = SalamandraLocalDB(
+            driver,
+            UserEntityAdapter = UserEntity.Adapter(
+                dateAdapter,
+                dateAdapter,
+                intAdapter,
+                intAdapter,
+                intAdapter,
+                intAdapter
+            ),
+            WorkoutTemplateEntityAdapter = WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()),
+            WorkoutTemplateElementEntityAdapter = WorkoutTemplateElementEntity.Adapter(intAdapter, intAdapter, intAdapter)
+        )
         dataSource = WorkoutTemplateDataSource(db, testDispatcher)
     }
 
     @Test
     fun testBasicInsertionAndGet() = runTest {
         // Act
-        val insertion = dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
+        val insertion =
+            dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
         runCurrent()
         val wk = dataSource.getWkByID(id)
         runCurrent()

@@ -11,3 +11,9 @@ CREATE TABLE WorkoutTemplateElementEntity (
     FOREIGN KEY (wkTemplateId) REFERENCES WorkoutTemplateEntity(id),
     FOREIGN KEY (exerciseId) REFERENCES ExerciseEntity(id)
 );
+
+getAllElementsOfWk:
+SELECT *
+FROM WorkoutTemplateElementEntity
+WHERE wkTemplateId = :wkTemplateId;
+

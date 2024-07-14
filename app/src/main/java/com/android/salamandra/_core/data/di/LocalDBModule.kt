@@ -17,6 +17,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import user.UserEntity
+import workout.WorkoutTemplateElementEntity
 import workout.WorkoutTemplateEntity
 import javax.inject.Singleton
 
@@ -49,7 +50,8 @@ object LocalDBModule {
                 fitnessLevelAdapter = intAdapter,
                 fitnessGoalAdapter = intAdapter
 
-            )
+            ),
+            WorkoutTemplateElementEntityAdapter = WorkoutTemplateElementEntity.Adapter(positionAdapter = intAdapter, repsAdapter = intAdapter, restAdapter = intAdapter)
         )
     }
 

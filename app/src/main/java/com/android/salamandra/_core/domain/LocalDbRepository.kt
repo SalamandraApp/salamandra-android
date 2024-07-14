@@ -6,6 +6,7 @@ import com.android.salamandra._core.domain.model.User
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import kotlinx.coroutines.flow.Flow
 import user.UserEntity
+import workout.WorkoutTemplateEntity
 
 interface LocalDbRepository {
     suspend fun isWkTemplateEntityEmpty(): Boolean
@@ -14,4 +15,5 @@ interface LocalDbRepository {
     suspend fun insertUser(user: User): Result<Unit, DataError.Local>
     suspend fun getUserByID(id: String): Result<UserEntity, DataError.Local>
     suspend fun clearAllDatabase()
+    suspend fun getWkByID(id: String): Result<WorkoutTemplateEntity, DataError.Local>
 }
