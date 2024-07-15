@@ -23,7 +23,7 @@ class RepositoryImpl(
                     when(val localWkTemplate = localDbRepository.getWkByID(workoutId)){
                         is Result.Success -> {
                             if(localWkTemplate.data.onlyPreviewAvailable){
-                                Result.Success(salamandraApiService.getWorkoutById(uid.data, workoutId).toDomain()                                )
+                                Result.Success(salamandraApiService.getWorkoutById(uid.data, workoutId).toDomain())
                             } else {
                                 TODO() //TODO get all wk template elements
                             }

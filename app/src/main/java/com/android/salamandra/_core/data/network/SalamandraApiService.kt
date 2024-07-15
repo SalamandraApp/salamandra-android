@@ -24,7 +24,7 @@ interface SalamandraApiService {
     @GET("users/{userId}")
     suspend fun getUserData(@Path("userId") userId: String): UserResponse
 
-    @GET("GET /users/{user_id}/workout-templates/{workout_template_id}")
-    suspend fun getWorkoutById(@Path("userId") userId: String, @Path("workout_template_id") wkId: String): WkTemplateResponse
+    @GET("/users/{user_id}/workout-templates/{workout_template_id}")
+    suspend fun getWorkoutById(@Path("user_id") userId: String, @Path("workout_template_id") wkId: String): WkTemplateResponse
 
 }

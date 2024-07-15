@@ -20,7 +20,7 @@ data class WkTemplateResponse(
     @SerializedName("user_id") private val userId: String,
     @SerializedName("name") private val name: String,
     @SerializedName("description") private val description: String?,
-    @SerializedName("date_created") private val dateCreated: LocalDate,
+    @SerializedName("date_created") private val dateCreated: String,
     @SerializedName("elements") private val elements: List<ExerciseInWkTemplateResponse>,
 ) {
     fun toDomain(): WorkoutTemplate {
@@ -29,7 +29,7 @@ data class WkTemplateResponse(
             name = name,
             elements = elements.map { it.toDomain() },
             description = description,
-            dateCreated = dateCreated,
+            dateCreated = LocalDate.parse(dateCreated),
         )
     }
 }
@@ -38,10 +38,10 @@ data class ExerciseInWkTemplateResponse(
     @SerializedName("id") private val templateElementId: String,
     @SerializedName("exercise_id") private val exerciseId: String,
     @SerializedName("exercise_name") private val exName: String,
-    @SerializedName("mainMuscleGroup") private val mainMuscleGroup: Int,
-    @SerializedName("secondaryMuscleGroup") private val secondaryMuscleGroup: Int,
-    @SerializedName("necessaryEquipment") private val necessaryEquipment: Int,
-    @SerializedName("exerciseType") private val exerciseType: Int,
+    @SerializedName("main_muscle_group") private val mainMuscleGroup: Int,
+    @SerializedName("secondary_muscle_group") private val secondaryMuscleGroup: Int,
+    @SerializedName("necessary_equipment") private val necessaryEquipment: Int,
+    @SerializedName("exercise_type") private val exerciseType: Int,
     @SerializedName("position") private val position: Int,
     @SerializedName("reps") private val reps: Int,
     @SerializedName("sets") private val sets: Int,

@@ -8,8 +8,10 @@ import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.User
+import javax.inject.Inject
 
-class CoreRepositoryImpl(
+
+class CoreRepositoryImpl @Inject constructor(
    private val cognitoService: CognitoService,
    private val dataStoreRepository: DataStoreRepository,
    private val localDbRepository: LocalDbRepository

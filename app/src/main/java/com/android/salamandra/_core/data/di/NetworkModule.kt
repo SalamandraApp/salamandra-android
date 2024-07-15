@@ -58,3 +58,41 @@ object NetworkModule {
         return CoreRepositoryImpl(cognitoService, dataStoreRepository, localDbRepository)
     }
 }
+
+/*
+@Module
+@InstallIn(SingletonComponent::class)
+interface NetworkModule {
+    //Retrofit
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit
+            .Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+        return OkHttpClient
+            .Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(authInterceptor)
+            .build()
+    }
+
+    @Provides
+    fun provideSalamandraApiService(retrofit: Retrofit): SalamandraApiService {
+        return retrofit.create(SalamandraApiService::class.java)
+    }
+
+    @Binds
+    fun provideRepository(
+        core: CoreRepositoryImpl
+    ): CoreRepository
+}
+* */
