@@ -14,5 +14,5 @@ fun Int.toMuscleGroup() = when (this) {
     2 -> MuscleGroup.Arms
     3 -> MuscleGroup.Hamstrings
     4 -> MuscleGroup.Back
-    else -> throw IllegalArgumentException("integer to Muscle group not mapped")
+    else -> throw IllegalArgumentException("Integer to MuscleGroup not mapped")
 }

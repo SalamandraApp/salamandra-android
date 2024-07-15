@@ -5,6 +5,7 @@ import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import com.android.salamandra.navArgs
+import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
 import com.android.salamandra.workouts.seeWk.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class SeeWkViewModel @Inject constructor(
     ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
-    private val repository: Repository
+    private val repository: Repository,
+    private val workoutsRepository: WorkoutsRepository
 ) :
     BaseViewModel<SeeWkState, SeeWkIntent, SeeWkEvent>(SeeWkState.initial, ioDispatcher) {
 
@@ -36,7 +38,7 @@ class SeeWkViewModel @Inject constructor(
             when(val wkToSee = repository.getWkTemplate(workoutId = navArgs.wkTemplateId)){
                 is Result.Success -> {
                     _state.update { it.copy(wkTemplate = wkToSee.data) }
-                    //TODO store wk in local
+                    workoutsRepository.storeWkTemplateInLocal(wkTemplate = wkToSee.data)
                 }
                 is Result.Error -> _state.update { it.copy(error = wkToSee.error) }
             }

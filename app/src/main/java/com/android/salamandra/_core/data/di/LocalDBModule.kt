@@ -8,13 +8,16 @@ import com.android.salamandra._core.data.adapter.BooleanAdapter
 import com.android.salamandra._core.data.adapter.DateAdapter
 import com.android.salamandra._core.data.LocalDbRepositoryImpl
 import com.android.salamandra._core.data.adapter.IntAdapter
+import com.android.salamandra._core.data.sqlDelight.exercise.ExerciseDataSource
 import com.android.salamandra._core.data.sqlDelight.user.UserDataSource
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateDataSource
+import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTemplateElementDataSource
 import com.android.salamandra._core.domain.LocalDbRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import exercise.ExerciseEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import user.UserEntity
 import workout.WorkoutTemplateElementEntity
@@ -35,7 +38,12 @@ object LocalDBModule {
 
     @Singleton
     @Provides
-    fun provideSQLDelightDB(driver: SqlDriver, dateAdapter: DateAdapter, booleanAdapter: BooleanAdapter, intAdapter: IntAdapter): SalamandraLocalDB {
+    fun provideSQLDelightDB(
+        driver: SqlDriver,
+        dateAdapter: DateAdapter,
+        booleanAdapter: BooleanAdapter,
+        intAdapter: IntAdapter
+    ): SalamandraLocalDB {
         return SalamandraLocalDB(
             driver = driver,
             WorkoutTemplateEntityAdapter = WorkoutTemplateEntity.Adapter(
@@ -51,7 +59,19 @@ object LocalDBModule {
                 fitnessGoalAdapter = intAdapter
 
             ),
-            WorkoutTemplateElementEntityAdapter = WorkoutTemplateElementEntity.Adapter(positionAdapter = intAdapter, repsAdapter = intAdapter, restAdapter = intAdapter)
+            WorkoutTemplateElementEntityAdapter = WorkoutTemplateElementEntity.Adapter(
+                positionAdapter = intAdapter,
+                repsAdapter = intAdapter,
+                restAdapter = intAdapter,
+                setsAdapter = intAdapter
+            ),
+            ExerciseEntityAdapter = ExerciseEntity.Adapter(
+                mainMuscleGroupAdapter = intAdapter,
+                secondaryMuscleGroupAdapter = intAdapter,
+                necessaryEquipmentAdapter = intAdapter,
+                exerciseTypeAdapter = intAdapter
+            )
+
         )
     }
 
@@ -59,9 +79,12 @@ object LocalDBModule {
     @Provides
     fun provideLocalDbRepository(
         workoutTemplateDataSource: WorkoutTemplateDataSource,
-        userDataSource: UserDataSource
+        userDataSource: UserDataSource,
+        exerciseDataSource: ExerciseDataSource,
+        workoutTemplateElementDataSource: WorkoutTemplateElementDataSource
+
     ): LocalDbRepository {
-        return LocalDbRepositoryImpl(workoutTemplateDataSource, userDataSource)
+        return LocalDbRepositoryImpl(workoutTemplateDataSource = workoutTemplateDataSource, userDataSource = userDataSource, exerciseDataSource = exerciseDataSource, workoutTemplateElementDataSource = workoutTemplateElementDataSource)
     }
 
     @Singleton

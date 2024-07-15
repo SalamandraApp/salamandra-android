@@ -18,7 +18,7 @@ getAllWks:
 SELECT *
 FROM WorkoutTemplateEntity;
 
-insertWk:
+insertWkTemplate:
 INSERT OR REPLACE
 INTO WorkoutTemplateEntity
 VALUES (?,?,?,?, ?);

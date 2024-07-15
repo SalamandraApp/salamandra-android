@@ -6,5 +6,5 @@ enum class FitnessLevel {
 
 fun Int.toFitnessLevel() = when(this){
     0 -> FitnessLevel.Beginner
-    else -> throw IllegalArgumentException("integer to Gender not mapped")
+    else -> throw IllegalArgumentException("Integer to FitnessLevel not mapped")
 }

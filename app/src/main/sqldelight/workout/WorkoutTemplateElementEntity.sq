@@ -6,6 +6,7 @@ CREATE TABLE WorkoutTemplateElementEntity (
     exerciseId TEXT NOT NULL,
     position INTEGER AS Int NOT NULL,
     reps INTEGER AS Int NOT NULL,
+    sets INTEGER AS Int NOT NULL,
     weight REAL,
     rest INTEGER AS Int NOT NULL,
     FOREIGN KEY (wkTemplateId) REFERENCES WorkoutTemplateEntity(id),
@@ -17,3 +18,10 @@ SELECT *
 FROM WorkoutTemplateElementEntity
 WHERE wkTemplateId = :wkTemplateId;
 
+insertWkTemplateElement:
+INSERT OR REPLACE
+INTO WorkoutTemplateElementEntity
+VALUES (?,?,?,?,?,?,?,?);
+
+clearDatabase:
+DELETE FROM WorkoutTemplateElementEntity;

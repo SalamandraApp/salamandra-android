@@ -10,5 +10,5 @@ fun Int.toGender() = when(this){
     0 -> Gender.Male
     1 -> Gender.Female
     2 -> Gender.Other
-    else -> throw IllegalArgumentException("integer to Gender not mapped")
+    else -> throw IllegalArgumentException("Integer to Gender not mapped")
 }

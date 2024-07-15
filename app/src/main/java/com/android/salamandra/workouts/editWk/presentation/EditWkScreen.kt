@@ -576,7 +576,7 @@ private fun ButtonsRowBanner (
                 contentDescription = "Add Exercise",
             )
             Text(
-                text = "ADD EXERCISE",
+                text = stringResource(R.string.add_exercise),
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
