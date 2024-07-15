@@ -28,11 +28,14 @@ class EditWkViewModel @Inject constructor(
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
             is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
+
             EditWkIntent.NavigateUp -> sendEvent(EditWkEvent.NavigateUp)
 
             // Toggle bottom sheet
-            EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false) }
+            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false) }
+
             is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true, exerciseSelectedIndex = intent.index) }
 
             is EditWkIntent.ChangeWkName -> _state.update {
@@ -53,13 +56,20 @@ class EditWkViewModel @Inject constructor(
             }
 
             is EditWkIntent.ChangeWkElementReps -> updateReps(intent.index, intent.newReps)
+
             is EditWkIntent.ChangeWkElementSets -> updateSets(intent.index, intent.newSets)
+
             is EditWkIntent.ChangeWkElementWeight -> updateWeight(intent.index, intent.newWeight)
 
-            is EditWkIntent.ShowSearchExercise -> _state.update { it.copy(showSearchExercise = intent.show) }
             is EditWkIntent.ChangeSearchTerm -> _state.update { it.copy(searchTerm = intent.newTerm) }
-            EditWkIntent.SearchExercise -> searchExercise()
+
+            is EditWkIntent.SearchExercise -> searchExercise()
+
             is EditWkIntent.AddExerciseToTemplate -> addExerciseToTemplate(intent.exercise)
+
+            is EditWkIntent.NavigateToEdit -> sendEvent(EditWkEvent.NavigateToEdit)
+
+            is EditWkIntent.NavigateToSearch -> sendEvent(EditWkEvent.NavigateToSearch)
         }
     }
 

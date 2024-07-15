@@ -72,6 +72,8 @@ import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
+import com.android.salamandra.destinations.EditWkScreenDestination
+import com.android.salamandra.destinations.SearchExerciseScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
@@ -93,6 +95,8 @@ fun EditWkScreen(navigator: DestinationsNavigator, viewModel: EditWkViewModel = 
     LaunchedEffect(events) {
         when (events) {
             EditWkEvent.NavigateUp -> navigator.navigateUp()
+            EditWkEvent.NavigateToEdit -> {}
+            EditWkEvent.NavigateToSearch -> navigator.navigate(SearchExerciseScreenDestination)
             null -> {}
         }
     }
@@ -570,7 +574,7 @@ private fun ButtonsRowBanner (
             containerColor = primaryVariant.copy(0.3f),
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { sendIntent(EditWkIntent.ShowSearchExercise(true)) }) {
+            onClick = { sendIntent(EditWkIntent.NavigateToSearch) }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add Exercise",
@@ -748,7 +752,7 @@ private fun EditTagRow(
             containerColor = secondary,
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { sendIntent(EditWkIntent.ShowSearchExercise(true)) }) {
+            onClick = { sendIntent(EditWkIntent.NavigateToSearch) }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add Exercise",
