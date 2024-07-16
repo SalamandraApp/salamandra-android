@@ -155,7 +155,7 @@ private fun SearchExerciseElement(
     }
 }
 
-@Preview()
+@Preview
 @Composable
 private fun ScreenPreview() {
     SalamandraTheme {
