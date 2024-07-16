@@ -17,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LoginProfileSettingsSeeWkSearchExerciseViewModelTest {
+class LoginProfileSettingsSeeWkSearchExerciseSearchViewModelTest {
     @get:Rule
     val coroutineRule = CoroutineRule()
 

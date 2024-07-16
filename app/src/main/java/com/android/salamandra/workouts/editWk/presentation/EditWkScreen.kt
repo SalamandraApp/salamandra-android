@@ -41,9 +41,8 @@ import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
-import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
 import com.android.salamandra.destinations.HomeScreenDestination
-import com.android.salamandra.destinations.SearchExerciseScreenDestination
+import com.android.salamandra.destinations.SearchScreenDestination
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.secondary
@@ -68,7 +67,7 @@ fun EditWkScreen(navigator: DestinationsNavigator, viewModel: EditWkViewModel = 
     LaunchedEffect(events) {
         when (events) {
             EditWkEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
-            EditWkEvent.NavigateToSearch -> navigator.navigate(SearchExerciseScreenDestination)
+            EditWkEvent.NavigateToSearch -> navigator.navigate(SearchScreenDestination())
             null -> {}
         }
     }

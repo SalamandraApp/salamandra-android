@@ -81,6 +81,7 @@ class EditWkViewModel @Inject constructor(
     }
 
 
+
     private fun updateReps(index: Int, newReps: Int) {
         _state.value.let { currentState ->
             val updatedElements = currentState.wkTemplate.elements.toMutableList()

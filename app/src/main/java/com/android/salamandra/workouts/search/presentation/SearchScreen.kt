@@ -1,4 +1,4 @@
-package com.android.salamandra.workouts.searchExercise.presentation
+package com.android.salamandra.workouts.search.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,28 +35,22 @@ import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
-import com.android.salamandra._core.util.EXERCISE_LIST
 import com.android.salamandra.destinations.EditWkScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
-import com.android.salamandra.workouts.editWk.presentation.EditWkState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination
+@Destination(navArgsDelegate = SearchNavArgs::class)
 @Composable
-fun SearchExerciseScreen(
-    navigator: DestinationsNavigator,
-    viewModel: SearchExerciseViewModel = hiltViewModel()
-) {
+fun SearchScreen(navigator: DestinationsNavigator, viewModel: SearchViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsState()
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            SearchExerciseEvent.NavigateToEdit -> navigator.navigate(EditWkScreenDestination(state.addedExercisesIds))
+            SearchEvent.NavigateToEdit -> navigator.navigate(EditWkScreenDestination(addedExercises = state.addedExercisesIds))
             null -> {}
         }
     }
@@ -69,8 +63,8 @@ fun SearchExerciseScreen(
 
 @Composable
 private fun ScreenBody(
-    state: SearchExerciseState,
-    sendIntent: (SearchExerciseIntent) -> Unit
+    state: SearchState,
+    sendIntent: (SearchIntent) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -85,10 +79,14 @@ private fun ScreenBody(
                 .fillMaxWidth()
                 .padding(8.dp),
             value = state.searchTerm,
-            onValueChange = { sendIntent(SearchExerciseIntent.ChangeSearchTerm(it)) },
+            onValueChange = {
+                sendIntent(SearchIntent.ChangeSearchTerm(it))
+            },
             placeholder = { Text(text = stringResource(R.string.type_an_exercise_to_search)) },
             trailingIcon = {
-                IconButton(onClick = { sendIntent(SearchExerciseIntent.SearchExercise) }) {
+                IconButton(onClick = {
+                    sendIntent(SearchIntent.SearchExercise)
+                }) {
                     Icon(
                         imageVector = Icons.Outlined.Search,
                         contentDescription = "Search exercise"
@@ -97,6 +95,7 @@ private fun ScreenBody(
             },
             shape = CircleShape
         )
+
         LazyColumn(
             Modifier
                 .align(Alignment.TopCenter)
@@ -106,7 +105,7 @@ private fun ScreenBody(
                 SearchExerciseElement(
                     exercise = it,
                     onAddExercise = { exercise ->
-                        sendIntent(SearchExerciseIntent.AddExercise(exercise.exId))
+                        sendIntent(SearchIntent.AddExercise(exercise.exId))
                     }
                 )
                 Spacer(Modifier.size(8.dp))
@@ -116,7 +115,7 @@ private fun ScreenBody(
 
         Button(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = { sendIntent(SearchExerciseIntent.NavigateToEdit) }) {
+            onClick = { sendIntent(SearchIntent.NavigateToEdit) }) {
             Text("Done", color = tertiary)
         }
 
@@ -124,7 +123,7 @@ private fun ScreenBody(
         if (state.error != null)
             ErrorDialog(
                 error = state.error.asUiText(),
-                onDismiss = { sendIntent(SearchExerciseIntent.CloseError) }
+                onDismiss = { sendIntent(SearchIntent.CloseError) }
             )
 
     }
@@ -161,7 +160,7 @@ private fun SearchExerciseElement(
 private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
-            state = SearchExerciseState.initial,
+            state = SearchState.initial,
             sendIntent = {}
         )
     }

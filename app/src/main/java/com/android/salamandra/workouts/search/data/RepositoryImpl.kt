@@ -1,15 +1,14 @@
-package com.android.salamandra.workouts.searchExercise.data
+package com.android.salamandra.workouts.search.data
 
 import android.util.Log
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra.workouts.searchExercise.domain.Repository
+import com.android.salamandra.workouts.search.domain.Repository
 
 class RepositoryImpl(private val salamandraApiService: SalamandraApiService): Repository {
     override suspend fun getExercises(term: String): Result<List<Exercise>, DataError.Network> {
-//        return Result.Error(DataError.Network.REQUEST_TIEMOUT)
         runCatching {
             salamandraApiService.searchExercise(term)
         }

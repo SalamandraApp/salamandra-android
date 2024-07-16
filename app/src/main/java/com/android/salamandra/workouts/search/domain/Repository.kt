@@ -1,4 +1,4 @@
-package com.android.salamandra.workouts.searchExercise.domain
+package com.android.salamandra.workouts.search.domain
 
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
