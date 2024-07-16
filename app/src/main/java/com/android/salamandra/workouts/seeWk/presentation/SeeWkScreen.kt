@@ -35,7 +35,7 @@ import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra.workouts.commons.presentation.components.WkElementComponent
-import com.android.salamandra.workouts.commons.presentation.constants.wkTemplateScreenConstants
+import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
 import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.ui.theme.TitleTypo
@@ -75,8 +75,8 @@ private fun ScreenBody(
     sendIntent: (SeeWkIntent) -> Unit
 ) {
     val mainColor = tertiary
-    val bannerHeight = wkTemplateScreenConstants.bannerHeight
-    val fixedBannerHeight = wkTemplateScreenConstants.fixedBannerHeight
+    val bannerHeight = WkTemplateScreenConstants.bannerHeight
+    val fixedBannerHeight = WkTemplateScreenConstants.fixedBannerHeight
 
     val scrollThreshold: Float
     val bannerHeightPx: Float
@@ -166,7 +166,7 @@ fun SeeWkFixedBanner(
     modifier: Modifier = Modifier
 ) {
 
-    val dpSideMargin = wkTemplateScreenConstants.sideMargin
+    val dpSideMargin = WkTemplateScreenConstants.sideMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -198,14 +198,14 @@ fun SeeWkBigBanner(
     sendIntent: (SeeWkIntent) -> Unit,
     bgColor: Color) {
 
-    val wTopRow     = wkTemplateScreenConstants.bannerRowWeights.top
-    val wTitle      = wkTemplateScreenConstants.bannerRowWeights.picture
-    val wTags       = wkTemplateScreenConstants.bannerRowWeights.tags
-    val wButtons    = wkTemplateScreenConstants.bannerRowWeights.buttons
-    val wLabels     = wkTemplateScreenConstants.bannerRowWeights.labels
+    val dpTopRow     = WkTemplateScreenConstants.bannerRowHeights.top
+    val dpTitle      = WkTemplateScreenConstants.bannerRowHeights.picture
+    val dpTags       = WkTemplateScreenConstants.bannerRowHeights.tags
+    val dpButtons    = WkTemplateScreenConstants.bannerRowHeights.buttons
+    val dpLabels     = WkTemplateScreenConstants.bannerRowHeights.labels
 
-    val dpSideMargin = wkTemplateScreenConstants.sideMargin
-    val dpInBetweenMargin = wkTemplateScreenConstants.bannerInBetweenMargin
+    val dpSideMargin = WkTemplateScreenConstants.sideMargin
+    val dpInBetweenMargin = WkTemplateScreenConstants.bannerInBetweenMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -214,7 +214,7 @@ fun SeeWkBigBanner(
     ) {
         SeeWkBannerTopRow(
             modifier = Modifier
-                .weight(wTopRow),
+                .height(dpTopRow),
             sendIntent = sendIntent,
             state = state,
             middleContent = {
@@ -229,7 +229,7 @@ fun SeeWkBigBanner(
         )
         BannerTitleRow(
             modifier = Modifier
-                .weight(wTitle)
+                .height(dpTitle)
                 .padding(bottom = dpInBetweenMargin),
             sendIntent = sendIntent,
             state = state
@@ -237,20 +237,20 @@ fun SeeWkBigBanner(
         TagRow(
             modifier = Modifier
                 .padding(bottom = dpInBetweenMargin)
-                .weight(wTags),
+                .height(dpTags),
             state = state,
             sendIntent = sendIntent
         )
         ButtonsRow(
             modifier = Modifier
-                .weight(wButtons)
+                .height(dpButtons)
                 .padding(bottom = dpInBetweenMargin / 2),
             state = state,
             sendIntent = sendIntent
         )
         WkTemplateViewLabels(
             modifier = Modifier
-                .weight(wLabels),
+                .height(dpLabels),
         )
     }
 }

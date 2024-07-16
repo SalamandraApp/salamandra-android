@@ -49,7 +49,7 @@ import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.android.salamandra.workouts.commons.presentation.components.WkElementComponent
 import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
-import com.android.salamandra.workouts.commons.presentation.constants.wkTemplateScreenConstants
+import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
 import com.android.salamandra.workouts.editWk.presentation.components.BannerTitleRow
 import com.android.salamandra.workouts.editWk.presentation.components.ButtonsRowBanner
 import com.android.salamandra.workouts.editWk.presentation.components.EditExercise
@@ -85,8 +85,8 @@ private fun ScreenBody(
     sendIntent: (EditWkIntent) -> Unit,
 ) {
     val mainColor = tertiary
-    val bannerHeight = wkTemplateScreenConstants.bannerHeight
-    val fixedBannerHeight = wkTemplateScreenConstants.fixedBannerHeight
+    val bannerHeight = WkTemplateScreenConstants.bannerHeight
+    val fixedBannerHeight = WkTemplateScreenConstants.fixedBannerHeight
 
     val scrollThreshold: Float
     val bannerHeightPx: Float
@@ -187,7 +187,7 @@ fun EditWkFixedBanner(
     modifier: Modifier = Modifier
 ) {
 
-    val dpSideMargin = wkTemplateScreenConstants.sideMargin
+    val dpSideMargin = WkTemplateScreenConstants.sideMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -219,14 +219,14 @@ fun EditWkBigBanner(
     backgroundColor: Color
 ) {
 
-    val wTopRow     = wkTemplateScreenConstants.bannerRowWeights.top
-    val wTitle      = wkTemplateScreenConstants.bannerRowWeights.picture
-    val wTags       = wkTemplateScreenConstants.bannerRowWeights.tags
-    val wButtons    = wkTemplateScreenConstants.bannerRowWeights.buttons
-    val wLabels     = wkTemplateScreenConstants.bannerRowWeights.labels
+    val dpTopRow     = WkTemplateScreenConstants.bannerRowHeights.top
+    val dpTitle      = WkTemplateScreenConstants.bannerRowHeights.picture
+    val dpTags       = WkTemplateScreenConstants.bannerRowHeights.tags
+    val dpButtons    = WkTemplateScreenConstants.bannerRowHeights.buttons
+    val dpLabels     = WkTemplateScreenConstants.bannerRowHeights.labels
 
-    val dpSideMargin = wkTemplateScreenConstants.sideMargin
-    val dpInBetweenMargin = wkTemplateScreenConstants.bannerInBetweenMargin
+    val dpSideMargin = WkTemplateScreenConstants.sideMargin
+    val dpInBetweenMargin = WkTemplateScreenConstants.bannerInBetweenMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -235,7 +235,7 @@ fun EditWkBigBanner(
     ) {
         EditWkBannerTopRow(
             modifier = Modifier
-                .weight(wTopRow),
+                .height(dpTopRow),
             sendIntent = sendIntent,
             state = state,
             middleContent = {
@@ -249,7 +249,7 @@ fun EditWkBigBanner(
         )
         BannerTitleRow(
             modifier = Modifier
-                .weight(wTitle)
+                .height(dpTitle)
                 .padding(bottom = dpInBetweenMargin),
             sendIntent = sendIntent,
             state = state
@@ -257,20 +257,20 @@ fun EditWkBigBanner(
         EditTagRow(
             modifier = Modifier
                 .padding(bottom = dpInBetweenMargin)
-                .weight(wTags),
+                .height(dpTags),
             state = state,
             sendIntent = sendIntent
         )
         ButtonsRowBanner(
             modifier = Modifier
-                .weight(wButtons)
+                .height(dpButtons)
                 .padding(bottom = dpInBetweenMargin / 2),
             state = state,
             sendIntent = sendIntent
         )
         WkTemplateViewLabels(
             modifier = Modifier
-                .weight(wLabels),
+                .height(dpLabels),
         )
     }
 }

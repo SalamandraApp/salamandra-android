@@ -60,7 +60,7 @@ fun BannerTitleRow(
                 },
                 minLines = 2,
                 maxLines = 2,
-                textStyle = TitleTypo.copy(fontSize = 14.sp),
+                textStyle = TitleTypo.copy(fontSize = 12.sp),
                 colors = textFieldColors(),
                 onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
             )

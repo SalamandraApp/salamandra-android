@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.R
-import com.android.salamandra.workouts.commons.presentation.constants.wkTemplateScreenConstants
+import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
 
 @Composable
 fun WkTemplateViewLabels(
@@ -29,7 +29,7 @@ fun WkTemplateViewLabels(
         // EXERCISE NAME
         Text(
             modifier = Modifier
-                .weight(wkTemplateScreenConstants.columnLabelWeights.exercise),
+                .weight(WkTemplateScreenConstants.columnLabelWeights.exercise),
             text = stringResource(R.string.exercise),
             color = columnLabelColor,
             fontSize = 14.sp,
@@ -38,7 +38,7 @@ fun WkTemplateViewLabels(
         // SETS
         Text(
             modifier = Modifier
-                .weight(wkTemplateScreenConstants.columnLabelWeights.sets),
+                .weight(WkTemplateScreenConstants.columnLabelWeights.sets),
             text = stringResource(R.string.sets),
             color = columnLabelColor,
             fontSize = 14.sp,
@@ -47,7 +47,7 @@ fun WkTemplateViewLabels(
         // REPS
         Text(
             modifier = Modifier
-                .weight(wkTemplateScreenConstants.columnLabelWeights.sets),
+                .weight(WkTemplateScreenConstants.columnLabelWeights.sets),
             text = stringResource(R.string.reps),
             color = columnLabelColor,
             fontSize = 14.sp,
@@ -56,7 +56,7 @@ fun WkTemplateViewLabels(
         // WEIGHT
         Text(
             modifier = Modifier
-                .weight(wkTemplateScreenConstants.columnLabelWeights.weight + wkTemplateScreenConstants.columnLabelWeights.button),
+                .weight(WkTemplateScreenConstants.columnLabelWeights.weight + WkTemplateScreenConstants.columnLabelWeights.button),
             text = stringResource(R.string.weight_kg),
             color = columnLabelColor,
             fontSize = 14.sp,

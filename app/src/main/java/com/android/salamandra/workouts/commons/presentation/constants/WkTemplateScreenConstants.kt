@@ -1,11 +1,11 @@
 package com.android.salamandra.workouts.commons.presentation.constants
 
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-object wkTemplateScreenConstants {
-    val bannerHeight = 320.dp
+object WkTemplateScreenConstants {
     val fixedBannerHeight = 85.dp
-    val columnLabelWeights = columnLabelWeights(
+    val columnLabelWeights = ColumnLabelWeights(
         0.5f,
         0.1f,
         0.1f,
@@ -13,28 +13,30 @@ object wkTemplateScreenConstants {
         0.1f
     )
     val sideMargin = 20.dp
-    val bannerInBetweenMargin = 20.dp
-    val bannerRowWeights = bannerRowWeights(
-        180f,
-        500f,
-        150f,
-        180f,
-        100f
+    val bannerInBetweenMargin = 22.dp
+    val bannerRowHeights = BannerRowHeights(
+        top     = 50.dp,
+        picture = 150.dp,
+        tags    = 30.dp,
+        buttons = 60.dp,
+        labels  = 50.dp
     )
+    val bannerHeight: Dp = with(bannerRowHeights) {
+        top + picture + tags + buttons + labels
+    }
 }
+data class BannerRowHeights (
+    val top: Dp,
+    val picture: Dp,
+    val tags: Dp,
+    val buttons: Dp,
+    val labels: Dp,
+)
 
-data class columnLabelWeights (
+data class ColumnLabelWeights (
     val exercise: Float,
     val sets: Float,
     val reps: Float,
     val weight: Float,
     val button: Float,
-)
-
-data class bannerRowWeights (
-    val top: Float,
-    val picture: Float,
-    val tags: Float,
-    val buttons: Float,
-    val labels: Float,
 )
