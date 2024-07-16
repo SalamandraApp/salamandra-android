@@ -5,18 +5,13 @@ import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
-import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
-import com.android.salamandra._core.util.EXERCISE_LIST
-import com.android.salamandra.workouts.seeWk.presentation.SeeWkIntent
 
 
 data class EditWkState(
     val loading: Boolean,
     val error: RootError?,
     val wkTemplate: WorkoutTemplate,
-    val searchTerm: String,
-    val exerciseList: List<Exercise>,
     val bottomSheet: Boolean,
     val exerciseSelectedIndex: Int?
 ) : State {
@@ -25,8 +20,7 @@ data class EditWkState(
             loading = false,
             error = null,
             wkTemplate = WorkoutTemplate(),
-            searchTerm = "",
-            exerciseList = emptyList(),
+
             bottomSheet = false,
             exerciseSelectedIndex = null,
         )
@@ -42,17 +36,9 @@ sealed class EditWkIntent: Intent {
 
     data object NavigateToSearch: EditWkIntent()
 
-    data object NavigateToEdit: EditWkIntent()
-
     data class ShowBottomSheet(val index: Int): EditWkIntent()
 
     data object HideBottomSheet: EditWkIntent()
-
-    data class ChangeSearchTerm(val newTerm: String): EditWkIntent()
-
-    data object SearchExercise: EditWkIntent()
-
-    data class AddExerciseToTemplate(val exercise: Exercise): EditWkIntent()
 
     data class ChangeWkName(val newName: String): EditWkIntent()
 
@@ -66,12 +52,23 @@ sealed class EditWkIntent: Intent {
 }
 
 sealed class EditWkEvent: Event{
-    data object NavigateUp: EditWkEvent()
+    data object NavigateToHome: EditWkEvent()
     data object NavigateToSearch: EditWkEvent()
-    data object NavigateToEdit: EditWkEvent()
-
 }
 
 data class EditWkNavArgs(
-    val dummy: Int? = null
-): NavArgs
+    val addedExercises: Array<String> = emptyArray()
+): NavArgs {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as EditWkNavArgs
+
+        return addedExercises.contentEquals(other.addedExercises)
+    }
+
+    override fun hashCode(): Int {
+        return addedExercises.contentHashCode()
+    }
+}

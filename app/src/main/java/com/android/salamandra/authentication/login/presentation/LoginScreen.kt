@@ -76,17 +76,13 @@ fun LoginScreen(
         }
     }
 
-    if (state.loading) {
-        MyCircularProgressbar()
-    } else {
-        ScreenBody(
-            state = state,
-            sendIntent = viewModel::dispatch,
-        )
-    }
+    ScreenBody(
+        state = state,
+        sendIntent = viewModel::dispatch,
+    )
+
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenBody(
     state: LoginState,
@@ -98,7 +94,7 @@ private fun ScreenBody(
             .fillMaxSize()
             .background(tertiary),
     ) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -120,7 +116,7 @@ private fun ScreenBody(
                 unfocusedLabelColor = subtitle,
             )
 
-            Box (
+            Box(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.BottomCenter
             ) {
@@ -152,7 +148,8 @@ private fun ScreenBody(
             // -------------------------------- PASSWORD
             Spacer(modifier = Modifier.height(betweenFieldSpacer))
             var passwordVisibility by remember { mutableStateOf(false) }
-            val img = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+            val img =
+                if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -188,7 +185,7 @@ private fun ScreenBody(
                     .align(Alignment.End)
                     .padding(vertical = textPad)
             )
-            Column (
+            Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Top
             ) {
@@ -211,8 +208,13 @@ private fun ScreenBody(
         }
         IconButton(modifier = Modifier
             .align(Alignment.TopStart)
-            .padding(start = 12.dp, top = 12.dp), onClick = { sendIntent(LoginIntent.GoToHomeNoSignIn) }) {
-            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close login", tint = onSecondary)
+            .padding(start = 12.dp, top = 12.dp),
+            onClick = { sendIntent(LoginIntent.GoToHomeNoSignIn) }) {
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                contentDescription = "Close login",
+                tint = onSecondary
+            )
         }
         if (state.error != null)
             ErrorDialog(

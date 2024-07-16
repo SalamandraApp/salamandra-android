@@ -1,8 +1,8 @@
-package com.android.salamandra.workouts.editWk.data.di
+package com.android.salamandra.workouts.searchExercise.data.di
 
 import com.android.salamandra._core.data.network.SalamandraApiService
-import com.android.salamandra._core.domain.LocalDbRepository
-import com.android.salamandra.workouts.editWk.data.RepositoryImpl
+import com.android.salamandra.workouts.searchExercise.data.RepositoryImpl
+import com.android.salamandra.workouts.searchExercise.domain.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,8 +15,8 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRepository(
-        localDbRepository: LocalDbRepository
-    ): com.android.salamandra.workouts.editWk.domain.Repository {
-       return RepositoryImpl(localDbRepository)
+        salamandraApiService: SalamandraApiService
+    ): Repository {
+       return RepositoryImpl(salamandraApiService)
     }
 }

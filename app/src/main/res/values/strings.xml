@@ -59,4 +59,5 @@
     <string name="workout_element_not_found">Workout element not found</string>
     <string name="exercise_not_found">Exercise not found</string>
     <string name="add_exercise">ADD EXERCISE</string>
+    <string name="type_an_exercise_to_search">Type an exercise to search...</string>
 </resources>

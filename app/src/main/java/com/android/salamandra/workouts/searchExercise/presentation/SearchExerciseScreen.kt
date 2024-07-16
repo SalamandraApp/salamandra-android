@@ -1,4 +1,4 @@
-package com.android.salamandra.workouts.editWk.presentation.search
+package com.android.salamandra.workouts.searchExercise.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
@@ -39,11 +41,8 @@ import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
-import com.android.salamandra.workouts.editWk.presentation.EditWkEvent
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
-import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
 import com.android.salamandra.workouts.editWk.presentation.EditWkState
-import com.android.salamandra.workouts.editWk.presentation.EditWkViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -51,15 +50,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Composable
 fun SearchExerciseScreen(
     navigator: DestinationsNavigator,
-    viewModel: EditWkViewModel = hiltViewModel()
+    viewModel: SearchExerciseViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            EditWkEvent.NavigateUp -> navigator.navigateUp()
-            EditWkEvent.NavigateToEdit -> navigator.navigate(EditWkScreenDestination(EditWkNavArgs()))
-            EditWkEvent.NavigateToSearch -> {}
+            SearchExerciseEvent.NavigateToEdit -> navigator.navigate(EditWkScreenDestination(state.addedExercisesIds))
             null -> {}
         }
     }
@@ -72,8 +69,8 @@ fun SearchExerciseScreen(
 
 @Composable
 private fun ScreenBody(
-    state: EditWkState,
-    sendIntent: (EditWkIntent) -> Unit
+    state: SearchExerciseState,
+    sendIntent: (SearchExerciseIntent) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -87,16 +84,17 @@ private fun ScreenBody(
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
                 .padding(8.dp),
-            placeholder = { Text(text = "Type an exercise to search...") },
             value = state.searchTerm,
-            onValueChange = { sendIntent(EditWkIntent.ChangeSearchTerm(it)) },
+            onValueChange = { sendIntent(SearchExerciseIntent.ChangeSearchTerm(it)) },
+            placeholder = { Text(text = stringResource(R.string.type_an_exercise_to_search)) },
             trailingIcon = {
-                IconButton(onClick = { sendIntent(EditWkIntent.SearchExercise) }) {
+                IconButton(onClick = { sendIntent(SearchExerciseIntent.SearchExercise) }) {
                     Icon(
                         imageVector = Icons.Outlined.Search,
                         contentDescription = "Search exercise"
                     )
-                }            },
+                }
+            },
             shape = CircleShape
         )
         LazyColumn(
@@ -104,11 +102,11 @@ private fun ScreenBody(
                 .align(Alignment.TopCenter)
                 .padding(top = 90.dp)
         ) {
-            items(state.exerciseList) {
+            items(state.searchResultExercises) {
                 SearchExerciseElement(
                     exercise = it,
                     onAddExercise = { exercise ->
-                        sendIntent(EditWkIntent.AddExerciseToTemplate(exercise))
+                        sendIntent(SearchExerciseIntent.AddExercise(exercise.exId))
                     }
                 )
                 Spacer(Modifier.size(8.dp))
@@ -116,7 +114,9 @@ private fun ScreenBody(
             }
         }
 
-        Button(modifier = Modifier.align(Alignment.BottomEnd), onClick = {sendIntent(EditWkIntent.NavigateToEdit)}) {
+        Button(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = { sendIntent(SearchExerciseIntent.NavigateToEdit) }) {
             Text("Done", color = tertiary)
         }
 
@@ -124,7 +124,7 @@ private fun ScreenBody(
         if (state.error != null)
             ErrorDialog(
                 error = state.error.asUiText(),
-                onDismiss = { sendIntent(EditWkIntent.CloseError) }
+                onDismiss = { sendIntent(SearchExerciseIntent.CloseError) }
             )
 
     }
@@ -161,7 +161,7 @@ private fun SearchExerciseElement(
 private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
-            state = EditWkState.initial.copy(exerciseList = EXERCISE_LIST),
+            state = SearchExerciseState.initial,
             sendIntent = {}
         )
     }

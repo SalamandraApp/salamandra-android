@@ -1,26 +1,21 @@
 package com.android.salamandra.workouts.editWk.presentation
 
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
-import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.presentation.UiText
-import com.android.salamandra._core.presentation.asUiText
+import com.android.salamandra.navArgs
 import com.android.salamandra.workouts.editWk.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.UUID
 import javax.inject.Inject
 
 
 @HiltViewModel
 class EditWkViewModel @Inject constructor(
-    private val ioDispatcher: CoroutineDispatcher,
+    ioDispatcher: CoroutineDispatcher,
+    savedStateHandle: SavedStateHandle,
     private val repository: Repository
 ) :
     BaseViewModel<EditWkState, EditWkIntent, EditWkEvent>(EditWkState.initial, ioDispatcher) {
@@ -31,12 +26,17 @@ class EditWkViewModel @Inject constructor(
 
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
 
-            EditWkIntent.NavigateUp -> sendEvent(EditWkEvent.NavigateUp)
+            EditWkIntent.NavigateUp -> sendEvent(EditWkEvent.NavigateToHome)
 
             // Toggle bottom sheet
             is EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false) }
 
-            is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true, exerciseSelectedIndex = intent.index) }
+            is EditWkIntent.ShowBottomSheet -> _state.update {
+                it.copy(
+                    bottomSheet = true,
+                    exerciseSelectedIndex = intent.index
+                )
+            }
 
             is EditWkIntent.ChangeWkName -> _state.update {
                 it.copy(
@@ -61,27 +61,25 @@ class EditWkViewModel @Inject constructor(
 
             is EditWkIntent.ChangeWkElementWeight -> updateWeight(intent.index, intent.newWeight)
 
-            is EditWkIntent.ChangeSearchTerm -> _state.update { it.copy(searchTerm = intent.newTerm) }
-
-            is EditWkIntent.SearchExercise -> searchExercise()
-
-            is EditWkIntent.AddExerciseToTemplate -> addExerciseToTemplate(intent.exercise)
-
-            is EditWkIntent.NavigateToEdit -> sendEvent(EditWkEvent.NavigateToEdit)
-
             is EditWkIntent.NavigateToSearch -> sendEvent(EditWkEvent.NavigateToSearch)
         }
     }
 
-    private fun searchExercise() {
-        viewModelScope.launch {
-            when (val search = withContext(ioDispatcher) { repository.getExercises(state.value.searchTerm) }){
-                is Result.Success -> _state.update { it.copy(exerciseList = search.data) }
-                is Result.Error -> _state.update { it.copy(error = search.error) }
-            }
+    init {
+        val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
+        ioLaunch {
+            addExercisesToTemplate(repository.getAllExercises(navArgs.addedExercises))
         }
-
     }
+
+    private fun addExercisesToTemplate(exercises: List<Exercise>) {
+        val elements = mutableListOf<WkTemplateElement>()
+        exercises.forEachIndexed { index, exercise ->
+            elements.add(WkTemplateElement(exercise = exercise, position = index + 1))
+        }
+        _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = elements)) }
+    }
+
 
     private fun updateReps(index: Int, newReps: Int) {
         _state.value.let { currentState ->
@@ -95,6 +93,7 @@ class EditWkViewModel @Inject constructor(
             _state.value = updatedState
         }
     }
+
     private fun updateSets(index: Int, newSets: Int) {
         _state.value.let { currentState ->
             val updatedElements = currentState.wkTemplate.elements.toMutableList()
@@ -107,6 +106,7 @@ class EditWkViewModel @Inject constructor(
             _state.value = updatedState
         }
     }
+
     private fun updateWeight(index: Int, newWeight: Double) {
         _state.value.let { currentState ->
             val updatedElements = currentState.wkTemplate.elements.toMutableList()
@@ -120,9 +120,5 @@ class EditWkViewModel @Inject constructor(
         }
     }
 
-    private fun addExerciseToTemplate(exercise: Exercise){
-        val position = state.value.wkTemplate.elements.size + 1
-        val wkTemplateElement = WkTemplateElement(exercise = exercise, position = position)
-        _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = it.wkTemplate.elements + wkTemplateElement)) }
-    }
+
 }
