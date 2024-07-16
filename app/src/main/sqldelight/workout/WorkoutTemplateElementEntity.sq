@@ -23,5 +23,9 @@ INSERT OR REPLACE
 INTO WorkoutTemplateElementEntity
 VALUES (?,?,?,?,?,?,?,?);
 
+deleteElementsById:
+DELETE FROM WorkoutTemplateElementEntity
+WHERE wkTemplateId = :wkTemplateId;
+
 clearDatabase:
 DELETE FROM WorkoutTemplateElementEntity;

@@ -53,6 +53,10 @@ class WorkoutTemplateElementDataSource @Inject constructor(
         }
     }
 
+    suspend fun deleteTemplateElementById(wkTemplateId: String){
+        withContext(ioDispatcher) { queries.deleteElementsById(wkTemplateId) }
+    }
+
     suspend fun clearDatabase(): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {
             queries.clearDatabase()

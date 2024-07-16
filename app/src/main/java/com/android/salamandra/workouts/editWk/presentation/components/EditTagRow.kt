@@ -99,7 +99,7 @@ fun EditTagRow(
             containerColor = secondary,
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { sendIntent(EditWkIntent.NavigateToSearch) }) {
+            onClick = { /*TODO*/ }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add Exercise",

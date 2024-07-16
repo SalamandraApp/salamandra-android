@@ -2,6 +2,7 @@ package com.android.salamandra.workouts.editWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra.navArgs
@@ -26,7 +27,7 @@ class EditWkViewModel @Inject constructor(
 
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
 
-            EditWkIntent.NavigateUp -> sendEvent(EditWkEvent.NavigateToHome)
+            EditWkIntent.NavigateToHome -> sendEvent(EditWkEvent.NavigateToHome)
 
             // Toggle bottom sheet
             is EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false) }
@@ -61,21 +62,41 @@ class EditWkViewModel @Inject constructor(
 
             is EditWkIntent.ChangeWkElementWeight -> updateWeight(intent.index, intent.newWeight)
 
-            is EditWkIntent.NavigateToSearch -> sendEvent(EditWkEvent.NavigateToSearch)
+            is EditWkIntent.NavigateToSearch -> navigateToSearch()
+
+            EditWkIntent.CreteWorkout -> createWorkout()
         }
     }
 
     init {
         val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
+            _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = repository.retrieveSavedWorkoutTemplateElements())) }
             addExercisesToTemplate(repository.getAllExercises(navArgs.addedExercises))
         }
     }
 
+    private fun createWorkout(){
+        ioLaunch {
+            when(val creation = repository.createWorkout(state.value.wkTemplate)) {
+                is Result.Success -> sendEvent(EditWkEvent.NavigateToHome)
+                is Result.Error -> _state.update { it.copy(error = creation.error) }
+            }
+        }
+
+    }
+
+    private fun navigateToSearch(){
+        ioLaunch {
+            repository.saveWorkoutTemplateElementsTemporary(state.value.wkTemplate.elements)
+            sendEvent(EditWkEvent.NavigateToSearch)
+        }
+    }
+
     private fun addExercisesToTemplate(exercises: List<Exercise>) {
-        val elements = mutableListOf<WkTemplateElement>()
-        exercises.forEachIndexed { index, exercise ->
-            elements.add(WkTemplateElement(exercise = exercise, position = index + 1))
+        val elements = state.value.wkTemplate.elements.toMutableList()
+        exercises.forEach { exercise ->
+            elements.add(WkTemplateElement(exercise = exercise, position = elements.size + 1))
         }
         _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = elements)) }
     }

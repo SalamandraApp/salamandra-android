@@ -17,6 +17,7 @@ import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import exercise.ExerciseEntity
 import kotlinx.coroutines.flow.Flow
 import user.UserEntity
+import workout.WorkoutTemplateElementEntity
 import javax.inject.Inject
 
 class LocalDbRepositoryImpl @Inject constructor(
@@ -93,6 +94,16 @@ class LocalDbRepositoryImpl @Inject constructor(
             is Result.Error -> return Result.Error(wkTemplateElements.error)
         }
     }
+
+    //Workout template element
+    override suspend fun insertWkTemplateElement(
+        wkTemplateId: String,
+        wkTemplateElement: WkTemplateElement
+    ): Result<Unit, DataError.Local> = workoutTemplateElementDataSource.insertWkTemplateElement(wkTemplateId, wkTemplateElement)
+
+    override suspend fun getWkTemplateElementsById(wkTemplateId: String): Result<List<WorkoutTemplateElementEntity>, DataError.Local> = workoutTemplateElementDataSource.getWkTemplateElementsById(wkTemplateId)
+
+    override suspend fun deleteTemplateElementById(wkTemplateId: String) = workoutTemplateDataSource.deleteWkByID(wkTemplateId)
 
     //User
     override suspend fun insertUser(user: User): Result<Unit, DataError.Local> =

@@ -32,7 +32,7 @@ sealed class EditWkIntent: Intent {
 
     data object CloseError: EditWkIntent()
 
-    data object NavigateUp: EditWkIntent()
+    data object NavigateToHome: EditWkIntent()
 
     data object NavigateToSearch: EditWkIntent()
 
@@ -49,6 +49,8 @@ sealed class EditWkIntent: Intent {
     data class ChangeWkElementReps(val newReps: Int, val index: Int): EditWkIntent()
 
     data class ChangeWkElementWeight(val newWeight: Double, val index: Int): EditWkIntent()
+
+    data object CreteWorkout: EditWkIntent()
 }
 
 sealed class EditWkEvent: Event{

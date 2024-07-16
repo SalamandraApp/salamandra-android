@@ -33,25 +33,25 @@ fun EditWkBannerTopRow (
     )
     {
         Box(modifier = Modifier
-            .clickable { sendIntent(EditWkIntent.NavigateUp) }
+            .clickable { sendIntent(EditWkIntent.NavigateToHome) }
         ) {
             Icon(
                 imageVector = Icons.Outlined.Close,
                 tint = onTertiary,
-                contentDescription = "Search workout"
+                contentDescription = "Close edit workout"
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         middleContent()
         Spacer(modifier = Modifier.weight(1f))
         Box(modifier = Modifier
-            .clickable { /*TODO*/ }
+            .clickable { sendIntent(EditWkIntent.CreteWorkout) }
         ) {
             Icon(
                 modifier = Modifier.size(27.dp),
                 tint = primaryVariant,
                 imageVector = Icons.Outlined.CheckCircle,
-                contentDescription = "Search workout"
+                contentDescription = "Create workout"
             )
         }
     }

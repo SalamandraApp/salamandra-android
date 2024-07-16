@@ -1,10 +1,11 @@
 package com.android.salamandra._core.data.network
 
 import com.android.salamandra._core.data.network.request.CreateUserRequest
+import com.android.salamandra._core.data.network.request.CreateWorkoutTemplateRequest
 import com.android.salamandra._core.data.network.response.UserResponse
 import com.android.salamandra._core.data.network.response.ExerciseResponse
 import com.android.salamandra._core.data.network.response.WkPreviewsResponse
-import com.android.salamandra._core.data.network.response.WkTemplateResponse
+import com.android.salamandra._core.data.network.response.WorkoutTemplateResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -25,6 +26,9 @@ interface SalamandraApiService {
     suspend fun getUserData(@Path("userId") userId: String): UserResponse
 
     @GET("/users/{user_id}/workout-templates/{workout_template_id}")
-    suspend fun getWorkoutById(@Path("user_id") userId: String, @Path("workout_template_id") wkId: String): WkTemplateResponse
+    suspend fun getWorkoutById(@Path("user_id") userId: String, @Path("workout_template_id") wkId: String): WorkoutTemplateResponse
+
+    @POST("/users/{user_id}/workout-templates")
+    suspend fun createWkTemplate(@Path("user_id") userId: String, @Body wkTemplate: CreateWorkoutTemplateRequest): WorkoutTemplateResponse
 
 }

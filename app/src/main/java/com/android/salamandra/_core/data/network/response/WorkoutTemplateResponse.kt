@@ -1,21 +1,15 @@
 package com.android.salamandra._core.data.network.response
 
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra._core.domain.model.enums.Equipment
-import com.android.salamandra._core.domain.model.enums.ExerciseType
-import com.android.salamandra._core.domain.model.enums.MuscleGroup
 import com.android.salamandra._core.domain.model.enums.toEquipment
 import com.android.salamandra._core.domain.model.enums.toExerciseType
 import com.android.salamandra._core.domain.model.enums.toMuscleGroup
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
-import java.util.Date
-import java.util.UUID
 
-data class WkTemplateResponse(
+data class WorkoutTemplateResponse(
     @SerializedName("id") private val id: String,
     @SerializedName("user_id") private val userId: String,
     @SerializedName("name") private val name: String,
