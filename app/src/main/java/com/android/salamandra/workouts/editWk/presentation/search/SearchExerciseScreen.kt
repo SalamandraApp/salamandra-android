@@ -1,4 +1,4 @@
-package com.android.salamandra.workouts.editWk.presentation
+package com.android.salamandra.workouts.editWk.presentation.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
@@ -36,16 +35,19 @@ import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.util.EXERCISE_LIST
 import com.android.salamandra.destinations.EditWkScreenDestination
-import com.android.salamandra.destinations.SearchExerciseScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
-import com.android.salamandra.ui.theme.onPrimary
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
+import com.android.salamandra.workouts.editWk.presentation.EditWkEvent
+import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
+import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
+import com.android.salamandra.workouts.editWk.presentation.EditWkState
+import com.android.salamandra.workouts.editWk.presentation.EditWkViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@Destination()
+@Destination
 @Composable
 fun SearchExerciseScreen(
     navigator: DestinationsNavigator,
