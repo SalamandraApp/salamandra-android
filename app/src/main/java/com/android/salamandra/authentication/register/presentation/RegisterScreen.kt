@@ -402,7 +402,7 @@ private fun checkFields(state: RegisterState, isSamePassword: Boolean, isUsernam
 
 @Preview()
 @Composable
-private fun ScreenPreview() {
+private fun RegisterScreenPreview() {
     SalamandraTheme {
         ScreenBody(
             state = RegisterState.initial,

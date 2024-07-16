@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
+import com.android.salamandra._core.presentation.constants.wkTemplateLabelWeights
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.onSecondaryVariant
@@ -32,13 +32,10 @@ fun WkElementComponent(
     modifier: Modifier = Modifier,
     onOption: () -> Unit,
     wkElement: WkTemplateElement,
-    columnWeightVector: FloatArray,
     startPad: Dp,
     fgColor: Color
 ) {
-    if (columnWeightVector.size != 5) {
-        throw IllegalArgumentException("The length of the float array must be 5.")
-    }
+
     val nameColor = onSecondaryVariant
     val valuesColor = onSecondaryVariant
     val valueStyle = NormalTypo.copy(
@@ -57,7 +54,7 @@ fun WkElementComponent(
         Text(
             modifier = Modifier
                 .padding(start = startPad)
-                .weight(columnWeightVector[0]),
+                .weight(wkTemplateLabelWeights()[0]),
             text = wkElement.exercise.name,
             style = SemiTypo,
             color = nameColor,
@@ -70,9 +67,9 @@ fun WkElementComponent(
             wkElement.weight.toString()
         )
         val columnWeights = listOf(
-            columnWeightVector[1],
-            columnWeightVector[2],
-            columnWeightVector[3]
+            wkTemplateLabelWeights()[1],
+            wkTemplateLabelWeights()[2],
+            wkTemplateLabelWeights()[3]
         )
 
         elements.forEachIndexed { index, value ->
@@ -91,7 +88,7 @@ fun WkElementComponent(
                 )
             }
         }
-        Box (modifier = Modifier.weight(columnWeightVector[4])) {
+        Box (modifier = Modifier.weight(wkTemplateLabelWeights()[4])) {
             IconButton(onClick = { onOption() }) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,

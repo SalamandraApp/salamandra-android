@@ -55,6 +55,7 @@ import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.WkElementComponent
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
+import com.android.salamandra._core.presentation.constants.wkTemplateScreenConstants
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
@@ -94,8 +95,8 @@ private fun ScreenBody(
     sendIntent: (SeeWkIntent) -> Unit
 ) {
     val mainColor = tertiary
-    val bannerHeight = 320.dp
-    val fixedBannerHeight = 85.dp
+    val bannerHeight = wkTemplateScreenConstants.bannerHeight
+    val fixedBannerHeight = wkTemplateScreenConstants.fixedBannerHeight
 
     val scrollThreshold: Float
     val bannerHeightPx: Float
@@ -113,7 +114,6 @@ private fun ScreenBody(
             totalScrollOffset > scrollThreshold
         }
     }
-    val columnWeights: FloatArray = floatArrayOf(0.5f, 0.1f, 0.1f, 0.15f, 0.1f)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -127,12 +127,11 @@ private fun ScreenBody(
                     .zIndex(1f),
             ) {
                 SeeWkFixedBanner(
-                    modifier = Modifier
-                        .height(fixedBannerHeight),
-                    columnWeightVector = columnWeights,
                     state = state,
                     sendIntent = sendIntent,
-                    bgColor = tertiary
+                    modifier = Modifier
+                        .height(fixedBannerHeight)
+                        .background(mainColor)
                 )
                 FadeLip()
             }
@@ -146,14 +145,12 @@ private fun ScreenBody(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val startPad = 15.dp
             item {
                 SeeWkBigBanner(
                     modifier = Modifier.height(bannerHeight),
                     state = state,
                     sendIntent = sendIntent,
                     bgColor = mainColor,
-                    columnWeightVector = columnWeights
                 )
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
@@ -162,9 +159,8 @@ private fun ScreenBody(
                 WkElementComponent(
                     onOption = {sendIntent(SeeWkIntent.ShowBottomSheet)},
                     wkElement = it,
-                    fgColor = tertiary,
-                    columnWeightVector = columnWeights,
-                    startPad = 10.dp
+                    startPad = 10.dp,
+                    fgColor = tertiary
                 )
             }
         }
@@ -187,15 +183,13 @@ private fun ScreenBody(
 fun SeeWkFixedBanner(
     state: SeeWkState,
     sendIntent: (SeeWkIntent) -> Unit,
-    modifier: Modifier = Modifier,
-    columnWeightVector: FloatArray,
-    bgColor: Color) {
+    modifier: Modifier = Modifier
+) {
 
-    val dpSideMargin = 20.dp
+    val dpSideMargin = wkTemplateScreenConstants.sideMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(bgColor)
             .padding(horizontal = dpSideMargin),
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -213,9 +207,7 @@ fun SeeWkFixedBanner(
             },
             executeButton = true,
         )
-        WkTemplateViewLabels(
-            columnWeightVector = columnWeightVector
-        )
+        WkTemplateViewLabels()
     }
 }
 
@@ -224,19 +216,16 @@ fun SeeWkBigBanner(
     modifier: Modifier = Modifier,
     state: SeeWkState,
     sendIntent: (SeeWkIntent) -> Unit,
-    columnWeightVector: FloatArray,
     bgColor: Color) {
-    if (columnWeightVector.size != 5) {
-        throw IllegalArgumentException("The length of the float array must be 5.")
-    }
-    val wTopRow     = 180f
-    val wTitle      = 500f
-    val wTags       = 150f
-    val wButtons    = 180f
-    val wLabels     = 100f
 
-    val dpSideMargin = 20.dp
-    val dpInBetweenMargin = 15.dp
+    val wTopRow     = wkTemplateScreenConstants.bannerRowWeights.top
+    val wTitle      = wkTemplateScreenConstants.bannerRowWeights.picture
+    val wTags       = wkTemplateScreenConstants.bannerRowWeights.tags
+    val wButtons    = wkTemplateScreenConstants.bannerRowWeights.buttons
+    val wLabels     = wkTemplateScreenConstants.bannerRowWeights.labels
+
+    val dpSideMargin = wkTemplateScreenConstants.sideMargin
+    val dpInBetweenMargin = wkTemplateScreenConstants.bannerInBetweenMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -282,7 +271,6 @@ fun SeeWkBigBanner(
         WkTemplateViewLabels(
             modifier = Modifier
                 .weight(wLabels),
-            columnWeightVector = columnWeightVector,
         )
     }
 }
@@ -512,19 +500,5 @@ private fun SeeWkPreview() {
             wkTemplate = WORKOUT_TEMPLATE,
         ),
         sendIntent = {},
-    )
-}
-
-@Preview
-@Composable
-private fun SeeWkFixedBannerPreview() {
-
-    val columnWeights: FloatArray = floatArrayOf(0.5f, 0.1f, 0.1f, 0.15f, 0.1f)
-    SeeWkFixedBanner(
-        modifier = Modifier.height(70.dp),
-        state = SeeWkState.initial.copy(wkTemplate = WORKOUT_TEMPLATE),
-        sendIntent = {},
-        columnWeightVector = columnWeights,
-        bgColor = tertiary
     )
 }

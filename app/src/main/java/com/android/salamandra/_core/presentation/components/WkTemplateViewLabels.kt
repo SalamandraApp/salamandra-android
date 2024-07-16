@@ -13,11 +13,11 @@ import androidx.compose.ui.unit.sp
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.R
+import com.android.salamandra._core.presentation.constants.wkTemplateLabelWeights
 
 @Composable
 fun WkTemplateViewLabels(
     modifier: Modifier = Modifier,
-    columnWeightVector: FloatArray,
 ) {
     Row(
         modifier = modifier
@@ -29,7 +29,7 @@ fun WkTemplateViewLabels(
         // EXERCISE NAME
         Text(
             modifier = Modifier
-                .weight(columnWeightVector[0]),
+                .weight(wkTemplateLabelWeights()[0]),
             text = stringResource(R.string.exercise),
             color = columnLabelColor,
             fontSize = 14.sp,
@@ -38,7 +38,7 @@ fun WkTemplateViewLabels(
         // SETS
         Text(
             modifier = Modifier
-                .weight(columnWeightVector[1]),
+                .weight(wkTemplateLabelWeights()[1]),
             text = stringResource(R.string.sets),
             color = columnLabelColor,
             fontSize = 14.sp,
@@ -47,7 +47,7 @@ fun WkTemplateViewLabels(
         // REPS
         Text(
             modifier = Modifier
-                .weight(columnWeightVector[2]),
+                .weight(wkTemplateLabelWeights()[2]),
             text = stringResource(R.string.reps),
             color = columnLabelColor,
             fontSize = 14.sp,
@@ -56,7 +56,7 @@ fun WkTemplateViewLabels(
         // WEIGHT
         Text(
             modifier = Modifier
-                .weight(columnWeightVector[3] + columnWeightVector[4]),
+                .weight(wkTemplateLabelWeights()[3] + wkTemplateLabelWeights()[4]),
             text = stringResource(R.string.weight_kg),
             color = columnLabelColor,
             fontSize = 14.sp,

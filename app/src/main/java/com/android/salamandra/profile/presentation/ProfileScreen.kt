@@ -134,7 +134,7 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(tertiary.copy(alpha = 0.9f))
+            .background(tertiary.copy(alpha = 0.95f))
             .padding(horizontal = 60.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -142,7 +142,7 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
         val buttonWeight = 70f
         val spacerWeights = 1000f - buttonWeight
 
-        Spacer(modifier = Modifier.weight(spacerWeights*2/5))
+        Spacer(modifier = Modifier.weight(spacerWeights/2))
         Text(
             modifier = Modifier.padding(bottom = 18.dp),
             text = stringResource(R.string.need_to_login),
@@ -165,7 +165,7 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
                 fontSize = 20.sp
             )
         }
-        Spacer(modifier = Modifier.weight(spacerWeights*3/5))
+        Spacer(modifier = Modifier.weight(spacerWeights/2))
     }
 }
 

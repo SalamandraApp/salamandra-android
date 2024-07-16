@@ -70,6 +70,7 @@ import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.presentation.components.WkElementComponent
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
+import com.android.salamandra._core.presentation.constants.wkTemplateScreenConstants
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
 import com.android.salamandra.ui.theme.NormalTypo
@@ -110,8 +111,8 @@ private fun ScreenBody(
     sendIntent: (EditWkIntent) -> Unit,
 ) {
     val mainColor = tertiary
-    val bannerHeight = 320.dp
-    val fixedBannerHeight = 70.dp
+    val bannerHeight = wkTemplateScreenConstants.bannerHeight
+    val fixedBannerHeight = wkTemplateScreenConstants.fixedBannerHeight
 
     val scrollThreshold: Float
     val bannerHeightPx: Float
@@ -130,7 +131,6 @@ private fun ScreenBody(
         }
     }
 
-    val columnWeights: FloatArray = floatArrayOf(0.5f, 0.1f, 0.1f, 0.15f, 0.1f)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -145,12 +145,11 @@ private fun ScreenBody(
                     .zIndex(1f),
             ){
                 EditWkFixedBanner(
-                    modifier = Modifier
-                        .height(fixedBannerHeight),
-                    columnWeightVector = columnWeights,
                     state = state,
                     sendIntent = sendIntent,
-                    bgColor = tertiary
+                    modifier = Modifier
+                        .height(fixedBannerHeight)
+                        .background(mainColor)
                 )
                 FadeLip()
             }
@@ -171,19 +170,17 @@ private fun ScreenBody(
                     modifier = Modifier.height(bannerHeight),
                     state = state,
                     sendIntent = sendIntent,
-                    backgroundColor = mainColor,
-                    columnWeightVector = columnWeights
+                    backgroundColor = mainColor
                 )
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    wkElement = element,
-                    fgColor = secondary,
-                    startPad = startPad,
                     onOption = {sendIntent(EditWkIntent.ShowBottomSheet(index))},
-                    columnWeightVector = columnWeights,
+                    wkElement = element,
+                    startPad = startPad,
+                    fgColor = secondary,
                 )
             }
         }
@@ -397,7 +394,6 @@ fun EditExercise(
             singleLine = true,
             enabled = true,
             value = time.value,
-            // value = templateElement.rest.toString(),
             textStyle = TitleTypo.copy(fontSize = 20.sp),
             colors = textFieldColors(),
             keyboardOptions = keyboardOptions,
@@ -431,15 +427,13 @@ fun EditExercise(
 fun EditWkFixedBanner(
     state: EditWkState,
     sendIntent: (EditWkIntent) -> Unit,
-    modifier: Modifier = Modifier,
-    columnWeightVector: FloatArray,
-    bgColor: Color) {
+    modifier: Modifier = Modifier
+) {
 
-    val dpSideMargin = 20.dp
+    val dpSideMargin = wkTemplateScreenConstants.sideMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(bgColor)
             .padding(horizontal = dpSideMargin),
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -456,9 +450,7 @@ fun EditWkFixedBanner(
                 )
             }
         )
-        WkTemplateViewLabels(
-            columnWeightVector = columnWeightVector
-        )
+        WkTemplateViewLabels()
     }
 }
 
@@ -467,19 +459,17 @@ fun EditWkBigBanner(
     modifier: Modifier = Modifier,
     state: EditWkState,
     sendIntent: (EditWkIntent) -> Unit,
-    columnWeightVector: FloatArray,
-    backgroundColor: Color) {
-    if (columnWeightVector.size != 5) {
-        throw IllegalArgumentException("The length of the float array must be 5.")
-    }
-    val wTopRow     = 180f
-    val wTitle      = 500f
-    val wTags       = 150f
-    val wButtons    = 180f
-    val wLabels     = 100f
+    backgroundColor: Color
+) {
 
-    val dpSideMargin = 20.dp
-    val dpInBetweenMargin = 15.dp
+    val wTopRow     = wkTemplateScreenConstants.bannerRowWeights.top
+    val wTitle      = wkTemplateScreenConstants.bannerRowWeights.picture
+    val wTags       = wkTemplateScreenConstants.bannerRowWeights.tags
+    val wButtons    = wkTemplateScreenConstants.bannerRowWeights.buttons
+    val wLabels     = wkTemplateScreenConstants.bannerRowWeights.labels
+
+    val dpSideMargin = wkTemplateScreenConstants.sideMargin
+    val dpInBetweenMargin = wkTemplateScreenConstants.bannerInBetweenMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -524,7 +514,6 @@ fun EditWkBigBanner(
         WkTemplateViewLabels(
             modifier = Modifier
                 .weight(wLabels),
-            columnWeightVector = columnWeightVector,
         )
     }
 }
@@ -760,35 +749,6 @@ private fun EditTagRow(
 
 @Preview
 @Composable
-private fun MainBannerRowPreview() {
-    Column (
-        modifier = Modifier
-            .height(150.dp)
-            .background(tertiary)
-    ) {
-        BannerTitleRow(
-            sendIntent = {},
-            state = EditWkState.initial.copy(wkTemplate = WORKOUT_TEMPLATE)
-        )
-    }
-}
-
-
-@Preview
-@Composable
-private fun EditWkFixedBannerPreview() {
-    val columnWeights: FloatArray = floatArrayOf(0.5f, 0.1f, 0.1f, 0.15f, 0.1f)
-    EditWkFixedBanner(
-        modifier = Modifier.height(70.dp),
-        state = EditWkState.initial.copy(wkTemplate = WORKOUT_TEMPLATE),
-        sendIntent = {},
-        columnWeightVector = columnWeights,
-        bgColor = tertiary
-    )
-}
-
-@Preview
-@Composable
 private fun EditWkPreview() {
     ScreenBody(
         state = EditWkState.initial.copy(
@@ -797,3 +757,5 @@ private fun EditWkPreview() {
         sendIntent = {},
     )
 }
+
+

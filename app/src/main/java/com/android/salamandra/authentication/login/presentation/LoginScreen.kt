@@ -104,7 +104,6 @@ private fun ScreenBody(
                 .fillMaxHeight()
                 .padding(horizontal = 50.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
 
             val underLogoSpacer = 30.dp
@@ -120,10 +119,17 @@ private fun ScreenBody(
                 unfocusedBorderColor = onTertiary,
                 unfocusedLabelColor = subtitle,
             )
-            SlmLogo()
 
-            Spacer(modifier = Modifier.height(underLogoSpacer))
+            Box (
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                SlmLogo()
+                Spacer(modifier = Modifier.height(underLogoSpacer))
+            }
+
             // -------------------------------- USERNAME
+
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -182,20 +188,25 @@ private fun ScreenBody(
                     .align(Alignment.End)
                     .padding(vertical = textPad)
             )
-            Spacer(modifier = Modifier.height(overButtonSpacer))
-            Box (
-                modifier = Modifier
-                    .height(buttonHeight)
-                    .fillMaxWidth()
-                    .border(BorderStroke(2.dp, primaryVariant), RoundedCornerShape(40))
-                    .clickable { sendIntent(LoginIntent.Login) },
-                contentAlignment = Alignment.Center
+            Column (
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Top
             ) {
-                Text(
-                    text = stringResource(R.string.login),
-                    fontSize = 16.sp,
-                    color = primaryVariant,
-                )
+                Spacer(modifier = Modifier.height(overButtonSpacer))
+                Box(
+                    modifier = Modifier
+                        .height(buttonHeight)
+                        .fillMaxWidth()
+                        .border(BorderStroke(2.dp, primaryVariant), RoundedCornerShape(40))
+                        .clickable { sendIntent(LoginIntent.Login) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.login),
+                        fontSize = 16.sp,
+                        color = primaryVariant,
+                    )
+                }
             }
         }
         IconButton(modifier = Modifier
