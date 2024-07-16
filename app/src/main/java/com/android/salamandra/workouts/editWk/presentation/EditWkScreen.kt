@@ -67,11 +67,10 @@ import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.TabRowBuilder
-import com.android.salamandra._core.presentation.components.WkElementComponent
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
-import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
+import com.android.salamandra.destinations.SearchExerciseScreenDestination
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
@@ -82,6 +81,9 @@ import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.ui.theme.title
+import com.android.salamandra.workouts.commons.presentation.components.WkElementComponent
+import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
+import com.android.salamandra.workouts.commons.presentation.constants.wkTemplateScreenConstants
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -429,15 +431,13 @@ fun EditExercise(
 fun EditWkFixedBanner(
     state: EditWkState,
     sendIntent: (EditWkIntent) -> Unit,
-    modifier: Modifier = Modifier,
-    columnWeightVector: FloatArray,
-    bgColor: Color) {
+    modifier: Modifier = Modifier
+) {
 
-    val dpSideMargin = 20.dp
+    val dpSideMargin = wkTemplateScreenConstants.sideMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(bgColor)
             .padding(horizontal = dpSideMargin),
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -454,9 +454,7 @@ fun EditWkFixedBanner(
                 )
             }
         )
-        WkTemplateViewLabels(
-            columnWeightVector = columnWeightVector
-        )
+        WkTemplateViewLabels()
     }
 }
 
@@ -743,7 +741,7 @@ private fun EditTagRow(
             containerColor = secondary,
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { sendIntent(EditWkIntent.ShowSearchExercise(true)) }) {
+            onClick = { sendIntent(EditWkIntent.NavigateToSearch) }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add Exercise",

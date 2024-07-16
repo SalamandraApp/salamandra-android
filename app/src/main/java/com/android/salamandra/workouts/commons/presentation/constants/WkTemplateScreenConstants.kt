@@ -1,11 +1,6 @@
-package com.android.salamandra._core.presentation.constants
+package com.android.salamandra.workouts.commons.presentation.constants
 
 import androidx.compose.ui.unit.dp
-
-
-fun wkTemplateLabelWeights(): FloatArray {
-    return floatArrayOf(0.5f, 0.1f, 0.1f, 0.15f, 0.1f)
-}
 
 object wkTemplateScreenConstants {
     val bannerHeight = 320.dp

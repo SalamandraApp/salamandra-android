@@ -21,11 +21,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.presentation.constants.wkTemplateLabelWeights
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.workouts.commons.presentation.constants.wkTemplateScreenConstants
 
 @Composable
 fun WkElementComponent(
@@ -54,7 +54,7 @@ fun WkElementComponent(
         Text(
             modifier = Modifier
                 .padding(start = startPad)
-                .weight(wkTemplateLabelWeights()[0]),
+                .weight(wkTemplateScreenConstants.columnLabelWeights.exercise),
             text = wkElement.exercise.name,
             style = SemiTypo,
             color = nameColor,
@@ -67,9 +67,9 @@ fun WkElementComponent(
             wkElement.weight.toString()
         )
         val columnWeights = listOf(
-            wkTemplateLabelWeights()[1],
-            wkTemplateLabelWeights()[2],
-            wkTemplateLabelWeights()[3]
+            wkTemplateScreenConstants.columnLabelWeights.sets,
+            wkTemplateScreenConstants.columnLabelWeights.reps,
+            wkTemplateScreenConstants.columnLabelWeights.weight,
         )
 
         elements.forEachIndexed { index, value ->
@@ -88,7 +88,7 @@ fun WkElementComponent(
                 )
             }
         }
-        Box (modifier = Modifier.weight(wkTemplateLabelWeights()[4])) {
+        Box (modifier = Modifier.weight(wkTemplateScreenConstants.columnLabelWeights.button)) {
             IconButton(onClick = { onOption() }) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,
