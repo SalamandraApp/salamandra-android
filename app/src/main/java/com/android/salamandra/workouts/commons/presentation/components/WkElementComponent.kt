@@ -1,4 +1,4 @@
-package com.android.salamandra._core.presentation.components
+package com.android.salamandra.workouts.commons.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

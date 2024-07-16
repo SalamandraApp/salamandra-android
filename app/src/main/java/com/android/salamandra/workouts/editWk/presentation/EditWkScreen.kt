@@ -70,7 +70,6 @@ import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.presentation.components.WkElementComponent
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
-import com.android.salamandra._core.presentation.constants.wkTemplateScreenConstants
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
 import com.android.salamandra.ui.theme.NormalTypo
@@ -94,6 +93,8 @@ fun EditWkScreen(navigator: DestinationsNavigator, viewModel: EditWkViewModel = 
     LaunchedEffect(events) {
         when (events) {
             EditWkEvent.NavigateUp -> navigator.navigateUp()
+            EditWkEvent.NavigateToEdit -> {}
+            EditWkEvent.NavigateToSearch -> navigator.navigate(SearchExerciseScreenDestination)
             null -> {}
         }
     }
@@ -394,6 +395,7 @@ fun EditExercise(
             singleLine = true,
             enabled = true,
             value = time.value,
+            // value = templateElement.rest.toString(),
             textStyle = TitleTypo.copy(fontSize = 20.sp),
             colors = textFieldColors(),
             keyboardOptions = keyboardOptions,
@@ -427,13 +429,15 @@ fun EditExercise(
 fun EditWkFixedBanner(
     state: EditWkState,
     sendIntent: (EditWkIntent) -> Unit,
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+    columnWeightVector: FloatArray,
+    bgColor: Color) {
 
-    val dpSideMargin = wkTemplateScreenConstants.sideMargin
+    val dpSideMargin = 20.dp
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .background(bgColor)
             .padding(horizontal = dpSideMargin),
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -450,7 +454,9 @@ fun EditWkFixedBanner(
                 )
             }
         )
-        WkTemplateViewLabels()
+        WkTemplateViewLabels(
+            columnWeightVector = columnWeightVector
+        )
     }
 }
 
@@ -559,13 +565,13 @@ private fun ButtonsRowBanner (
             containerColor = primaryVariant.copy(0.3f),
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { sendIntent(EditWkIntent.ShowSearchExercise(true)) }) {
+            onClick = { sendIntent(EditWkIntent.NavigateToSearch) }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add Exercise",
             )
             Text(
-                text = "ADD EXERCISE",
+                text = stringResource(R.string.add_exercise),
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
@@ -757,5 +763,3 @@ private fun EditWkPreview() {
         sendIntent = {},
     )
 }
-
-

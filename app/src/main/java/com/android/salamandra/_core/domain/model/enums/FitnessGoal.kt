@@ -6,5 +6,5 @@ enum class FitnessGoal {
 
 fun Int.toFitnessGoal() = when(this){
     0 -> FitnessGoal.Bulking
-    else -> throw IllegalArgumentException("integer to Gender not mapped")
+    else -> throw IllegalArgumentException("Integer to FitnessGoal not mapped")
 }

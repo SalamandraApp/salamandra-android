@@ -1,13 +1,8 @@
 package com.android.salamandra._core.data.sqlDelight.workoutTemplate
 
-import androidx.test.platform.app.InstrumentationRegistry
-import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import app.cash.turbine.test
 import com.android.salamandra.SalamandraLocalDB
-import com.android.salamandra.SalamandraLocalDB.Companion.Schema
-import com.android.salamandra._core.data.adapter.BooleanAdapter
-import com.android.salamandra._core.data.adapter.DateAdapter
-import com.android.salamandra._core.data.adapter.IntAdapter
+import com.android.salamandra._core.data.sqlDelight.util.DbInstantiation
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,11 +12,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import user.UserEntity
-import workout.WorkoutTemplateElementEntity
 import workout.WorkoutTemplateEntity
 import java.time.LocalDate
-import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WorkoutTemplateDataSourceTest {
@@ -44,26 +36,7 @@ class WorkoutTemplateDataSourceTest {
 
     @Before
     fun setUp() {
-        val dateAdapter = DateAdapter()
-        val intAdapter = IntAdapter()
-        val driver = AndroidSqliteDriver(
-            Schema,
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            "test.db"
-        )
-        db = SalamandraLocalDB(
-            driver,
-            UserEntityAdapter = UserEntity.Adapter(
-                dateAdapter,
-                dateAdapter,
-                intAdapter,
-                intAdapter,
-                intAdapter,
-                intAdapter
-            ),
-            WorkoutTemplateEntityAdapter = WorkoutTemplateEntity.Adapter(DateAdapter(), BooleanAdapter()),
-            WorkoutTemplateElementEntityAdapter = WorkoutTemplateElementEntity.Adapter(intAdapter, intAdapter, intAdapter)
-        )
+        db = DbInstantiation.instantiateTestDB()
         dataSource = WorkoutTemplateDataSource(db, testDispatcher)
     }
 

@@ -3,7 +3,22 @@ import kotlin.Int;
 CREATE TABLE ExerciseEntity (
     id TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
+    mainMuscleGroup INTEGER AS Int NOT NULL,
     secondaryMuscleGroup INTEGER AS Int NOT NULL,
     necessaryEquipment INTEGER AS Int NOT NULL,
     exerciseType INTEGER AS Int NOT NULL
 );
+
+getExerciseById:
+SELECT *
+FROM ExerciseEntity
+WHERE id = :exId;
+
+insertExercise:
+INSERT OR REPLACE
+INTO ExerciseEntity
+VALUES (?,?,?,?,?,?);
+
+
+clearDatabase:
+DELETE FROM ExerciseEntity;

@@ -49,7 +49,7 @@ class WorkoutTemplateDataSource @Inject constructor(
         onlyPreviewAvailable: Boolean
     ): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {
-            queries.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
+            queries.insertWkTemplate(id, name, description, dateCreated, onlyPreviewAvailable)
             Result.Success(Unit)
         }
     }

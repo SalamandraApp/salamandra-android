@@ -56,4 +56,7 @@
     <string name="delete_exercise">Delete exercise</string>
     <string name="change_through_set">Change through set</string>
     <string name="date_joined">Date joined</string>
+    <string name="workout_element_not_found">Workout element not found</string>
+    <string name="exercise_not_found">Exercise not found</string>
+    <string name="add_exercise">ADD EXERCISE</string>
 </resources>

@@ -53,9 +53,7 @@ import com.android.salamandra.destinations.SeeWkScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.WkTemplateElementTypo
-import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onTertiary
-import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title

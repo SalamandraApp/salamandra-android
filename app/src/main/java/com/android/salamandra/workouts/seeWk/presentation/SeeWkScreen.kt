@@ -52,10 +52,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
-import com.android.salamandra._core.presentation.components.WkElementComponent
+import com.android.salamandra.workouts.commons.presentation.components.WkElementComponent
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.presentation.constants.wkTemplateScreenConstants
+import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
