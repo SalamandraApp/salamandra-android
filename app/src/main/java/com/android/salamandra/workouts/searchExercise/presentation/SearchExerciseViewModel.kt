@@ -1,5 +1,6 @@
 package com.android.salamandra.workouts.searchExercise.presentation
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
@@ -28,7 +29,7 @@ class SearchExerciseViewModel @Inject constructor(
 
             is SearchExerciseIntent.CloseError -> _state.update { it.copy(error = null) }
 
-            is SearchExerciseIntent.ChangeSearchTerm -> _state.update { it.copy(searchTerm = intent.newTerm) }
+            is SearchExerciseIntent.ChangeSearchTerm -> onChangeSearchTerm(intent.newTerm)
 
             SearchExerciseIntent.NavigateToEdit -> sendEvent(SearchExerciseEvent.NavigateToEdit)
 
@@ -47,6 +48,11 @@ class SearchExerciseViewModel @Inject constructor(
             }
         }
 
+    }
+
+    private fun onChangeSearchTerm(newTerm: String) {
+        _state.update { it.copy(searchTerm = newTerm) }
+        Log.i("SLM", "Dummy")
     }
 
     private fun addExerciseToTemplate(exercise: String){
