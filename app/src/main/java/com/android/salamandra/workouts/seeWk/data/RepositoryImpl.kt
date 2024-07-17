@@ -24,7 +24,7 @@ class RepositoryImpl(
                     when(val localWkTemplate = localDbRepository.getWkPreviewByID(workoutId)){
                         is Result.Success -> {
                             if(localWkTemplate.data.onlyPreviewAvailable){
-                                Result.Success(salamandraApiService.getWorkoutById("true", uid.data, workoutId).toDomain())
+                                Result.Success(salamandraApiService.getWorkoutById(full = "true", userId = uid.data, wkId = workoutId).toDomain())
                             } else {
                                 when(val wkTemplate = localDbRepository.getWkTemplate(workoutId)){
                                     is Result.Success -> Result.Success(wkTemplate.data)
@@ -34,7 +34,7 @@ class RepositoryImpl(
                         }
                         is Result.Error -> {
                             Log.e("SLM", "${localWkTemplate.error}")
-                            Result.Success(salamandraApiService.getWorkoutById("true", uid.data, workoutId).toDomain())
+                            Result.Success(salamandraApiService.getWorkoutById(full = "true", userId = uid.data, wkId = workoutId).toDomain())
                         }
                     }
                 }

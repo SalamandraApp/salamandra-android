@@ -27,9 +27,10 @@ interface SalamandraApiService {
 
     @GET("/users/{user_id}/workout-templates/{workout_template_id}")
     suspend fun getWorkoutById(
-        @Query("full") full: String,
         @Path("user_id") userId: String,
-        @Path("workout_template_id") wkId: String): WorkoutTemplateResponse
+        @Path("workout_template_id") wkId: String,
+        @Query("full") full: String
+    ): WorkoutTemplateResponse
 
     @POST("/users/{user_id}/workout-templates")
     suspend fun createWkTemplate(@Path("user_id") userId: String, @Body wkTemplate: CreateWorkoutTemplateRequest): WorkoutTemplateResponse
