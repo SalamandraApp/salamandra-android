@@ -24,28 +24,14 @@ class EditWkViewModel @Inject constructor(
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
             is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
-
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
-
             EditWkIntent.NavigateToHome -> sendEvent(EditWkEvent.NavigateToHome)
 
-            // Toggle bottom sheet
-            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false) }
+            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false, selectedExercise = null) }
+            is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true, selectedExercise = intent.exercise) }
 
-            is EditWkIntent.ShowBottomSheet -> _state.update {
-                it.copy(
-                    bottomSheet = true,
-                    exerciseSelectedIndex = intent.index
-                )
-            }
+            is EditWkIntent.ChangeWkName -> _state.update { it.copy(wkTemplate = it.wkTemplate.copy(name = intent.newName)) }
 
-            is EditWkIntent.ChangeWkName -> _state.update {
-                it.copy(
-                    wkTemplate = it.wkTemplate.copy(
-                        name = intent.newName
-                    )
-                )
-            }
 
             is EditWkIntent.ChangeWkDescription -> {
                 if (intent.newDescription != "") _state.update {
@@ -56,7 +42,9 @@ class EditWkViewModel @Inject constructor(
                 }
             }
 
-            is EditWkIntent.ChangeWkElementReps -> updateReps(intent.index, intent.newReps)
+            is EditWkIntent.ChangeWkElementReps -> _state.update {
+                it.copy(wkTemplate = it.wkTemplate.copy(elements = it.wkTemplate.elements))
+            }
 
             is EditWkIntent.ChangeWkElementSets -> updateSets(intent.index, intent.newSets)
 

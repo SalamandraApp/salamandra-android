@@ -46,7 +46,6 @@ fun EditExercise(
     // TODO, delete placeholder
     templateElement: WkTemplateElement = WORKOUT_TEMPLATE_ELEMENT,
     index: Int,
-    sendIntent: (EditWkIntent) -> Unit
 ) {
 
     val keyboardOptions = KeyboardOptions.Default.copy(

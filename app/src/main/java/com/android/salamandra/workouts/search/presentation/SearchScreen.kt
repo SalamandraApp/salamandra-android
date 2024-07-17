@@ -180,7 +180,7 @@ private fun ScreenBody(
                             SearchExerciseComponent(
                                 exercise = exercise,
                                 onAddExercise = { sendIntent(SearchIntent.AddExercise(exercise.exId)) },
-                                onExerciseInfo = { sendIntent(SearchIntent.ShowBottomSheet) },
+                                onExerciseInfo = { sendIntent(SearchIntent.ShowBottomSheet(it)) },
                                 last = index == size - 1,
                             )
 
@@ -190,14 +190,14 @@ private fun ScreenBody(
                 }
             )
         }
-        if (state.bottomSheet) {
+        if (state.bottomSheet && state.selectedExercise != null) {
             val sheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = false,
             )
             BottomSheet (
                 sheetState = sheetState,
                 onDismiss = {sendIntent(SearchIntent.HideBottomSheet)},
-                content = { ExerciseInfo() }
+                content = { ExerciseInfo(state.selectedExercise) }
             )
         }
         if (state.error != null)
@@ -214,7 +214,7 @@ private fun SearchExerciseComponent(
     modifier: Modifier = Modifier,
     exercise: Exercise,
     onAddExercise: (Exercise) -> Unit,
-    onExerciseInfo: () -> Unit,
+    onExerciseInfo: (Exercise) -> Unit,
     last: Boolean
 ) {
     Row(
@@ -237,7 +237,7 @@ private fun SearchExerciseComponent(
             color = onTertiary,
             style = SemiTypo
         )
-        IconButton(onClick = { onExerciseInfo() }) {
+        IconButton(onClick = { onExerciseInfo(exercise) }) {
             Icon(
                 Icons.Outlined.Info,
                 contentDescription = "Info exercise",

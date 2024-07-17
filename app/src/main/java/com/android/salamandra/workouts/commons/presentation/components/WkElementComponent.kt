@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
@@ -30,7 +31,7 @@ import com.android.salamandra.workouts.commons.presentation.constants.WkTemplate
 @Composable
 fun WkElementComponent(
     modifier: Modifier = Modifier,
-    onOption: () -> Unit,
+    onOption: (Exercise) -> Unit,
     wkElement: WkTemplateElement,
     startPad: Dp,
     fgColor: Color
@@ -89,7 +90,7 @@ fun WkElementComponent(
             }
         }
         Box (modifier = Modifier.weight(WkTemplateScreenConstants.columnLabelWeights.button)) {
-            IconButton(onClick = { onOption() }) {
+            IconButton(onClick = { onOption(wkElement.exercise) }) {
                 Icon(
                     imageVector = Icons.Outlined.MoreVert,
                     contentDescription = "Move Exercise",

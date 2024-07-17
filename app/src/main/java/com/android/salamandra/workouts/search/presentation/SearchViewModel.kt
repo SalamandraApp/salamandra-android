@@ -31,8 +31,8 @@ class SearchViewModel @Inject constructor(
             is SearchIntent.ChangeSearchTerm -> _state.update { it.copy(searchTerm = intent.newTerm) }
             SearchIntent.SearchExercise ->  searchExercise()
             SearchIntent.NavigateToEdit -> sendEvent(SearchEvent.NavigateToEdit)
-            SearchIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true) }
-            SearchIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false) }
+            SearchIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false, selectedExercise = null) }
+            is SearchIntent.ShowBottomSheet -> _state.update { it.copy(selectedExercise = intent.exercise, bottomSheet = true) }
         }
     }
 

@@ -26,7 +26,7 @@ data class SingleExercise(
             mainMuscleGroup = MuscleGroup.Chest,
             secondaryMuscleGroup = MuscleGroup.Chest,
             necessaryEquipment = Equipment.Barbell,
-            exerciseType = ExerciseType.Strength
+            exerciseType = ExerciseType.FreeWeights
         )
     }
 }

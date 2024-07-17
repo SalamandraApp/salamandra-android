@@ -63,7 +63,16 @@
     <string name="search_exercise">Search Exercise</string>
     <string name="chest">Chest</string>
     <string name="legs">Legs</string>
+
     <string name="back">Back</string>
     <string name="core">Core</string>
     <string name="arms">Arms</string>
+
+    <string name="barbell">Barbell</string>
+    <string name="dumbbell">Dumbbell</string>
+    <string name="machine">Machine</string>
+
+    <string name="calisthenics">Calisthenics</string>
+    <string name="free_weights">Free Weights</string>
+    <string name="warm_up">Warm-up</string>
 </resources>

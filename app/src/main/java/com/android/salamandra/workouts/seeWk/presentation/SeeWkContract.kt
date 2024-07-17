@@ -5,14 +5,16 @@ import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
+import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 
 
 data class SeeWkState(
     val loading: Boolean,
+    val error: RootError?,
     val wkTemplate: WorkoutTemplate,
     val bottomSheet: Boolean,
-    val error: RootError?
+    val selectedExercise: Exercise?
 ) : State {
     companion object {
         val initial: SeeWkState = SeeWkState(
@@ -20,6 +22,7 @@ data class SeeWkState(
             error = null,
             wkTemplate = WorkoutTemplate(),
             bottomSheet = false,
+            selectedExercise = null
         )
     }
 }
@@ -28,7 +31,7 @@ sealed class SeeWkIntent: Intent {
     data class Error(val error: RootError): SeeWkIntent()
     data object CloseError: SeeWkIntent()
     data object NavigateUp: SeeWkIntent()
-    data object ShowBottomSheet: SeeWkIntent()
+    data class ShowBottomSheet(val exercise: Exercise): SeeWkIntent()
     data object HideBottomSheet: SeeWkIntent()
 }
 

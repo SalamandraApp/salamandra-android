@@ -161,14 +161,14 @@ private fun ScreenBody(
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    onOption = { sendIntent(EditWkIntent.ShowBottomSheet(index)) },
+                    onOption = { sendIntent(EditWkIntent.ShowBottomSheet(element.exercise)) },
                     wkElement = element,
                     startPad = startPad,
                     fgColor = secondary,
                 )
             }
         }
-        if (state.bottomSheet && state.exerciseSelectedIndex != null) {
+        if (state.bottomSheet && state.selectedExercise != null) {
             val sheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = false,
             )
@@ -178,8 +178,8 @@ private fun ScreenBody(
                 content = {
                     TabRowBuilder(
                         contents = listOf(
-                            { EditExercise(index = 0, sendIntent = sendIntent) },
-                            { ExerciseInfo() }
+                            { EditExercise(index = 0) },
+                            { ExerciseInfo(state.selectedExercise) }
                         ),
                         icons = listOf(Icons.Outlined.Edit, Icons.Outlined.FitnessCenter),
                         titles = listOf("Edit", "Info")

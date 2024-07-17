@@ -15,6 +15,7 @@ data class SearchState(
     val searchResultExercises: List<Exercise>,
     val addedExercisesIds: Array<String>,
     val bottomSheet: Boolean,
+    val selectedExercise: Exercise?
 ) : State {
     companion object {
         val initial: SearchState = SearchState(
@@ -24,6 +25,7 @@ data class SearchState(
             searchResultExercises = emptyList(),
             addedExercisesIds = emptyArray(),
             bottomSheet = false,
+            selectedExercise = null
         )
     }
 }
@@ -35,8 +37,8 @@ sealed class SearchIntent: Intent {
     data class AddExercise(val exercise: String) : SearchIntent()
     data object SearchExercise : SearchIntent()
     data object NavigateToEdit : SearchIntent()
-    data object ShowBottomSheet: SearchIntent()
     data object HideBottomSheet: SearchIntent()
+    data class ShowBottomSheet(val exercise: Exercise): SearchIntent()
 }
 
 sealed class SearchEvent: Event{

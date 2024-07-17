@@ -139,21 +139,21 @@ private fun ScreenBody(
             }
             items(state.wkTemplate.elements) {
                 WkElementComponent(
-                    onOption = {sendIntent(SeeWkIntent.ShowBottomSheet)},
+                    onOption = {sendIntent(SeeWkIntent.ShowBottomSheet(it))},
                     wkElement = it,
                     startPad = 10.dp,
                     fgColor = tertiary
                 )
             }
         }
-        if (state.bottomSheet) {
+        if (state.bottomSheet && state.selectedExercise != null) {
             val sheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = false,
             )
             BottomSheet(
                 sheetState = sheetState,
                 onDismiss = {sendIntent(SeeWkIntent.HideBottomSheet)},
-                content = { ExerciseInfo() }
+                content = { ExerciseInfo(state.selectedExercise) }
             )
         }
     }
