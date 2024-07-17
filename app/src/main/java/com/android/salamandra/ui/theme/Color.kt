@@ -111,5 +111,6 @@ fun textFieldColors (): TextFieldColors {
         unfocusedContainerColor = secondary.copy(0.5f),
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
+        disabledTextColor = secondary.copy(0.5f)
     )
 }

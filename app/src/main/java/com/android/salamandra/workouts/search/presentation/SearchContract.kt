@@ -13,7 +13,8 @@ data class SearchState(
     val error: RootError?,
     val searchTerm: String,
     val searchResultExercises: List<Exercise>,
-    val addedExercisesIds: Array<String>
+    val addedExercisesIds: Array<String>,
+    val bottomSheet: Boolean,
 ) : State {
     companion object {
         val initial: SearchState = SearchState(
@@ -21,7 +22,8 @@ data class SearchState(
             error = null,
             searchTerm = "",
             searchResultExercises = emptyList(),
-            addedExercisesIds = emptyArray()
+            addedExercisesIds = emptyArray(),
+            bottomSheet = false,
         )
     }
 }
@@ -33,6 +35,8 @@ sealed class SearchIntent: Intent {
     data class AddExercise(val exercise: String) : SearchIntent()
     data object SearchExercise : SearchIntent()
     data object NavigateToEdit : SearchIntent()
+    data object ShowBottomSheet: SearchIntent()
+    data object HideBottomSheet: SearchIntent()
 }
 
 sealed class SearchEvent: Event{

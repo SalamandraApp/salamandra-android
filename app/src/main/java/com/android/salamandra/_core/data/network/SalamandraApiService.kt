@@ -27,7 +27,7 @@ interface SalamandraApiService {
 
     @GET("/users/{user_id}/workout-templates/{workout_template_id}")
     suspend fun getWorkoutById(
-        @Query("full") full: Boolean,
+        @Query("full") full: String,
         @Path("user_id") userId: String,
         @Path("workout_template_id") wkId: String): WorkoutTemplateResponse
 
