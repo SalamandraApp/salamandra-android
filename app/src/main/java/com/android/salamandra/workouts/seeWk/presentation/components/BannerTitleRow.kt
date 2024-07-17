@@ -29,8 +29,7 @@ import com.android.salamandra.workouts.seeWk.presentation.SeeWkState
 @Composable
 fun BannerTitleRow(
     modifier: Modifier = Modifier,
-    sendIntent: (SeeWkIntent) -> Unit,
-    state: SeeWkState
+    wkDescription: String?
 ) {
     Row(
         modifier = modifier
@@ -44,7 +43,7 @@ fun BannerTitleRow(
         ) {
             val descriptionPlaceholder =
                 "Really really really long description, I mean really long, why do you need so much, a little too much"
-            val textToShow = state.wkTemplate.description ?: descriptionPlaceholder
+            val textToShow = wkDescription ?: descriptionPlaceholder
             Text(
                 modifier = Modifier.padding(top = 20.dp),
                 text = textToShow,

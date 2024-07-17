@@ -24,8 +24,8 @@ import com.android.salamandra.workouts.seeWk.presentation.SeeWkState
 @Composable
 fun SeeWkBannerTopRow(
     modifier: Modifier = Modifier,
-    sendIntent: (SeeWkIntent) -> Unit,
-    state: SeeWkState,
+    onGoBack: () -> Unit,
+    onExecuteWk: () -> Unit,
     middleContent: @Composable () -> Unit,
     executeButton: Boolean = false
 ) {
@@ -36,7 +36,7 @@ fun SeeWkBannerTopRow(
     )
     {
         Box(modifier = Modifier
-            .clickable { sendIntent(SeeWkIntent.NavigateUp) }
+            .clickable { onGoBack() }
         ) {
             Icon(
                 imageVector = Icons.Outlined.ArrowBackIosNew,
@@ -54,7 +54,7 @@ fun SeeWkBannerTopRow(
                 containerColor = primaryVariant.copy(0.3f),
                 contentColor = primaryVariant,
                 elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                onClick = { }) {
+                onClick = { onExecuteWk() }) {
                 Icon(
                     imageVector = Icons.Filled.PlayCircle,
                     contentDescription = "Execute Workout",

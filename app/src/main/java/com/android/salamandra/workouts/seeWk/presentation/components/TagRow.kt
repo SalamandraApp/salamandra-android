@@ -24,19 +24,14 @@ import com.android.salamandra.workouts.seeWk.presentation.SeeWkState
 @Composable
 fun TagRow(
     modifier: Modifier = Modifier,
-    sendIntent: (SeeWkIntent) -> Unit,
-    state: SeeWkState
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val wTags = 800f
-        val wButton = 200f
         Box(
             modifier = Modifier
-                .weight(wTags)
                 .padding(end = 15.dp)
         ) {
             val bgColor = onTertiary.copy(0.4f)

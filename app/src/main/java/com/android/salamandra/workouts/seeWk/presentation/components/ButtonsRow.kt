@@ -29,8 +29,10 @@ import com.android.salamandra.workouts.seeWk.presentation.SeeWkState
 @Composable
 fun ButtonsRow (
     modifier: Modifier = Modifier,
-    state: SeeWkState,
-    sendIntent: (SeeWkIntent) -> Unit
+    onEdit: () -> Unit,
+    onShare: () -> Unit,
+    onStats: () -> Unit,
+    onExecuteWk: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -40,7 +42,7 @@ fun ButtonsRow (
     {
 
         Box(modifier = Modifier
-            .clickable { }
+            .clickable { onEdit() }
         ) {
             Icon(
                 imageVector = Icons.Outlined.Edit,
@@ -51,7 +53,7 @@ fun ButtonsRow (
         Box(
             modifier = Modifier
                 .padding(start = 20.dp)
-                .clickable { sendIntent(SeeWkIntent.ShowBottomSheet) }
+                .clickable { onShare() }
         ) {
             Icon(
                 imageVector = Icons.Filled.Share,
@@ -66,7 +68,7 @@ fun ButtonsRow (
             containerColor = secondary,
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { }) {
+            onClick = { onStats() }) {
             Icon(
                 imageVector = Icons.Outlined.QueryStats,
                 contentDescription = "Wk Stats",
@@ -81,7 +83,7 @@ fun ButtonsRow (
             containerColor = primaryVariant.copy(0.3f),
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { }) {
+            onClick = { onExecuteWk() }) {
             Icon(
                 imageVector = Icons.Filled.PlayCircle,
                 contentDescription = "Execute Workout",

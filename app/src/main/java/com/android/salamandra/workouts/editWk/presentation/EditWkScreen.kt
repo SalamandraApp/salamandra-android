@@ -119,11 +119,12 @@ private fun ScreenBody(
                     .zIndex(1f),
             ){
                 EditWkFixedBanner(
-                    state = state,
-                    sendIntent = sendIntent,
                     modifier = Modifier
                         .height(fixedBannerHeight)
-                        .background(mainColor)
+                        .background(mainColor),
+                    wkName = state.wkTemplate.name,
+                    onSave = { sendIntent(EditWkIntent.CreteWorkout) },
+                    onClose = { sendIntent(EditWkIntent.NavigateToHome) }
                 )
                 FadeLip()
             }
@@ -142,16 +143,25 @@ private fun ScreenBody(
             item {
                 EditWkBigBanner(
                     modifier = Modifier.height(bannerHeight),
-                    state = state,
-                    sendIntent = sendIntent,
-                    backgroundColor = mainColor
+                    wkName = state.wkTemplate.name,
+                    wkDescription = state.wkTemplate.description,
+                    bgColor = mainColor,
+                    onClose = { sendIntent(EditWkIntent.NavigateToHome) },
+                    onSave =  { sendIntent(EditWkIntent.CreteWorkout) },
+                    onDeleteWk = {  },
+                    onAddTag = {  },
+                    onDeleteTag = {  },
+                    onEditTag = {  },
+                    onAddExercise = { sendIntent(EditWkIntent.NavigateToSearch) },
+                    onChangeName = { sendIntent(EditWkIntent.ChangeWkName(it)) },
+                    onChangeDescription = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
                 )
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    onOption = {sendIntent(EditWkIntent.ShowBottomSheet(index))},
+                    onOption = { sendIntent(EditWkIntent.ShowBottomSheet(index)) },
                     wkElement = element,
                     startPad = startPad,
                     fgColor = secondary,
@@ -182,9 +192,10 @@ private fun ScreenBody(
 
 @Composable
 fun EditWkFixedBanner(
-    state: EditWkState,
-    sendIntent: (EditWkIntent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    wkName: String,
+    onSave: () -> Unit,
+    onClose: () -> Unit,
 ) {
 
     val dpSideMargin = WkTemplateScreenConstants.sideMargin
@@ -196,11 +207,11 @@ fun EditWkFixedBanner(
     ) {
         EditWkBannerTopRow(
             modifier = Modifier.weight(1f),
-            sendIntent = sendIntent,
-            state = state,
+            onClose = onClose,
+            onSave = onSave,
             middleContent = {
                 Text(
-                    text = state.wkTemplate.name,
+                    text = wkName,
                     color = title,
                     fontSize = 16.sp,
                     style = TitleTypo,
@@ -214,9 +225,18 @@ fun EditWkFixedBanner(
 @Composable
 fun EditWkBigBanner(
     modifier: Modifier = Modifier,
-    state: EditWkState,
-    sendIntent: (EditWkIntent) -> Unit,
-    backgroundColor: Color
+    wkName: String,
+    wkDescription: String?,
+    onSave: () -> Unit,
+    onClose: () -> Unit,
+    onDeleteWk: () -> Unit,
+    onAddExercise: () -> Unit,
+    onAddTag: () -> Unit,
+    onDeleteTag: () -> Unit,
+    onEditTag: () -> Unit,
+    onChangeName: (String) -> Unit,
+    onChangeDescription: (String) -> Unit,
+    bgColor: Color
 ) {
 
     val dpTopRow     = WkTemplateScreenConstants.bannerRowHeights.top
@@ -230,14 +250,14 @@ fun EditWkBigBanner(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(backgroundColor)
+            .background(bgColor)
             .padding(horizontal = dpSideMargin)
     ) {
         EditWkBannerTopRow(
             modifier = Modifier
                 .height(dpTopRow),
-            sendIntent = sendIntent,
-            state = state,
+            onSave = onSave,
+            onClose = onClose,
             middleContent = {
                 Text(
                     text = stringResource(R.string.edit_workout),
@@ -251,22 +271,25 @@ fun EditWkBigBanner(
             modifier = Modifier
                 .height(dpTitle)
                 .padding(bottom = dpInBetweenMargin),
-            sendIntent = sendIntent,
-            state = state
+            wkName = wkName,
+            wkDescription = wkDescription,
+            onChangeName = onChangeName,
+            onChangeDescription = onChangeDescription,
         )
         EditTagRow(
             modifier = Modifier
                 .padding(bottom = dpInBetweenMargin)
                 .height(dpTags),
-            state = state,
-            sendIntent = sendIntent
+            onAddTag = onAddTag,
+            onDeleteTag = onDeleteTag,
+            onEditTag = onEditTag,
         )
         ButtonsRowBanner(
             modifier = Modifier
                 .height(dpButtons)
                 .padding(bottom = dpInBetweenMargin / 2),
-            state = state,
-            sendIntent = sendIntent
+            onAddExercise = onAddExercise,
+            onDeleteWk = onDeleteWk
         )
         WkTemplateViewLabels(
             modifier = Modifier

@@ -106,12 +106,18 @@ private fun ScreenBody(
                 .background(mainColor),
             verticalArrangement = Arrangement.Top
         ) {
-            HomeBanner(sendIntent, mainColor)
+            HomeBanner(
+                onCreateExercise = { sendIntent(HomeIntent.NewWk) },
+                onSearchWkTemplate = {/* TODO */}
+            )
             FadeLip()
             ListViewToggles()
             LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
                 items(state.wkPreviewList) { wkPreview ->
-                    WkPreview(wkPreview = wkPreview, sendIntent = sendIntent)
+                    WkPreview(
+                        wkPreview = wkPreview,
+                        onClick = {sendIntent(HomeIntent.SeeWk(wkTemplateId = wkPreview.wkId))}
+                    )
                     Spacer(modifier = Modifier.size(18.dp))
                 }
             }
@@ -178,15 +184,13 @@ fun ListViewToggles() {
 
 @Composable
 fun HomeBanner(
-    sendIntent: (HomeIntent) -> Unit,
-    bgColor: Color
+    onCreateExercise: () -> Unit,
+    onSearchWkTemplate: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .background(bgColor)
-
     ) {
         Row(
             modifier = Modifier
@@ -218,7 +222,7 @@ fun HomeBanner(
                 modifier = Modifier.padding(end = 10.dp)
             ) {
                 IconButton(
-                    onClick = {/*TODO*/ }
+                    onClick = { onSearchWkTemplate() }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Search,
@@ -227,7 +231,7 @@ fun HomeBanner(
                     )
                 }
                 IconButton(
-                    onClick = { sendIntent(HomeIntent.NewWk) }
+                    onClick = { onCreateExercise() }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Add,
@@ -264,12 +268,15 @@ fun HomeBanner(
 
 
 @Composable
-fun WkPreview(wkPreview: WorkoutPreview, sendIntent: (HomeIntent) -> Unit) {
+fun WkPreview(
+    wkPreview: WorkoutPreview,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .padding(end = 40.dp)
             .fillMaxWidth()
-            .clickable { sendIntent(HomeIntent.SeeWk(wkTemplateId = wkPreview.wkId)) },
+            .clickable { onClick() },
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {

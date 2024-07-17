@@ -34,8 +34,9 @@ import com.android.salamandra.workouts.editWk.presentation.EditWkState
 @Composable
 fun EditTagRow(
     modifier: Modifier = Modifier,
-    sendIntent: (EditWkIntent) -> Unit,
-    state: EditWkState
+    onAddTag: () -> Unit,
+    onEditTag: () -> Unit,
+    onDeleteTag: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -62,7 +63,7 @@ fun EditTagRow(
                     ) {
                         Box(modifier = Modifier
                             .padding(horizontal = 5.dp)
-                            .clickable { }
+                            .clickable { onDeleteTag() }
                         ) {
                             Icon(
                                 modifier = Modifier.size(15.dp),
@@ -79,7 +80,7 @@ fun EditTagRow(
                         )
                         Box(modifier = Modifier
                             .padding(horizontal = 5.dp)
-                            .clickable { }
+                            .clickable { onEditTag() }
                         ) {
                             Icon(
                                 modifier = Modifier.size(15.dp),
@@ -99,7 +100,7 @@ fun EditTagRow(
             containerColor = secondary,
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { /*TODO*/ }) {
+            onClick = { onAddTag() }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add Exercise",

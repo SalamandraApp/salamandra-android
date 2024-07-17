@@ -107,8 +107,9 @@ private fun ScreenBody(
                     .zIndex(1f),
             ) {
                 SeeWkFixedBanner(
-                    state = state,
-                    sendIntent = sendIntent,
+                    wkName = state.wkTemplate.name,
+                    onGoBack = {sendIntent(SeeWkIntent.NavigateUp)},
+                    onExecuteWk = {/* TODO */},
                     modifier = Modifier
                         .height(fixedBannerHeight)
                         .background(mainColor)
@@ -128,9 +129,10 @@ private fun ScreenBody(
             item {
                 SeeWkBigBanner(
                     modifier = Modifier.height(bannerHeight),
-                    state = state,
-                    sendIntent = sendIntent,
-                    bgColor = mainColor,
+                    wkName = state.wkTemplate.name,
+                    wkDescription = state.wkTemplate.description,
+                    onGoBack = { sendIntent(SeeWkIntent.NavigateUp) },
+                    onExecuteWk = { }
                 )
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
@@ -161,9 +163,10 @@ private fun ScreenBody(
 
 @Composable
 fun SeeWkFixedBanner(
-    state: SeeWkState,
-    sendIntent: (SeeWkIntent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    wkName: String,
+    onGoBack: () -> Unit,
+    onExecuteWk: () -> Unit,
 ) {
 
     val dpSideMargin = WkTemplateScreenConstants.sideMargin
@@ -175,16 +178,16 @@ fun SeeWkFixedBanner(
     ) {
         SeeWkBannerTopRow(
             modifier = Modifier.weight(1f),
-            sendIntent = sendIntent,
-            state = state,
             middleContent = {
                 Text(
-                    text = state.wkTemplate.name,
+                    text = wkName,
                     color = title,
                     fontSize = 16.sp,
                     style = TitleTypo,
                 )
             },
+            onGoBack = onGoBack,
+            onExecuteWk = onExecuteWk,
             executeButton = true,
         )
         WkTemplateViewLabels()
@@ -193,10 +196,12 @@ fun SeeWkFixedBanner(
 
 @Composable
 fun SeeWkBigBanner(
+    wkName: String,
+    wkDescription: String?,
+    onGoBack: () -> Unit,
+    onExecuteWk: () -> Unit,
     modifier: Modifier = Modifier,
-    state: SeeWkState,
-    sendIntent: (SeeWkIntent) -> Unit,
-    bgColor: Color) {
+) {
 
     val dpTopRow     = WkTemplateScreenConstants.bannerRowHeights.top
     val dpTitle      = WkTemplateScreenConstants.bannerRowHeights.picture
@@ -209,17 +214,16 @@ fun SeeWkBigBanner(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(bgColor)
             .padding(horizontal = dpSideMargin)
     ) {
         SeeWkBannerTopRow(
             modifier = Modifier
                 .height(dpTopRow),
-            sendIntent = sendIntent,
-            state = state,
+            onGoBack = onGoBack,
+            onExecuteWk = onExecuteWk,
             middleContent = {
                 Text(
-                    text = state.wkTemplate.name,
+                    text = wkName,
                     color = title,
                     fontSize = 18.sp,
                     style = TitleTypo,
@@ -231,22 +235,21 @@ fun SeeWkBigBanner(
             modifier = Modifier
                 .height(dpTitle)
                 .padding(bottom = dpInBetweenMargin),
-            sendIntent = sendIntent,
-            state = state
+            wkDescription = wkDescription
         )
         TagRow(
             modifier = Modifier
                 .padding(bottom = dpInBetweenMargin)
-                .height(dpTags),
-            state = state,
-            sendIntent = sendIntent
+                .height(dpTags)
         )
         ButtonsRow(
             modifier = Modifier
                 .height(dpButtons)
                 .padding(bottom = dpInBetweenMargin / 2),
-            state = state,
-            sendIntent = sendIntent
+            onEdit = {},
+            onShare = {},
+            onStats = {},
+            onExecuteWk = {},
         )
         WkTemplateViewLabels(
             modifier = Modifier

@@ -1,5 +1,6 @@
 package com.android.salamandra.workouts.editWk.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,12 +31,13 @@ import com.android.salamandra.workouts.editWk.presentation.EditWkState
 @Composable
 fun ButtonsRowBanner (
     modifier: Modifier = Modifier,
-    state: EditWkState,
-    sendIntent: (EditWkIntent) -> Unit
+    onAddExercise: () -> Unit,
+    onDeleteWk: () -> Unit,
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onDeleteWk() },
         verticalAlignment = Alignment.CenterVertically
     )
     {
@@ -51,24 +53,13 @@ fun ButtonsRowBanner (
             style = SemiTypo,
             fontSize = 14.sp
         )
-        IconButton(
-            onClick = { sendIntent(EditWkIntent.ShowBottomSheet(0)) },
-            modifier = Modifier.padding(start = 10.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.FolderOpen,
-                tint = onTertiary,
-                contentDescription = "Folder workout"
-            )
-        }
-
         Spacer(modifier = Modifier.weight(1f))
 
         ExtendedFloatingActionButton(
             containerColor = primaryVariant.copy(0.3f),
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { sendIntent(EditWkIntent.NavigateToSearch) }) {
+            onClick = { onAddExercise() }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
                 contentDescription = "Add Exercise",

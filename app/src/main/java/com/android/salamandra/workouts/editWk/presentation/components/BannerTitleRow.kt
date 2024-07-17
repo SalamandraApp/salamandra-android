@@ -24,8 +24,10 @@ import com.android.salamandra.workouts.editWk.presentation.EditWkState
 @Composable
 fun BannerTitleRow(
     modifier: Modifier = Modifier,
-    sendIntent: (EditWkIntent) -> Unit,
-    state: EditWkState
+    wkName: String,
+    wkDescription: String?,
+    onChangeName: (String) -> Unit,
+    onChangeDescription: (String) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -41,14 +43,14 @@ fun BannerTitleRow(
                 modifier = Modifier.clip(RoundedCornerShape(10.dp)),
                 singleLine = true,
                 enabled = true,
-                value = state.wkTemplate.name,
+                value = wkName,
                 textStyle = TitleTypo.copy(fontSize = 16.sp),
                 colors = textFieldColors(),
-                onValueChange = { sendIntent(EditWkIntent.ChangeWkName(it)) }
+                onValueChange = { onChangeName(it) }
             )
             Spacer(modifier = Modifier.weight(1f))
 
-            val textToShow = state.wkTemplate.description ?: ""
+            val textToShow = wkDescription ?: ""
             TextField(
                 modifier = Modifier.clip(RoundedCornerShape(10.dp)),
                 enabled = true,
@@ -62,7 +64,7 @@ fun BannerTitleRow(
                 maxLines = 2,
                 textStyle = TitleTypo.copy(fontSize = 12.sp),
                 colors = textFieldColors(),
-                onValueChange = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
+                onValueChange = { onChangeDescription(it) },
             )
 
         }

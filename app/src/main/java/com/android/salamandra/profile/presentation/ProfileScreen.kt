@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
+import com.android.salamandra._core.domain.model.enums.FitnessGoal
+import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
@@ -63,6 +65,8 @@ import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Destination
 @Composable
@@ -104,28 +108,33 @@ private fun ScreenBody(
             verticalArrangement = Arrangement.Top
         ) {
             ProfileBanner(
-                state = state,
-                sendIntent = sendIntent,
-                bgColor = mainColor,
-                modifier = Modifier.weight(bannerWeight)
+                modifier = Modifier.weight(bannerWeight),
+                username = state.userData?.displayName,
+                displayName = state.userData?.displayName,
+                dateJoined = state.userData?.dateJoined,
+                onGoToSettings = { sendIntent(ProfileIntent.GoToSettings) }
             )
             FadeLip()
             InfoSection(
                 modifier = Modifier
                     .weight(infoWeight),
-                sendIntent = sendIntent,
-                state = state,
-                bgColor = tertiary
+                weight = state.userData?.weight,
+                fitnessLevel = state.userData?.fitnessLevel,
+                fitnessGoal = state.userData?.fitnessGoal,
             )
         }
         if (!state.isSignedIn) {
-            NotLoggedInCover ( sendIntent = sendIntent )
+            NotLoggedInCover (
+                onGoToLogin = { sendIntent(ProfileIntent.GoToLogin) }
+            )
         }
 
     }
 }
 @Composable
-private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
+private fun NotLoggedInCover(
+    onGoToLogin: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,7 +161,7 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
                 containerColor = primaryVariant,
             ),
             shape = RoundedCornerShape(40),
-            onClick = { sendIntent(ProfileIntent.GoToLogin) }
+            onClick = { onGoToLogin() }
         ) {
             Text(
                 text = stringResource(R.string.login),
@@ -167,9 +176,9 @@ private fun NotLoggedInCover(sendIntent: (ProfileIntent) -> Unit) {
 @Composable
 private fun InfoSection (
     modifier: Modifier = Modifier,
-    bgColor: Color,
-    sendIntent: (ProfileIntent) -> Unit,
-    state: ProfileState
+    weight: Double?,
+    fitnessLevel: FitnessLevel?,
+    fitnessGoal: FitnessGoal?,
 ) {
     val dpSideMargin = 20.dp
     val dpVerticalPadding = 20.dp
@@ -182,8 +191,9 @@ private fun InfoSection (
                     .height(300.dp)
                     .fillMaxWidth()
                     .padding(vertical = dpVerticalPadding, horizontal = dpSideMargin),
-                sendIntent = sendIntent,
-                state = state,
+                weight = weight,
+                fitnessLevel = fitnessLevel,
+                fitnessGoal = fitnessGoal,
             )
         }
     }
@@ -192,8 +202,9 @@ private fun InfoSection (
 @Composable
 private fun BasicInfo (
     modifier: Modifier = Modifier,
-    sendIntent: (ProfileIntent) -> Unit,
-    state: ProfileState
+    weight: Double?,
+    fitnessLevel: FitnessLevel?,
+    fitnessGoal: FitnessGoal?,
 ) {
     val dpInsidePadding = 10.dp
     val dpBoxMargin = 10.dp
@@ -203,7 +214,7 @@ private fun BasicInfo (
     val weightAnnotatedString = buildAnnotatedString {
         append("Weight: ")
         withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-            append(state.userData?.weight?.toString()?: "???")
+            append(weight?.toString()?: "???")
             append(" kg")
         }
     }
@@ -211,14 +222,14 @@ private fun BasicInfo (
     val fitnessLvlAnnotatedString = buildAnnotatedString {
         append("Fitness Level: ")
         withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-            append(state.userData?.fitnessLevel?.toString()?: "Beginner")
+            append(fitnessLevel?.toString()?: "Beginner")
         }
     }
 
     val fitnessGoalAnnotatedString = buildAnnotatedString {
         append("Fitness Goal: ")
         withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-            append(state.userData?.fitnessGoal?.toString()?: "Get in shape")
+            append(fitnessGoal?.toString()?: "Get in shape")
         }
     }
     Row (
@@ -332,10 +343,11 @@ private fun BasicInfo (
 @Composable
 private fun ProfileBanner(
     modifier: Modifier = Modifier,
-    bgColor: Color,
-    sendIntent: (ProfileIntent) -> Unit,
-    state: ProfileState
-) {
+    username: String?,
+    displayName: String?,
+    dateJoined: LocalDate?,
+    onGoToSettings: () -> Unit,
+    ) {
     val bannerPicWeight = 0.40f
     val bannerPfpWeight = 0.5f
     val bannerBadgesWeight = 0.15f
@@ -343,7 +355,6 @@ private fun ProfileBanner(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(bgColor)
     ) {
         Row(
             modifier = Modifier
@@ -380,9 +391,9 @@ private fun ProfileBanner(
                     pad = 10.dp
                 )
             }
-            val displayName = state.userData?.displayName ?: stringResource(R.string.display_name)
-            val username = "@${state.userData?.username ?: "username"}"
-            val date_joined = state.userData?.dateJoined?.let { "Joined $it" } ?: stringResource(R.string.date_joined)
+            val displayNameText = displayName ?: stringResource(R.string.display_name)
+            val usernameText = "@${username ?: "username"}"
+            val dateJoinedText = "Joined ${dateJoined?.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) ?: "DD-MM-YYYY"}"
 
             Column (
                 modifier = Modifier
@@ -391,7 +402,7 @@ private fun ProfileBanner(
                     .padding(horizontal = 10.dp)
             ){
                 Text(
-                    text = displayName,
+                    text = displayNameText,
                     color = title,
                     style = TitleTypo,
                     fontSize = 20.sp,
@@ -400,7 +411,7 @@ private fun ProfileBanner(
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
-                    text = username,
+                    text = usernameText,
                     color = onTertiary,
                     style = SemiTypo,
                     fontSize = 18.sp,
@@ -409,7 +420,7 @@ private fun ProfileBanner(
                 )
                 Text(
                     modifier = Modifier.padding(top = 10.dp),
-                    text = date_joined,
+                    text = dateJoinedText,
                     color = onTertiary,
                     style = SemiTypo,
                     fontSize = 14.sp
@@ -422,7 +433,7 @@ private fun ProfileBanner(
                     .padding(end = sideMargin - 10.dp)
             ){
                 IconButton(
-                    onClick = {sendIntent(ProfileIntent.GoToSettings)},
+                    onClick = { onGoToSettings() },
                 ) {
                     Icon(
                         modifier = Modifier.size(30.dp),

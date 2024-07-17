@@ -22,8 +22,8 @@ import com.android.salamandra.workouts.editWk.presentation.EditWkState
 @Composable
 fun EditWkBannerTopRow (
     modifier: Modifier = Modifier,
-    sendIntent: (EditWkIntent) -> Unit,
-    state: EditWkState,
+    onClose: () -> Unit,
+    onSave: () -> Unit,
     middleContent: @Composable () -> Unit
 ) {
     Row(
@@ -33,7 +33,7 @@ fun EditWkBannerTopRow (
     )
     {
         Box(modifier = Modifier
-            .clickable { sendIntent(EditWkIntent.NavigateToHome) }
+            .clickable { onClose() }
         ) {
             Icon(
                 imageVector = Icons.Outlined.Close,
@@ -45,7 +45,7 @@ fun EditWkBannerTopRow (
         middleContent()
         Spacer(modifier = Modifier.weight(1f))
         Box(modifier = Modifier
-            .clickable { sendIntent(EditWkIntent.CreteWorkout) }
+            .clickable { onSave() }
         ) {
             Icon(
                 modifier = Modifier.size(27.dp),
