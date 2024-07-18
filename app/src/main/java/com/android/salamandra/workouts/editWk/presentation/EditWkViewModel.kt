@@ -24,14 +24,23 @@ class EditWkViewModel @Inject constructor(
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
             is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
-            EditWkIntent.NavigateToHome -> sendEvent(EditWkEvent.NavigateToHome)
 
-            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false, selectedExercise = null) }
-            is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true, selectedExercise = intent.exercise) }
+            EditWkIntent.NavigateToHome -> navToHome()
 
-            is EditWkIntent.ChangeWkName -> _state.update { it.copy(wkTemplate = it.wkTemplate.copy(name = intent.newName)) }
+            is EditWkIntent.HideBottomSheet -> _state.update {
+                it.copy(bottomSheet = false, selectedExercise = null)
+            }
 
+            is EditWkIntent.ShowBottomSheet -> _state.update {
+                it.copy(bottomSheet = true, selectedExercise = intent.exercise)
+            }
+
+            is EditWkIntent.ChangeWkName -> _state.update {
+                it.copy(wkTemplate = it.wkTemplate.copy(name = intent.newName)
+                )
+            }
 
             is EditWkIntent.ChangeWkDescription -> {
                 if (intent.newDescription != "") _state.update {
@@ -64,9 +73,9 @@ class EditWkViewModel @Inject constructor(
         }
     }
 
-    private fun createWorkout(){
+    private fun createWorkout() {
         ioLaunch {
-            when(val creation = repository.createWorkout(state.value.wkTemplate)) {
+            when (val creation = repository.createWorkout(state.value.wkTemplate)) {
                 is Result.Success -> sendEvent(EditWkEvent.NavigateToHome)
                 is Result.Error -> _state.update { it.copy(error = creation.error) }
             }
@@ -74,9 +83,16 @@ class EditWkViewModel @Inject constructor(
 
     }
 
-    private fun navigateToSearch(){
+    private fun navToHome() {
         ioLaunch {
-            repository.saveWorkoutTemplateElementsTemporary(state.value.wkTemplate.elements)
+            repository.deleteTemporalTemplateElements()
+            sendEvent(EditWkEvent.NavigateToHome)
+        }
+    }
+
+    private fun navigateToSearch() {
+        ioLaunch {
+            repository.saveWorkoutTemplateElementsTemporarly(state.value.wkTemplate.elements)
             sendEvent(EditWkEvent.NavigateToSearch)
         }
     }
@@ -88,7 +104,6 @@ class EditWkViewModel @Inject constructor(
         }
         _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = elements)) }
     }
-
 
 
     private fun updateReps(index: Int, newReps: Int) {

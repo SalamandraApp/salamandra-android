@@ -14,6 +14,7 @@ import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import com.android.salamandra.workouts.editWk.domain.Repository
+import kotlin.random.Random
 
 class RepositoryImpl(
     private val localDbRepository: LocalDbRepository,
@@ -30,10 +31,7 @@ class RepositoryImpl(
         exerciseIdList.forEach { id ->
             when (val exercise = localDbRepository.getExerciseByID(id)) {
                 is Result.Success -> exerciseList.add(exercise.data.toExercise())
-                is Result.Error -> Log.e(
-                    "SLM",
-                    "Error occurred while getting exercise from local: ${exercise.error}"
-                )
+                is Result.Error -> Log.e("SLM","Error occurred while getting exercise from local: ${exercise.error}")
             }
         }
         return exerciseList
@@ -71,35 +69,34 @@ class RepositoryImpl(
                     when (val exercise = localDbRepository.getExerciseByID(it.exerciseId)) {
                         is Result.Success -> it.toWkTemplateElement(exercise.data.toExercise())
                         is Result.Error -> {
-                            Log.e(
-                                "SLM",
-                                "Error occurred while getting exercise from local: ${exercise.error}"
-                            )
+                            Log.e("SLM","Error occurred while getting exercise from local: ${exercise.error}")
                             null
                         }
                     }
                 }
-                localDbRepository.deleteTemplateElementById(TEMPORARY_SAVED_ELEMENTS_ID)
+               deleteTemporalTemplateElements()
                 return wkTemplateElementList
             }
 
             is Result.Error -> {
                 Log.e("SLM", "Error occurred while retrieving temporal elements")
-                emptyList<WkTemplateElement>()
+                emptyList()
             }
         }
     }
 
-    override suspend fun saveWorkoutTemplateElementsTemporary(wkTemplateElementList: List<WkTemplateElement>) {
+    override suspend fun deleteTemporalTemplateElements() {
+        localDbRepository.deleteTemplateElementById(TEMPORARY_SAVED_ELEMENTS_ID)
+    }
+
+    override suspend fun saveWorkoutTemplateElementsTemporarly(wkTemplateElementList: List<WkTemplateElement>) {
         wkTemplateElementList.forEach {
             when (val insertion = localDbRepository.insertWkTemplateElement(
                 wkTemplateId = TEMPORARY_SAVED_ELEMENTS_ID,
-                wkTemplateElement = it
+                wkTemplateElement = it.copy(templateElementId = Random.nextInt().toString())
             )) {
                 is Result.Success -> {}
-                is Result.Error -> Log.e(
-                    "SLM",
-                    "An error occurred while storing temporary element: ${insertion.error}"
+                is Result.Error -> Log.e("SLM","An error occurred while storing temporary element: ${insertion.error}"
                 )
             }
         }

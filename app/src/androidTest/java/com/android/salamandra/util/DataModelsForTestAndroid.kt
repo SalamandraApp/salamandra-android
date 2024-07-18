@@ -31,40 +31,44 @@ val EXAMPLE_EXERCISE_PUSH_UP = Exercise(
     mainMuscleGroup = MuscleGroup.Chest,
     secondaryMuscleGroup = MuscleGroup.Arms,
     necessaryEquipment = Equipment.Dumbbell,
-    exerciseType = ExerciseType.Hypertrophy
+    exerciseType = ExerciseType.WarmUp
 )
 
 val EXAMPLE_EXERCISE_SQUAT = Exercise(
     exId = "exex2",
     name = "Squat",
     mainMuscleGroup = MuscleGroup.Legs,
-    secondaryMuscleGroup = MuscleGroup.Hamstrings,
+    secondaryMuscleGroup = MuscleGroup.Legs,
     necessaryEquipment = Equipment.Barbell,
-    exerciseType = ExerciseType.Strength
+    exerciseType = ExerciseType.FreeWeights
+)
+
+val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP = WkTemplateElement(
+    templateElementId = "12345",
+    exercise = EXAMPLE_EXERCISE_PUSH_UP,
+    position = 1,
+    reps = 15,
+    sets = 4,
+    weight = null,
+    rest = 120
+)
+
+val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT = WkTemplateElement(
+    templateElementId = "12",
+    exercise = EXAMPLE_EXERCISE_SQUAT,
+    position = 1,
+    reps = 15,
+    sets = 4,
+    weight = null,
+    rest = 120
 )
 
 val EXAMPLE_WORKOUT_TEMPLATE = WorkoutTemplate(
     wkId = "12345",
     name = "Leg Hypertrophy",
     elements = listOf(
-        WkTemplateElement(
-            templateElementId = "12345",
-            exercise = EXAMPLE_EXERCISE_PUSH_UP,
-            position = 1,
-            reps = 15,
-            sets = 4,
-            weight = null,
-            rest = 120
-        ),
-        WkTemplateElement(
-            templateElementId = "123456",
-            exercise = EXAMPLE_EXERCISE_SQUAT,
-            position = 2,
-            reps = 6,
-            sets = 3,
-            weight = 95.0,
-            rest = 200
-        )
+        EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,
+        EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT
     ),
     description = "This is a test workout to see if local db works",
     dateCreated = LocalDate.parse("2024-02-02")

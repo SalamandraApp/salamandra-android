@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
+import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra.navArgs
 import com.android.salamandra.workouts.search.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,8 +52,14 @@ class SearchViewModel @Inject constructor(
 
     }
 
-    private fun addExerciseToTemplate(exercise: String) {
-        _state.update { it.copy(addedExercisesIds = it.addedExercisesIds + exercise) }
+    private fun addExerciseToTemplate(exercise: Exercise) {
+        ioLaunch {
+            when(val insertion = repository.insertExerciseInLocal(exercise = exercise)){
+                is Result.Success -> {}
+                is Result.Error -> _state.update { it.copy(error = insertion.error) }
+            }
+        }
+        _state.update { it.copy(addedExercisesIds = it.addedExercisesIds + exercise.exId) }
     }
 
 }
