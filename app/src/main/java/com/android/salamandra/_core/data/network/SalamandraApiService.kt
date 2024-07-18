@@ -2,6 +2,7 @@ package com.android.salamandra._core.data.network
 
 import com.android.salamandra._core.data.network.request.CreateUserRequest
 import com.android.salamandra._core.data.network.request.CreateWorkoutTemplateRequest
+import com.android.salamandra._core.data.network.response.CreateWorkoutTemplateResponse
 import com.android.salamandra._core.data.network.response.UserResponse
 import com.android.salamandra._core.data.network.response.ExerciseResponse
 import com.android.salamandra._core.data.network.response.WkPreviewsResponse
@@ -33,6 +34,6 @@ interface SalamandraApiService {
     ): WorkoutTemplateResponse
 
     @POST("/users/{user_id}/workout-templates")
-    suspend fun createWkTemplate(@Path("user_id") userId: String, @Body wkTemplate: CreateWorkoutTemplateRequest): WorkoutTemplateResponse
+    suspend fun createWkTemplate(@Path("user_id") userId: String, @Body wkTemplate: CreateWorkoutTemplateRequest): CreateWorkoutTemplateResponse
 
 }

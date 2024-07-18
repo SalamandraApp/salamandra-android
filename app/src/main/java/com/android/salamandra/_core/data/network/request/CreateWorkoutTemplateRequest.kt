@@ -19,7 +19,7 @@ data class CreateWorkoutTemplateElementRequest(
     @SerializedName("sets") val sets: Int,
     @SerializedName("weight") val weight: Double?,
     @SerializedName("rest") val rest: Int,
-    @SerializedName("super_set") val superSet: Boolean
+    @SerializedName("super_set") val superSet: Int?
 )
 
 fun WorkoutTemplate.toCreateWorkoutTemplateRequest() =

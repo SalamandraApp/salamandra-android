@@ -11,5 +11,5 @@ data class WkTemplateElement(
     val sets: Int = 4,
     val weight: Double? = 270.5,
     val rest: Int = 60,
-    val superSet: Boolean = false
+    val superSet: Int? = null
 )
