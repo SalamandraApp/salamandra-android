@@ -1,8 +1,9 @@
 package com.android.salamandra._core.domain.model.enums
 
+import androidx.annotation.StringRes
 import com.android.salamandra.R
 
-enum class ExerciseType(val stringId: Int) {
+enum class ExerciseType(@StringRes val stringId: Int) {
     Calisthenics(R.string.calisthenics),
     FreeWeights(R.string.free_weights),
     WarmUp(R.string.warm_up)

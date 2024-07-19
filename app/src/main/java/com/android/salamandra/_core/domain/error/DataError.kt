@@ -2,9 +2,14 @@ package com.android.salamandra._core.domain.error
 
 sealed interface DataError : RootError {
     enum class Network : DataError {
+        BAD_REQUEST,
+        UNAUTHORISED,
+        FORBIDDEN,
+        NOT_FOUND,
         REQUEST_TIMEOUT,
         TOO_MANY_REQUESTS,
         NO_CONNECTION,
+        INTERNAL_SERVER_ERROR,
         UNKNOWN
     }
 

@@ -15,8 +15,13 @@ class RetrofitExceptionHandler @Inject constructor() {
     }
     private fun handleHTTPException(exception: HttpException): DataError.Network {
         return when (exception.code()){
-            429-> DataError.Network.TOO_MANY_REQUESTS
+            400 -> DataError.Network.BAD_REQUEST
+            401 -> DataError.Network.UNAUTHORISED
+            403 ->DataError.Network.FORBIDDEN
+            404 -> DataError.Network.NOT_FOUND
             408-> DataError.Network.REQUEST_TIMEOUT
+            429-> DataError.Network.TOO_MANY_REQUESTS
+            500 ->DataError.Network.INTERNAL_SERVER_ERROR
             else -> DataError.Network.UNKNOWN
         }
     }

@@ -75,4 +75,9 @@
     <string name="calisthenics">Calisthenics</string>
     <string name="free_weights">Free Weights</string>
     <string name="warm_up">Warm-up</string>
+    <string name="bad_request">Bad request</string>
+    <string name="unauthorised">Unauthorised</string>
+    <string name="forbidden">Forbidden</string>
+    <string name="not_found">Not found</string>
+    <string name="internal_server_error">Internal server error</string>
 </resources>

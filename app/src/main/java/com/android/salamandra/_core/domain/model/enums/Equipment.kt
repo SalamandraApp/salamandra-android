@@ -1,8 +1,9 @@
 package com.android.salamandra._core.domain.model.enums
 
+import androidx.annotation.StringRes
 import com.android.salamandra.R
 
-enum class Equipment(val stringId: Int) {
+enum class Equipment(@StringRes val stringId: Int) {
     Barbell(R.string.barbell),
     Dumbbell(R.string.dumbbell),
     Machine(R.string.machine),

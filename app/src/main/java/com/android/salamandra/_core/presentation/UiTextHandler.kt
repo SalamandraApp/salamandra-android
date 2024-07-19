@@ -49,8 +49,18 @@ fun DataError.asUiText(): UiText {
         DataError.Network.NO_CONNECTION -> UiText.StringResource(R.string.you_have_no_internet_connection)
 
         DataError.Local.WORKOUT_TEMPLATE_ELEMENT_NOT_FOUND -> UiText.StringResource(R.string.workout_element_not_found)
-
+        
         DataError.Local.EXERCISE_NOT_FOUND -> UiText.StringResource(R.string.exercise_not_found)
+
+        DataError.Network.BAD_REQUEST ->  UiText.StringResource(R.string.bad_request)
+
+        DataError.Network.UNAUTHORISED ->  UiText.StringResource(R.string.unauthorised)
+        
+        DataError.Network.FORBIDDEN ->  UiText.StringResource(R.string.forbidden)
+
+        DataError.Network.NOT_FOUND -> UiText.StringResource(R.string.not_found)
+
+        DataError.Network.INTERNAL_SERVER_ERROR -> UiText.StringResource(R.string.internal_server_error)
     }
 }
 

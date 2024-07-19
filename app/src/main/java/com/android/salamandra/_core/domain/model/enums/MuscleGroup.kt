@@ -1,10 +1,11 @@
 package com.android.salamandra._core.domain.model.enums
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.ui.res.stringResource
 import com.android.salamandra.R
 
-enum class MuscleGroup(val stringId: Int) {
+enum class MuscleGroup(@StringRes val stringId: Int) {
     Chest(R.string.chest),
     Legs(R.string.legs),
     Arms(R.string.arms),
