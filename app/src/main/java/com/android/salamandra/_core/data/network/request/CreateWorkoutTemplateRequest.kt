@@ -26,7 +26,7 @@ fun WorkoutTemplate.toCreateWorkoutTemplateRequest() =
     CreateWorkoutTemplateRequest(
         name = name,
         description = description,
-        dateCreated = dateCreated?.toString() ?: throw IllegalArgumentException("Date created is mandatory for creating a workout"),
+        dateCreated = dateCreated?.toString() ?: throw IllegalArgumentException("DateCreated is mandatory for creating a workout"),
         elements = elements.map { it.toCreateWorkoutTemplateElementRequest() }
     )
 
