@@ -329,7 +329,7 @@ fun EditWkTemplateElement(
                     Text(
                         text = stringResource(R.string.delete_exercise),
                         modifier = Modifier.padding(start = 8.dp)
-                    ),
+                    )
                 }
             }
 
