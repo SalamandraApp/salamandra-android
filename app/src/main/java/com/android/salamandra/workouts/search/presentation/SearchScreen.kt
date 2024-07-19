@@ -180,7 +180,7 @@ private fun ScreenBody(
                         itemsIndexed(state.searchResultExercises) { index, exercise ->
                             SearchExerciseComponent(
                                 exercise = exercise,
-                                onAddExercise = { sendIntent(SearchIntent.AddExercise(exercise.exId)) },
+                                onAddExercise = { sendIntent(SearchIntent.AddExercise(exercise)) },
                                 onExerciseInfo = { sendIntent(SearchIntent.ShowBottomSheet(it)) },
                                 last = index == size - 1,
                             )

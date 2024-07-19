@@ -28,6 +28,7 @@ class EditWkViewModel @Inject constructor(
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
             EditWkIntent.NavigateToHome -> sendEvent(EditWkEvent.NavigateToHome)
 
+            EditWkIntent.NavigateToHome -> navToHome()
             is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null) }
             is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElementIndex = intent.index) }
 
@@ -51,6 +52,7 @@ class EditWkViewModel @Inject constructor(
                 // TODO, remove from local DB
             }
 
+
             is EditWkIntent.NavigateToSearch -> navigateToSearch()
 
             EditWkIntent.CreateWorkout -> createWorkout()
@@ -61,14 +63,13 @@ class EditWkViewModel @Inject constructor(
         val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
             _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = repository.retrieveSavedWorkoutTemplateElements())) }
-            addExercisesToTemplate( repository.getAllExercises(navArgs.addedExercises))
-
+            addExercisesToTemplate(repository.getAllExercises(navArgs.addedExercises))
         }
     }
 
-    private fun createWorkout(){
+    private fun createWorkout() {
         ioLaunch {
-            when(val creation = repository.createWorkout(state.value.wkTemplate)) {
+            when (val creation = repository.createWorkout(state.value.wkTemplate)) {
                 is Result.Success -> sendEvent(EditWkEvent.NavigateToHome)
                 is Result.Error -> _state.update { it.copy(error = creation.error) }
             }
@@ -76,9 +77,16 @@ class EditWkViewModel @Inject constructor(
 
     }
 
-    private fun navigateToSearch(){
+    private fun navToHome() {
         ioLaunch {
-            repository.saveWorkoutTemplateElementsTemporary(state.value.wkTemplate.elements)
+            repository.deleteTemporalTemplateElements()
+            sendEvent(EditWkEvent.NavigateToHome)
+        }
+    }
+
+    private fun navigateToSearch() {
+        ioLaunch {
+            repository.saveWorkoutTemplateElementsTemporarly(state.value.wkTemplate.elements)
             sendEvent(EditWkEvent.NavigateToSearch)
         }
     }
@@ -91,15 +99,17 @@ class EditWkViewModel @Inject constructor(
         _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = elements)) }
     }
 
-    private fun updateWkElementSets(newSets: Int, index: Int) {
-        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
-            this[index] = this[index].copy(sets = newSets)
-        }
-        _state.update {it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
-    }
+
+
     private fun updateWkElementReps(newReps: Int, index: Int) {
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             this[index] = this[index].copy(reps = newReps)
+        }
+        _state.update {it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
+    }
+    private fun updateWkElementSets(newSets: Int, index: Int) {
+        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+            this[index] = this[index].copy(sets = newSets)
         }
         _state.update {it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }

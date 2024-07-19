@@ -103,7 +103,7 @@ class LocalDbRepositoryImpl @Inject constructor(
 
     override suspend fun getWkTemplateElementsById(wkTemplateId: String): Result<List<WorkoutTemplateElementEntity>, DataError.Local> = workoutTemplateElementDataSource.getWkTemplateElementsById(wkTemplateId)
 
-    override suspend fun deleteTemplateElementById(wkTemplateId: String) = workoutTemplateDataSource.deleteWkByID(wkTemplateId)
+    override suspend fun deleteTemplateElementById(wkTemplateId: String) = workoutTemplateElementDataSource.deleteTemplateElementById(wkTemplateId)
 
     //User
     override suspend fun insertUser(user: User): Result<Unit, DataError.Local> =

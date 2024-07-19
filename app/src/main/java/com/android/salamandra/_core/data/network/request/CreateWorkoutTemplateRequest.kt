@@ -8,7 +8,7 @@ import java.time.LocalDate
 data class CreateWorkoutTemplateRequest(
     @SerializedName("name") val name: String,
     @SerializedName("description") val description: String?,
-    @SerializedName("date_created") val dateCreated: LocalDate?,
+    @SerializedName("date_created") val dateCreated: String,
     @SerializedName("elements") val elements: List<CreateWorkoutTemplateElementRequest>
 )
 
@@ -19,14 +19,14 @@ data class CreateWorkoutTemplateElementRequest(
     @SerializedName("sets") val sets: Int,
     @SerializedName("weight") val weight: Double?,
     @SerializedName("rest") val rest: Int,
-    @SerializedName("super_set") val superSet: Boolean
+    @SerializedName("super_set") val superSet: Int?
 )
 
 fun WorkoutTemplate.toCreateWorkoutTemplateRequest() =
     CreateWorkoutTemplateRequest(
         name = name,
         description = description,
-        dateCreated = dateCreated,
+        dateCreated = dateCreated?.toString() ?: throw IllegalArgumentException("Date created is mandatory for creating a workout"),
         elements = elements.map { it.toCreateWorkoutTemplateElementRequest() }
     )
 
@@ -37,5 +37,5 @@ fun WkTemplateElement.toCreateWorkoutTemplateElementRequest() = CreateWorkoutTem
     sets = sets,
     weight = weight,
     rest = rest,
-    superSet = superSet
+    superSet = superSet,
 )

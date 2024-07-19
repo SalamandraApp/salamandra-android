@@ -31,5 +31,5 @@ interface LocalDbRepository {
     ): Result<Unit, DataError.Local>
 
     suspend fun getWkTemplateElementsById(wkTemplateId: String): Result<List<WorkoutTemplateElementEntity>, DataError.Local>
-    suspend fun deleteTemplateElementById(wkTemplateId: String): Result<Unit, DataError.Local>
+    suspend fun deleteTemplateElementById(wkTemplateId: String)
 }

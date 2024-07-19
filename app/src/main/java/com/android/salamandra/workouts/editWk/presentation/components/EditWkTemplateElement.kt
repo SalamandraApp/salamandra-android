@@ -320,7 +320,7 @@ fun EditWkTemplateElement(
                 ExtendedFloatingActionButton(
                     containerColor = secondary,
                     contentColor = colorError,
-                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
                     onClick = { onDeleteElement(index) }) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
@@ -329,7 +329,7 @@ fun EditWkTemplateElement(
                     Text(
                         text = stringResource(R.string.delete_exercise),
                         modifier = Modifier.padding(start = 8.dp)
-                    )
+                    ),
                 }
             }
 

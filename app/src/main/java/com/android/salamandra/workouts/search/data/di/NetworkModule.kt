@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.search.data.di
 
 import com.android.salamandra._core.data.network.SalamandraApiService
+import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra.workouts.search.data.RepositoryImpl
 import com.android.salamandra.workouts.search.domain.Repository
 import dagger.Module
@@ -15,8 +16,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRepository(
-        salamandraApiService: SalamandraApiService
+        salamandraApiService: SalamandraApiService,
+        localDbRepository: LocalDbRepository
     ): Repository {
-       return RepositoryImpl(salamandraApiService)
+       return RepositoryImpl(salamandraApiService, localDbRepository)
     }
 }

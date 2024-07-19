@@ -32,7 +32,7 @@ sealed class SearchIntent: Intent {
     data class Error(val error: RootError): SearchIntent()
     data object CloseError: SearchIntent()
     data class ChangeSearchTerm(val newTerm: String) : SearchIntent()
-    data class AddExercise(val exercise: String) : SearchIntent()
+    data class AddExercise(val exercise: Exercise) : SearchIntent()
     data object SearchExercise : SearchIntent()
     data object NavigateToEdit : SearchIntent()
     data object HideBottomSheet: SearchIntent()
