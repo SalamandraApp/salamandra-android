@@ -23,6 +23,9 @@ import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.android.salamandra.workouts.editWk.presentation.EditWkState
 
+const val MAX_DESCRIPTION_LENGTH = 50
+const val MAX_NAME_LENGTH = 25
+
 @Composable
 fun BannerTitleRow(
     modifier: Modifier = Modifier,
@@ -48,7 +51,7 @@ fun BannerTitleRow(
                 value = wkName,
                 textStyle = TitleTypo.copy(fontSize = 16.sp),
                 colors = textFieldColors(),
-                onValueChange = { onChangeName(it) }
+                onValueChange = { if (wkName.length < MAX_NAME_LENGTH) onChangeName(it) }
             )
             Spacer(modifier = Modifier.weight(1f))
 
@@ -66,7 +69,10 @@ fun BannerTitleRow(
                 maxLines = 2,
                 textStyle = TitleTypo.copy(fontSize = 12.sp),
                 colors = textFieldColors(),
-                onValueChange = { onChangeDescription(it) },
+                onValueChange = {
+                    if (textToShow.length < MAX_DESCRIPTION_LENGTH)
+                        onChangeDescription(it)
+                },
             )
 
         }

@@ -332,8 +332,6 @@ fun EditWkTemplateElement(
                     )
                 }
             }
-
-
         }
     }
 }

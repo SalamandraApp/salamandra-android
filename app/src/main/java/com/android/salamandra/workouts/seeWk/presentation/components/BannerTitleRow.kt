@@ -41,8 +41,7 @@ fun BannerTitleRow(
                 .weight(1f)
                 .padding(end = 20.dp)
         ) {
-            val descriptionPlaceholder =
-                "Really really really long description, I mean really long, why do you need so much, a little too much"
+            val descriptionPlaceholder = "..."
             val textToShow = wkDescription ?: descriptionPlaceholder
             Text(
                 modifier = Modifier.padding(top = 20.dp),
