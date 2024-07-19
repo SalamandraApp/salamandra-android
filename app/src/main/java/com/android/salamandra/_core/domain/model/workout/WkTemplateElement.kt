@@ -7,9 +7,9 @@ data class WkTemplateElement(
     val templateElementId: String = "",
     val exercise: Exercise,
     val position: Int,
-    val reps: Int = 8,
-    val sets: Int = 4,
-    val weight: Double? = 270.5,
-    val rest: Int = 60,
+    val reps: Int = 1,
+    val sets: Int = 1,
+    val weight: Double? = 0.0,
+    val rest: Int = 0,
     val superSet: Boolean = false
 )

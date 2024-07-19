@@ -1,5 +1,6 @@
 package com.android.salamandra.workouts.editWk.presentation
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
@@ -27,12 +28,10 @@ class EditWkViewModel @Inject constructor(
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
             EditWkIntent.NavigateToHome -> sendEvent(EditWkEvent.NavigateToHome)
 
-            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false, selectedExercise = null) }
-            is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true, selectedExercise = intent.exercise) }
+            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null) }
+            is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElementIndex = intent.index) }
 
             is EditWkIntent.ChangeWkName -> _state.update { it.copy(wkTemplate = it.wkTemplate.copy(name = intent.newName)) }
-
-
             is EditWkIntent.ChangeWkDescription -> {
                 if (intent.newDescription != "") _state.update {
                     it.copy(wkTemplate = it.wkTemplate.copy(description = intent.newDescription))
@@ -42,17 +41,19 @@ class EditWkViewModel @Inject constructor(
                 }
             }
 
-            is EditWkIntent.ChangeWkElementReps -> _state.update {
-                it.copy(wkTemplate = it.wkTemplate.copy(elements = it.wkTemplate.elements))
+            is EditWkIntent.ChangeSets -> updateWkElementSets(intent.newSets, intent.index)
+            is EditWkIntent.ChangeReps -> updateWkElementReps(intent.newReps, intent.index)
+            is EditWkIntent.ChangeWeight -> updateWkElementWeight(intent.newWeight, intent.index)
+            is EditWkIntent.ChangeRest-> updateWkElementRest(intent.newRest, intent.index)
+            is EditWkIntent.DeleteWkElement -> {
+                removeWkElement(intent.index)
+                _state.update { it.copy(selectedElementIndex = null) }
+                // TODO, remove from local DB
             }
-
-            is EditWkIntent.ChangeWkElementSets -> updateSets(intent.index, intent.newSets)
-
-            is EditWkIntent.ChangeWkElementWeight -> updateWeight(intent.index, intent.newWeight)
 
             is EditWkIntent.NavigateToSearch -> navigateToSearch()
 
-            EditWkIntent.CreteWorkout -> createWorkout()
+            EditWkIntent.CreateWorkout -> createWorkout()
         }
     }
 
@@ -60,7 +61,8 @@ class EditWkViewModel @Inject constructor(
         val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
             _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = repository.retrieveSavedWorkoutTemplateElements())) }
-            addExercisesToTemplate(repository.getAllExercises(navArgs.addedExercises))
+            addExercisesToTemplate( repository.getAllExercises(navArgs.addedExercises))
+
         }
     }
 
@@ -89,46 +91,36 @@ class EditWkViewModel @Inject constructor(
         _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = elements)) }
     }
 
-
-
-    private fun updateReps(index: Int, newReps: Int) {
-        _state.value.let { currentState ->
-            val updatedElements = currentState.wkTemplate.elements.toMutableList()
-            val updatedElement = updatedElements[index].copy(reps = newReps)
-            updatedElements[index] = updatedElement
-
-            val updatedState = currentState.copy(
-                wkTemplate = currentState.wkTemplate.copy(elements = updatedElements)
-            )
-            _state.value = updatedState
+    private fun updateWkElementSets(newSets: Int, index: Int) {
+        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+            this[index] = this[index].copy(sets = newSets)
         }
+        _state.update {it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
-
-    private fun updateSets(index: Int, newSets: Int) {
-        _state.value.let { currentState ->
-            val updatedElements = currentState.wkTemplate.elements.toMutableList()
-            val updatedElement = updatedElements[index].copy(sets = newSets)
-            updatedElements[index] = updatedElement
-
-            val updatedState = currentState.copy(
-                wkTemplate = currentState.wkTemplate.copy(elements = updatedElements)
-            )
-            _state.value = updatedState
+    private fun updateWkElementReps(newReps: Int, index: Int) {
+        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+            this[index] = this[index].copy(reps = newReps)
         }
+        _state.update {it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
-
-    private fun updateWeight(index: Int, newWeight: Double) {
-        _state.value.let { currentState ->
-            val updatedElements = currentState.wkTemplate.elements.toMutableList()
-            val updatedElement = updatedElements[index].copy(weight = newWeight)
-            updatedElements[index] = updatedElement
-
-            val updatedState = currentState.copy(
-                wkTemplate = currentState.wkTemplate.copy(elements = updatedElements)
-            )
-            _state.value = updatedState
+    private fun updateWkElementWeight(newWeight: Double, index: Int) {
+        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+            this[index] = this[index].copy(weight = newWeight)
         }
+        _state.update {it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
-
-
+    private fun updateWkElementRest(newRest: Int, index: Int) {
+        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+            this[index] = this[index].copy(rest = newRest)
+        }
+        _state.update {it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
+    }
+    private fun removeWkElement(index: Int) {
+        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+            if (index in indices) {
+                removeAt(index)
+            }
+        }
+        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
+    }
 }

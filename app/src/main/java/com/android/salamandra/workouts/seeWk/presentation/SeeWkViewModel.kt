@@ -27,8 +27,8 @@ class SeeWkViewModel @Inject constructor(
             is SeeWkIntent.Error -> _state.update { it.copy(error = intent.error) }
             is SeeWkIntent.CloseError -> _state.update { it.copy(error = null) }
             is SeeWkIntent.NavigateUp -> sendEvent(SeeWkEvent.NavigateUp)
-            is SeeWkIntent.ShowBottomSheet -> _state.update { it.copy(bottomSheet = true, selectedExercise = intent.exercise) }
-            SeeWkIntent.HideBottomSheet -> _state.update { it.copy(bottomSheet = false, selectedExercise = null) }
+            is SeeWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElementIndex = intent.index) }
+            SeeWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null) }
         }
     }
 

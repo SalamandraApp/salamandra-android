@@ -31,16 +31,16 @@ val EXAMPLE_EXERCISE_PUSH_UP = Exercise(
     mainMuscleGroup = MuscleGroup.Chest,
     secondaryMuscleGroup = MuscleGroup.Arms,
     necessaryEquipment = Equipment.Dumbbell,
-    exerciseType = ExerciseType.Hypertrophy
+    exerciseType = ExerciseType.WarmUp
 )
 
 val EXAMPLE_EXERCISE_SQUAT = Exercise(
     exId = "exex2",
     name = "Squat",
     mainMuscleGroup = MuscleGroup.Legs,
-    secondaryMuscleGroup = MuscleGroup.Hamstrings,
+    secondaryMuscleGroup = MuscleGroup.Legs,
     necessaryEquipment = Equipment.Barbell,
-    exerciseType = ExerciseType.Strength
+    exerciseType = ExerciseType.FreeWeights
 )
 
 val EXAMPLE_WORKOUT_TEMPLATE = WorkoutTemplate(

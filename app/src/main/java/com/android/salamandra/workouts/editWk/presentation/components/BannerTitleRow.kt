@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra.ui.theme.TitleTypo
+import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.ui.theme.subtitle
 import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.android.salamandra.workouts.editWk.presentation.EditWkState
@@ -57,7 +59,7 @@ fun BannerTitleRow(
                 value = textToShow,
                 placeholder = {
                     if (textToShow.isEmpty()) {
-                        Text("Description...", style = TitleTypo)
+                        Text(text = "Description...", style = TitleTypo, color = onTertiary, fontSize = 12.sp)
                     }
                 },
                 minLines = 2,

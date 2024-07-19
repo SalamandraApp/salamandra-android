@@ -14,7 +14,6 @@ data class SearchState(
     val searchTerm: String,
     val searchResultExercises: List<Exercise>,
     val addedExercisesIds: Array<String>,
-    val bottomSheet: Boolean,
     val selectedExercise: Exercise?
 ) : State {
     companion object {
@@ -24,7 +23,6 @@ data class SearchState(
             searchTerm = "",
             searchResultExercises = emptyList(),
             addedExercisesIds = emptyArray(),
-            bottomSheet = false,
             selectedExercise = null
         )
     }

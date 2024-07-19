@@ -1,8 +1,10 @@
 package com.android.salamandra.workouts.editWk.presentation.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -36,23 +38,28 @@ fun ButtonsRowBanner (
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable { onDeleteWk() },
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     )
     {
-        Icon(
-            imageVector = Icons.Outlined.Delete,
-            contentDescription = "Delete Wk",
-            tint = colorError,
-        )
-        Text(
-            modifier = Modifier.padding(start = 5.dp),
-            text = "Delete",
-            color = colorError,
-            style = SemiTypo,
-            fontSize = 14.sp
-        )
+        Row (
+            modifier = modifier
+                .clickable { onDeleteWk() }
+                .fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = "Delete Wk",
+                tint = colorError,
+            )
+            Text(
+                modifier = Modifier.padding(start = 5.dp),
+                text = "Delete",
+                color = colorError,
+                style = SemiTypo,
+                fontSize = 14.sp
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
 
         ExtendedFloatingActionButton(

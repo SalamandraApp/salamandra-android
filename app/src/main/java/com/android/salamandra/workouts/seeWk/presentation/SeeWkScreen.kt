@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -137,23 +138,23 @@ private fun ScreenBody(
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
             }
-            items(state.wkTemplate.elements) {
+            itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    onOption = {sendIntent(SeeWkIntent.ShowBottomSheet(it))},
-                    wkElement = it,
+                    onOption = {sendIntent(SeeWkIntent.ShowBottomSheet(index))},
+                    wkElement = element,
                     startPad = 10.dp,
                     fgColor = tertiary
                 )
             }
         }
-        if (state.bottomSheet && state.selectedExercise != null) {
+        if (state.selectedElementIndex != null) {
             val sheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = false,
             )
             BottomSheet(
                 sheetState = sheetState,
                 onDismiss = {sendIntent(SeeWkIntent.HideBottomSheet)},
-                content = { ExerciseInfo(state.selectedExercise) }
+                content = { ExerciseInfo(state.wkTemplate.elements[state.selectedElementIndex].exercise) }
             )
         }
     }

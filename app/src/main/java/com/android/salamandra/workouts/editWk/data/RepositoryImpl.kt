@@ -31,7 +31,7 @@ class RepositoryImpl(
             when (val exercise = localDbRepository.getExerciseByID(id)) {
                 is Result.Success -> exerciseList.add(exercise.data.toExercise())
                 is Result.Error -> Log.e(
-                    "SLM",
+                    "ADD EXERCISE",
                     "Error occurred while getting exercise from local: ${exercise.error}"
                 )
             }

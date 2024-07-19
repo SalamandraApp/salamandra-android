@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class WorkoutTemplate(
     val wkId: String = "",
-    val name: String = "Weighted Leg Plyometrics",
+    val name: String = "New Workout",
     val elements: List<WkTemplateElement> = emptyList(),
     val description: String? = null,
     val dateCreated: LocalDate? = null

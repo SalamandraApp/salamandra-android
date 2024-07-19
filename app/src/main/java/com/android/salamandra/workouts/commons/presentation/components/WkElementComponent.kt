@@ -24,6 +24,7 @@ import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SemiTypo
+import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
@@ -34,7 +35,8 @@ fun WkElementComponent(
     onOption: (Exercise) -> Unit,
     wkElement: WkTemplateElement,
     startPad: Dp,
-    fgColor: Color
+    verticalPad: Dp = 0.dp,
+    fgColor: Color,
 ) {
 
     val nameColor = onSecondaryVariant
@@ -45,16 +47,17 @@ fun WkElementComponent(
     )
     Row(
         modifier = modifier
-            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .padding(horizontal = 10.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(15.dp))
-            .fillMaxWidth()
-            .background(fgColor),
+            .background(fgColor)
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // EXERCISE NAME
         Text(
             modifier = Modifier
                 .padding(start = startPad)
+                .padding(vertical = verticalPad)
                 .weight(WkTemplateScreenConstants.columnLabelWeights.exercise),
             text = wkElement.exercise.name,
             style = SemiTypo,
@@ -63,9 +66,9 @@ fun WkElementComponent(
             overflow = TextOverflow.Ellipsis
         )
         val elements = listOf(
-            wkElement.sets.toString(),
-            wkElement.reps.toString(),
-            wkElement.weight.toString()
+            wkElement.sets,
+            wkElement.reps,
+            wkElement.weight
         )
         val columnWeights = listOf(
             WkTemplateScreenConstants.columnLabelWeights.sets,
@@ -81,8 +84,8 @@ fun WkElementComponent(
             ) {
 
                 Text(
-                    text = value,
-                    color = nameColor,
+                    text = value.toString(),
+                    color = if (value == 0 && index != 2) colorError else nameColor,
                     overflow = TextOverflow.Ellipsis,
                     style = valueStyle,
                     maxLines = 1,

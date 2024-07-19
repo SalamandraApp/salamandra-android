@@ -103,14 +103,17 @@ val colorMessage = Color(0xfffdf56a).copy(alpha = 0.7f)
 val selectedScreenBottomBar =Color(0xffd3d3d3).copy(alpha = 0.3f)
 
 @Composable
-fun textFieldColors (): TextFieldColors {
+fun textFieldColors (
+    visibleCursor: Boolean = true
+): TextFieldColors {
     return TextFieldDefaults.colors(
         focusedTextColor = title,
-        focusedContainerColor = secondary,
+        focusedContainerColor = onTertiary.copy(0.2f),
         unfocusedTextColor = subtitle,
-        unfocusedContainerColor = secondary.copy(0.5f),
+        unfocusedContainerColor = secondary,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
-        disabledTextColor = secondary.copy(0.5f)
+        disabledTextColor = secondary.copy(0.5f),
+        cursorColor = if (!visibleCursor) Color.Transparent else primaryVariant
     )
 }

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -190,7 +191,7 @@ private fun ScreenBody(
                 }
             )
         }
-        if (state.bottomSheet && state.selectedExercise != null) {
+        if (state.selectedExercise != null) {
             val sheetState = rememberModalBottomSheetState(
                 skipPartiallyExpanded = false,
             )
@@ -246,7 +247,7 @@ private fun SearchExerciseComponent(
         }
         IconButton(onClick = { onAddExercise(exercise) }) {
             Icon(
-                Icons.Outlined.AddCircle,
+                Icons.Outlined.AddCircleOutline,
                 contentDescription = "Add exercise",
                 tint = primaryVariant
             )

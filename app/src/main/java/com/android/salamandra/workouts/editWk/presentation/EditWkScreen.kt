@@ -1,5 +1,6 @@
 package com.android.salamandra.workouts.editWk.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -25,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,11 +57,12 @@ import com.android.salamandra.workouts.commons.presentation.components.WkTemplat
 import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
 import com.android.salamandra.workouts.editWk.presentation.components.BannerTitleRow
 import com.android.salamandra.workouts.editWk.presentation.components.ButtonsRowBanner
-import com.android.salamandra.workouts.editWk.presentation.components.EditExercise
+import com.android.salamandra.workouts.editWk.presentation.components.EditWkTemplateElement
 import com.android.salamandra.workouts.editWk.presentation.components.EditTagRow
 import com.android.salamandra.workouts.editWk.presentation.components.EditWkBannerTopRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.launch
 
 @Destination(navArgsDelegate = EditWkNavArgs::class)
 @Composable
@@ -123,7 +128,7 @@ private fun ScreenBody(
                         .height(fixedBannerHeight)
                         .background(mainColor),
                     wkName = state.wkTemplate.name,
-                    onSave = { sendIntent(EditWkIntent.CreteWorkout) },
+                    onSave = { sendIntent(EditWkIntent.CreateWorkout) },
                     onClose = { sendIntent(EditWkIntent.NavigateToHome) }
                 )
                 FadeLip()
@@ -147,7 +152,7 @@ private fun ScreenBody(
                     wkDescription = state.wkTemplate.description,
                     bgColor = mainColor,
                     onClose = { sendIntent(EditWkIntent.NavigateToHome) },
-                    onSave =  { sendIntent(EditWkIntent.CreteWorkout) },
+                    onSave =  { sendIntent(EditWkIntent.CreateWorkout) },
                     onDeleteWk = {  },
                     onAddTag = {  },
                     onDeleteTag = {  },
@@ -161,25 +166,44 @@ private fun ScreenBody(
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    onOption = { sendIntent(EditWkIntent.ShowBottomSheet(element.exercise)) },
+                    onOption = { sendIntent(EditWkIntent.ShowBottomSheet(index)) },
                     wkElement = element,
                     startPad = startPad,
+                    verticalPad = 18.dp,
                     fgColor = secondary,
                 )
             }
         }
-        if (state.bottomSheet && state.selectedExercise != null) {
-            val sheetState = rememberModalBottomSheetState(
-                skipPartiallyExpanded = false,
-            )
+        if (state.selectedElementIndex != null) {
+            val selectedElement = state.wkTemplate.elements[state.selectedElementIndex]
+            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+
             BottomSheet(
                 sheetState = sheetState,
                 onDismiss = { sendIntent(EditWkIntent.HideBottomSheet) },
                 content = {
                     TabRowBuilder(
                         contents = listOf(
-                            { EditExercise(index = 0) },
-                            { ExerciseInfo(state.selectedExercise) }
+                            {
+                                EditWkTemplateElement(
+                                    element = selectedElement,
+                                    index = state.selectedElementIndex,
+                                    onEditSets = { newSets, index ->
+                                        sendIntent(EditWkIntent.ChangeSets(newSets, index))
+                                    },
+                                    onEditReps= { newReps, index ->
+                                        sendIntent(EditWkIntent.ChangeReps(newReps, index))
+                                    },
+                                    onEditWeight = { newWeight, index ->
+                                        sendIntent(EditWkIntent.ChangeWeight(newWeight, index))
+                                    },
+                                    onEditRest = { newRest, index ->
+                                        sendIntent(EditWkIntent.ChangeRest(newRest, index))
+                                    },
+                                    onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement(it)) },
+                                )
+                            },
+                            { ExerciseInfo(selectedElement.exercise) }
                         ),
                         icons = listOf(Icons.Outlined.Edit, Icons.Outlined.FitnessCenter),
                         titles = listOf("Edit", "Info")
