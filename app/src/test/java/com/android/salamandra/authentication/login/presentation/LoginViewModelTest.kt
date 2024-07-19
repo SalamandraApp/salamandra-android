@@ -17,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LoginProfileSettingsSeeWkSearchExerciseSearchViewModelTest {
+class LoginViewModelTest {
     @get:Rule
     val coroutineRule = CoroutineRule()
 
@@ -32,22 +32,18 @@ class LoginProfileSettingsSeeWkSearchExerciseSearchViewModelTest {
         loginViewModel = LoginViewModel(mockkRepository, ioDispatcher = StandardTestDispatcher())
     }
 
-
     @Test
-    fun `When Error, state changed`() = runTest {
-        //Arrange
-        val expectedError = PasswordError.NO_UPPERCASE
-
-        //Act
-        loginViewModel.dispatch(LoginIntent.Error(PasswordError.NO_UPPERCASE))
-        runCurrent()
-        //Assert
-        assert(loginViewModel.state.value.error == expectedError)
+    fun `Assert initial state`(){
+        val expectedState = LoginState(
+            email = "",
+            password = "",
+            error = null,
+        )
+        assert(LoginState.initial == expectedState)
     }
 
-
     @Test
-    fun `When user error occurs while authenticationg user, error displayed`() = runTest {
+    fun `When error occurs while authenticating user, error is displayed`() = runTest {
         //Arrange
         coEvery { mockkRepository.login(any(), any()) } returns Result.Error(DataError.Cognito.INVALID_EMAIL_OR_PASSWORD)
         //Act

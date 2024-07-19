@@ -36,16 +36,12 @@ class EditWkRepositoryImplTest {
 
     @RelaxedMockK
     private lateinit var localDbRepository: LocalDbRepository
-
     @RelaxedMockK
     private lateinit var salamandraApiService: SalamandraApiService
-
     @RelaxedMockK
     private lateinit var retrofitExceptionHandler: RetrofitExceptionHandler
-
     @RelaxedMockK
     private lateinit var dataStoreRepository: DataStoreRepository
-
     @RelaxedMockK
     private lateinit var log: Log
 

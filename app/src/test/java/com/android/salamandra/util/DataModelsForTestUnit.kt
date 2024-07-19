@@ -24,32 +24,32 @@ val EXAMPLE_USER = User(
     weight = 76.5,
     gender = Gender.Male,
     fitnessGoal = FitnessGoal.Bulking,
-    fitnessLevel = FitnessLevel.Beginner
+    fitnessLevel = FitnessLevel.Amateur
 )
 
 val EXAMPLE_EXERCISE_PUSH_UP = Exercise(
     exId = "exex1",
     name = "Push Up",
     mainMuscleGroup = MuscleGroup.Chest,
-    secondaryMuscleGroup = MuscleGroup.Arms,
+    secondaryMuscleGroup = MuscleGroup.Triceps,
     necessaryEquipment = Equipment.Dumbbell,
-    exerciseType = ExerciseType.WarmUp
+    exerciseType = ExerciseType.Calisthenics
 )
 
 val EXAMPLE_EXERCISE_PUSH_UP_ENTITY = ExerciseEntity(
     id = "exex1",
     name = "Push Up",
     mainMuscleGroup = MuscleGroup.Chest.ordinal,
-    secondaryMuscleGroup = MuscleGroup.Arms.ordinal,
+    secondaryMuscleGroup = MuscleGroup.Triceps.ordinal,
     necessaryEquipment = Equipment.Dumbbell.ordinal,
-    exerciseType = ExerciseType.WarmUp.ordinal
+    exerciseType = ExerciseType.Calisthenics.ordinal
 )
 
 val EXAMPLE_EXERCISE_SQUAT = Exercise(
     exId = "exex2",
     name = "Squat",
-    mainMuscleGroup = MuscleGroup.Legs,
-    secondaryMuscleGroup = MuscleGroup.Legs,
+    mainMuscleGroup = MuscleGroup.Quadriceps,
+    secondaryMuscleGroup = MuscleGroup.Glutes,
     necessaryEquipment = Equipment.Barbell,
     exerciseType = ExerciseType.FreeWeights
 )
@@ -57,8 +57,8 @@ val EXAMPLE_EXERCISE_SQUAT = Exercise(
 val EXAMPLE_EXERCISE_SQUAT_ENTITY = ExerciseEntity(
     id = "exex2",
     name = "Squat",
-    mainMuscleGroup = MuscleGroup.Legs.ordinal,
-    secondaryMuscleGroup = MuscleGroup.Legs.ordinal,
+    mainMuscleGroup = MuscleGroup.Quadriceps.ordinal,
+    secondaryMuscleGroup = MuscleGroup.Glutes.ordinal,
     necessaryEquipment = Equipment.Barbell.ordinal,
     exerciseType = ExerciseType.FreeWeights.ordinal
 )
