@@ -25,11 +25,9 @@ class VerifyCodeViewModel @Inject constructor(
 
     override fun reduce(intent: VerifyCodeIntent) {
         when (intent) {
-            is VerifyCodeIntent.Error -> onError(intent.error)
+            is VerifyCodeIntent.Error -> _state.update { it.copy(error = intent.error) }
 
-            is VerifyCodeIntent.CloseError -> onCloseError()
-
-            is VerifyCodeIntent.Loading -> onLoading(intent.isLoading)
+            is VerifyCodeIntent.CloseError ->_state.update { it.copy(error = null) }
 
             is VerifyCodeIntent.ChangeCode -> _state.update { it.copy(code = intent.code) }
 
@@ -41,11 +39,6 @@ class VerifyCodeViewModel @Inject constructor(
         val navArgs: VerifyCodeNavArgs = savedStateHandle.navArgs()
         _state.update { it.copy(username = navArgs.username, email = navArgs.email, password = navArgs.password) }
     }
-
-
-    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
-    private fun onCloseError() = _state.update { it.copy(error = null) }
-    private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
 
     private fun onVerifyCode() {
         ioLaunch {

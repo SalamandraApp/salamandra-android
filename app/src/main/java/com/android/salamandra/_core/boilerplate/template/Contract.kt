@@ -9,12 +9,10 @@ import com.android.salamandra._core.domain.error.RootError
 
 
 data class tState(
-    val loading: Boolean,
     val error: RootError?
 ) : State {
     companion object {
         val initial: tState = tState(
-            loading = false,
             error = null
         )
     }
