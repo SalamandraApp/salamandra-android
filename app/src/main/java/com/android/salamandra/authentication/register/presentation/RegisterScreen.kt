@@ -88,15 +88,11 @@ fun RegisterScreen(
             null -> {}
         }
     }
+    ScreenBody(
+        state = state,
+        sendIntent = viewModel::dispatch,
+    )
 
-    if (state.loading) {
-        MyCircularProgressbar()
-    } else {
-        ScreenBody(
-            state = state,
-            sendIntent = viewModel::dispatch,
-        )
-    }
 }
 
 @Composable

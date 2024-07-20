@@ -22,23 +22,23 @@ val EXAMPLE_USER = User(
     weight = 76.5,
     gender = Gender.Male,
     fitnessGoal = FitnessGoal.Bulking,
-    fitnessLevel = FitnessLevel.Beginner
+    fitnessLevel = FitnessLevel.Amateur
 )
 
 val EXAMPLE_EXERCISE_PUSH_UP = Exercise(
     exId = "exex1",
     name = "Push Up",
     mainMuscleGroup = MuscleGroup.Chest,
-    secondaryMuscleGroup = MuscleGroup.Arms,
+    secondaryMuscleGroup = MuscleGroup.Chest,
     necessaryEquipment = Equipment.Dumbbell,
-    exerciseType = ExerciseType.WarmUp
+    exerciseType = ExerciseType.Calisthenics
 )
 
 val EXAMPLE_EXERCISE_SQUAT = Exercise(
     exId = "exex2",
     name = "Squat",
-    mainMuscleGroup = MuscleGroup.Legs,
-    secondaryMuscleGroup = MuscleGroup.Legs,
+    mainMuscleGroup = MuscleGroup.Quadriceps,
+    secondaryMuscleGroup = MuscleGroup.Hamstrings,
     necessaryEquipment = Equipment.Barbell,
     exerciseType = ExerciseType.FreeWeights
 )

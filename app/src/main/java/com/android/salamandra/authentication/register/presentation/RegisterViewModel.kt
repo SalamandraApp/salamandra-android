@@ -23,11 +23,9 @@ class RegisterViewModel @Inject constructor(
 
     override fun reduce(intent: RegisterIntent) {
         when (intent) {
-            is RegisterIntent.Error -> onError(intent.error)
+            is RegisterIntent.Error -> _state.update { it.copy(error = intent.error) }
 
-            is RegisterIntent.CloseError -> onCloseError()
-
-            is RegisterIntent.Loading -> onLoading(intent.isLoading)
+            is RegisterIntent.CloseError ->_state.update { it.copy(error = null) }
 
             is RegisterIntent.ChangeEmail -> validateEmail(intent.email)
 
@@ -38,18 +36,10 @@ class RegisterViewModel @Inject constructor(
             is RegisterIntent.OnRegister -> onRegister()
 
             RegisterIntent.GoToSignIn -> sendEvent(RegisterEvent.NavigateToLogin)
+
             RegisterIntent.GoToHomeNoRegister -> sendEvent(RegisterEvent.NavigateToProfile)
         }
     }
-
-    private fun onError(error: RootError) =
-        _state.update { it.copy(error = error) }
-
-    private fun onCloseError() =
-        _state.update { it.copy(error = null) }
-
-    private fun onLoading(isLoading: Boolean) =
-        _state.update { it.copy(loading = isLoading) }
 
     private fun onRegister() {
         ioLaunch {
