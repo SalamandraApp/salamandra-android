@@ -33,7 +33,7 @@ class RepositoryImpl(
                     }
                 }
 
-                is Result.Error -> Result.Error(DataError.Datastore.UID_NOT_FOUND)
+                is Result.Error -> Result.Error(uid.error)
             }
         } catch (exception: Exception) {
             Result.Error(retrofitExceptionHandler.handleException(exception))

@@ -28,11 +28,10 @@ class HomeViewModel @Inject constructor(
         intent: HomeIntent
     ) { //This function reduces each intent with a when
         when (intent) {
-            is HomeIntent.Error -> onError(intent.error)
+            is HomeIntent.Error -> _state.update { it.copy(error = intent.error) }
 
-            is HomeIntent.CloseError -> onCloseError()
+            is HomeIntent.CloseError -> _state.update { it.copy(error = null) }
 
-            is HomeIntent.Loading -> onLoading(intent.isLoading)
 
             is HomeIntent.NewWk -> sendEvent(HomeEvent.NavigateToEditWk)
 
@@ -47,19 +46,11 @@ class HomeViewModel @Inject constructor(
             if (coreRepository.isUserLogged() && repository.isLocalDbEmpty())
                 repository.getWkPreviewsFromRemoteAndStoreInLocal()
 
-            repository.getWkPreviews().collect{ newList ->
+            repository.getWkPreviews().collect { newList ->
                 _state.update { it.copy(wkPreviewList = newList) }
             }
         }
     }
-
-    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
-
-    private fun onCloseError() = _state.update { it.copy(error = null) }
-
-    private fun onLoading(isLoading: Boolean) = _state.update { it.copy(loading = isLoading) }
-
-
 }
 
 
