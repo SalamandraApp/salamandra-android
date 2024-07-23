@@ -65,7 +65,7 @@ class LocalDbRepositoryImplTest {
         val resultWkTemplate = localDbRepository.getWkTemplate(EXAMPLE_WORKOUT_TEMPLATE.wkId)
 
         //Assert
-        assert(resultWkTemplate is Result.Success && resultWkTemplate.data != expectedWkTemplate)
+        assert(resultWkTemplate is Result.Success && resultWkTemplate.data == expectedWkTemplate)
     }
 
     @Test
