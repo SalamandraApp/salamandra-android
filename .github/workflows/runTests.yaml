@@ -20,19 +20,25 @@ jobs:
       - name: Download dependencies
         run: ./gradlew build --scan --continue
 
-      - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+      - name: Ensure system image is available
+        run: |
+          sdkmanager --install 'system-images;android-30;google_apis;x86' --channel=0
+          sdkmanager --install 'emulator' --channel=0
+          echo "y" | sdkmanager --licenses
 
       - name: Start Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
-          target: default
+          target: google_apis
           arch: x86
           profile: Nexus 6
           emulator-options: -no-boot-anim -no-audio -no-window
           disable-linux-hw-accel: true
           script: ./gradlew connectedAndroidTest
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
 
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
