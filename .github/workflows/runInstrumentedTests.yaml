@@ -2,7 +2,7 @@ name: Instrumented tests
 on:
   push
 jobs:
-  test:
+  instrumented:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -26,3 +26,7 @@ jobs:
         with:
           api-level: 29
           script: ./gradlew connectedCheck
+
+      - name: Android Test Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }}

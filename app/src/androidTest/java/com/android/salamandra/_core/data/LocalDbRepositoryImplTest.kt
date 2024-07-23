@@ -72,7 +72,6 @@ class LocalDbRepositoryImplTest {
     fun testInsertingTemporalWkElementsAndRetrievingThem() = runTest {
         //Arrange
         val TEMPORAL = "TEMPORAL"
-
         val expectedList = listOf(EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP, EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT)
 
         //Act
