@@ -1,7 +1,5 @@
 name: Android Testing CI
-on:
-  pull_request:
-    branches: [ "CI-CD_TEST" ]
+on: [push]
 
 jobs:
   test:
@@ -28,6 +26,11 @@ jobs:
           sdkmanager --install 'emulator' --channel=0
           echo "y" | sdkmanager --licenses
 
+      - name: Kill any running emulators
+        run: |
+          adb -e emu kill || true
+          adb devices
+
       - name: Start Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -38,7 +41,7 @@ jobs:
           emulator-options: -no-boot-anim -no-audio -no-window
           disable-linux-hw-accel: true
           script: ./gradlew connectedAndroidTest
-          emulator-boot-timeout: 1200
+          emulator-boot-timeout: 1800
 
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
@@ -49,4 +52,4 @@ jobs:
 
       - name: Terminate Emulator
         run: adb -s emulator-5554 emu kill
-        if: success() || failure()
+        if: always()
