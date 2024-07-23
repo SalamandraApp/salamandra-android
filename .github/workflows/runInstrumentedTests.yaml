@@ -1,65 +1,25 @@
-name: Android Testing CI
-on: [push]
-
+name: Instrumented tests
+on:
+  push
 jobs:
   instrumented:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: 17
           distribution: 'temurin'
-          cache: gradle
+          cache: 'gradle'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
-
-      - name: Download dependencies
-        run: ./gradlew build --scan --continue
-
-      - name: Ensure system image is available
-        run: |
-          sdkmanager --install 'system-images;android-30;google_apis;x86' --channel=0
-          sdkmanager --install 'emulator' --channel=0
-          echo "y" | sdkmanager --licenses
-
-      - name: Kill any running emulators
-        run: |
-          adb devices | grep 'emulator-' | cut -f1 | while read line; do adb -s $line emu kill; done
-          adb devices
-
-      - name: Start Emulator and Run Tests
-        uses: reactivecircus/android-emulator-runner@v2
+      - name: Run connected tests
+        uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 30
           target: google_apis
-          arch: x86
-          profile: Nexus 6
-          emulator-options: -no-boot-anim -no-window
-          disable-linux-hw-accel: true
-          script: |
-            adb wait-for-device
-            adb shell getprop sys.boot_completed | grep -m 1 '1'
-            sleep 60
-            adb shell input keyevent 82
-            ./gradlew connectedAndroidTest
-          emulator-boot-timeout: 1800
-          disable-animations: true
-
-      - name: Collect Logcat Output
-        if: failure()
-        run: adb logcat -d > logcat.txt
-
-      - name: Upload Logcat
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: logcat
-          path: logcat.txt
-
-      - name: Terminate Emulator
-        run: adb -s emulator-5554 emu kill
-        if: always()
+          arch: x86_64
+          script: ./gradlew connectedCheck
