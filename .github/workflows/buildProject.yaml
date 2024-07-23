@@ -1,8 +1,6 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ "CI-CD_TEST" ]
   pull_request:
     branches: [ "CI-CD_TEST" ]
 
