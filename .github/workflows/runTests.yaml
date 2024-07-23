@@ -22,7 +22,7 @@ jobs:
 
       - name: Ensure system image is available
         run: |
-          sdkmanager --install 'system-images;android-30;google_apis;x86' --channel=0
+          sdkmanager --install 'system-images;android-30;default;x86' --channel=0
           sdkmanager --install 'emulator' --channel=0
           echo "y" | sdkmanager --licenses
 
@@ -30,12 +30,13 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
-          target: google_apis
+          target: default
           arch: x86
           profile: Nexus 6
           emulator-options: -no-boot-anim -no-audio -no-window
           disable-linux-hw-accel: true
           script: ./gradlew connectedAndroidTest
+          emulator-boot-timeout: 1200
 
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
@@ -43,3 +44,7 @@ jobs:
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
         if: ${{ always() }}
+
+      - name: Terminate Emulator
+        run: adb -s emulator-5554 emu kill
+        if: success() || failure()
