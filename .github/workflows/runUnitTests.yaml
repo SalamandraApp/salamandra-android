@@ -4,7 +4,7 @@ on:
     branches: [ "CI-CD_TEST" ]
 
 jobs:
-  test:
+  unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

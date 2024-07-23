@@ -31,7 +31,7 @@ jobs:
           adb devices | grep 'emulator-' | cut -f1 | while read line; do adb -s $line emu kill; done
           adb devices
 
-      - name: Start Emulator
+      - name: Start Emulator and Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -40,19 +40,9 @@ jobs:
           profile: Nexus 6
           emulator-options: -no-boot-anim -no-audio -no-window
           disable-linux-hw-accel: true
-          script: ""
+          script: ./gradlew connectedAndroidTest
           emulator-boot-timeout: 1200
           disable-animations: true
-
-      - name: Wait for Emulator to be ready
-        run: |
-          adb wait-for-device
-          adb shell getprop sys.boot_completed | grep -m 1 '1'
-          sleep 30
-          adb shell input keyevent 82
-
-      - name: Run Instrumented Tests
-        run: ./gradlew connectedAndroidTest
 
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
