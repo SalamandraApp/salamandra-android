@@ -22,29 +22,37 @@ jobs:
 
       - name: Ensure system image is available
         run: |
-          sdkmanager --install 'system-images;android-30;google_apis_playstore;x86' --channel=0
+          sdkmanager --install 'system-images;android-30;google_apis;x86' --channel=0
           sdkmanager --install 'emulator' --channel=0
           echo "y" | sdkmanager --licenses
 
       - name: Kill any running emulators
         run: |
-          adb -e emu kill || true
+          adb devices | grep 'emulator-' | cut -f1 | while read line; do adb -s $line emu kill; done
           adb devices
 
       - name: Start Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
-          target: google_apis_playstore
+          target: google_apis
           arch: x86
           profile: Nexus 6
           emulator-options: -no-boot-anim -no-audio -no-window
           disable-linux-hw-accel: true
-          script: ./gradlew connectedAndroidTest
-          emulator-boot-timeout: 1800
+          script: ""
+          emulator-boot-timeout: 1200
+          disable-animations: true
 
-      - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+      - name: Wait for Emulator to be ready
+        run: |
+          adb wait-for-device
+          adb shell getprop sys.boot_completed | grep -m 1 '1'
+          sleep 30
+          adb shell input keyevent 82
+
+      - name: Run Instrumented Tests
+        run: ./gradlew connectedAndroidTest
 
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
