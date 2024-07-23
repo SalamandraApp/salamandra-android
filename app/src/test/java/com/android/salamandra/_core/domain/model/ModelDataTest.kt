@@ -9,7 +9,7 @@ class DataModelsTest{
         //TODO decide whether to use default values or make nullable
         val expectedValue = WorkoutTemplate(
             wkId = "",
-            name = "",
+            name = "New Workout",
             elements = emptyList(),
             description = null,
             dateCreated = null
