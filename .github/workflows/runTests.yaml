@@ -1,5 +1,7 @@
 name: Android Testing CI
-on: [push]
+on:
+  pull_request:
+    branches: [ "CI-CD_TEST" ]
 
 jobs:
   test:
