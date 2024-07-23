@@ -18,9 +18,9 @@ class ProfileViewModel @Inject constructor(
 
     override fun reduce(intent: ProfileIntent) {
         when (intent) {
-            is ProfileIntent.Error -> onError(intent.error)
+            is ProfileIntent.Error -> _state.update { it.copy(error = intent.error) }
 
-            is ProfileIntent.CloseError -> onCloseError()
+            is ProfileIntent.CloseError -> _state.update { it.copy(error = null) }
 
             is ProfileIntent.BottomBarClicked -> sendEvent(ProfileEvent.BottomBarClicked(intent.destination))
 
@@ -32,9 +32,15 @@ class ProfileViewModel @Inject constructor(
 
     init {
         ioLaunch {
-            if(coreRepository.isUserLogged()){
-                when (val userData = coreRepository.getUserData()){
-                    is Result.Success -> _state.update { it.copy(isSignedIn = true, userData = userData.data) }
+            if (coreRepository.isUserLogged()) {
+                when (val userData = coreRepository.getUserData()) {
+                    is Result.Success -> _state.update {
+                        it.copy(
+                            isSignedIn = true,
+                            userData = userData.data
+                        )
+                    }
+
                     is Result.Error -> _state.update { it.copy(error = userData.error) }
                 }
             }
@@ -42,6 +48,4 @@ class ProfileViewModel @Inject constructor(
 
     }
 
-    private fun onError(error: RootError) = _state.update { it.copy(error = error) }
-    private fun onCloseError() = _state.update { it.copy(error = null) }
 }

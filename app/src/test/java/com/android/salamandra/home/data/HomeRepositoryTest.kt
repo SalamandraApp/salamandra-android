@@ -83,4 +83,17 @@ class HomeRepositoryTest {
         // Assert
         assert(result is Result.Error)
     }
+
+    @Test
+    fun `when local insertion returns Error, getPreviewsFromRemote fails`() = runTest {
+        // Arrange
+        coEvery { localDbRepository.insertWkPreviewList(any()) } returns Result.Error(DataError.Local.ERROR_INSERTING_WK_TEMPLATES)
+
+        // Act
+        val result = repository.getWkPreviewsFromRemoteAndStoreInLocal()
+        runCurrent()
+        
+        // Assert
+        assert(result is Result.Error && result.error == DataError.Local.ERROR_INSERTING_WK_TEMPLATES)
+    }
 }
