@@ -22,8 +22,11 @@ class SettingsViewModel @Inject constructor(
     override fun reduce(intent: SettingsIntent) {
         when (intent) {
             is SettingsIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is SettingsIntent.CloseError -> _state.update { it.copy(error = null) }
+
             is SettingsIntent.NavigateUp -> sendEvent(SettingsEvent.NavigateUp)
+
             SettingsIntent.Logout -> onLogout()
         }
     }

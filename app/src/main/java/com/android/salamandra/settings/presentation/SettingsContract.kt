@@ -8,12 +8,10 @@ import com.android.salamandra._core.domain.error.RootError
 
 
 data  class SettingsState(
-    val loading: Boolean,
     val error: RootError?
 ) : State {
     companion object {
         val initial: SettingsState = SettingsState(
-            loading = false,
             error = null
         )
     }
