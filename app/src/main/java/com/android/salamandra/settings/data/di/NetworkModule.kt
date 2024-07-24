@@ -1,4 +1,4 @@
-package com.android.salamandra.settings.di
+package com.android.salamandra.settings.data.di
 
 import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.domain.LocalDbRepository

@@ -25,7 +25,7 @@ class CognitoService @Inject constructor(
         logout()
         try {
             return if (Amplify.Auth.signIn(email, password).isSignedIn) {
-                return fetchAndSaveToken()
+                return getUserId()
             } else {
                 Result.Error(DataError.Cognito.INVALID_EMAIL_OR_PASSWORD)
             }
@@ -35,23 +35,20 @@ class CognitoService @Inject constructor(
         }
     }
 
-    private suspend fun fetchAndSaveToken(): Result<String, DataError.Cognito> = try {
-        val cognitoAuthSession =
-            Amplify.Auth.fetchAuthSession() as AWSCognitoAuthSession
+    suspend fun getAccessToken(): String? =
+        (Amplify.Auth.fetchAuthSession() as AWSCognitoAuthSession).accessToken
 
-        dataStore.saveToken(cognitoAuthSession.accessToken!!)
-        val userId = cognitoAuthSession.userSubResult.value
+    suspend fun getUserId(): Result<String, DataError.Cognito> = try {
+        val userId = (Amplify.Auth.fetchAuthSession() as AWSCognitoAuthSession).userSubResult.value
         if (userId != null) {
             dataStore.saveUid(userId)
             Result.Success(userId)
         } else
             Result.Error(DataError.Cognito.SESSION_FETCH)
-
     } catch (e: Exception) {
         Log.e("SLM", "Error using Cognito for sign in: " + e.message.orEmpty())
         Result.Error(DataError.Cognito.SESSION_FETCH)
     }
-
 
     suspend fun register(
         email: String,

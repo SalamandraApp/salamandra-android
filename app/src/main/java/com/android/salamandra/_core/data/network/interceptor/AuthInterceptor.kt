@@ -1,5 +1,6 @@
 package com.android.salamandra._core.data.network.interceptor
 
+import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.domain.DataStoreRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -8,11 +9,12 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
-    private val datastore: DataStoreRepository
+    private val datastore: DataStoreRepository,
+    private val cognitoService: CognitoService
 ): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking {
-            datastore.getToken().first()
+            cognitoService.getAccessToken()
         }
         if(token == null) {
             return chain.proceed(chain.request())

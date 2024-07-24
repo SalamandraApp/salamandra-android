@@ -22,26 +22,7 @@ class DataStoreRepositoryImpl @Inject constructor(private val context: Context) 
     DataStoreRepository {
 
     companion object {
-        private val TOKEN_KEY = stringPreferencesKey("accessToken")
         private val UID = stringPreferencesKey("uid")
-    }
-
-    override fun getToken(): Flow<String?> {
-        return context.dataStore.data.map { preferences ->
-            preferences[TOKEN_KEY]
-        }
-    }
-
-    override suspend fun saveToken(token: String) {
-        context.dataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = token
-        }
-    }
-
-    override suspend fun deleteToken() {
-        context.dataStore.edit { preferences ->
-            preferences.remove(TOKEN_KEY)
-        }
     }
 
     override suspend fun getUidFromDatastore(): Result<String, DataError.Datastore> {
