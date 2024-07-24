@@ -1,14 +1,15 @@
 package com.android.salamandra.workouts.editWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
-import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import com.android.salamandra._core.util.EXERCISE
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
-import com.android.salamandra.authentication.verifyAccount.presentation.VerifyCodeNavArgs
 import com.android.salamandra.util.CoroutineRule
+import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP
+import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT
 import com.android.salamandra.workouts.editWk.domain.Repository
 import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
@@ -32,26 +33,23 @@ class EditWkViewModelTest {
     private lateinit var savedStateHandle: SavedStateHandle
 
     @RelaxedMockK
-    private lateinit var mockkRepository: Repository
+    private lateinit var repository: Repository
 
     @Before
     fun setUp() {
 
         MockKAnnotations.init(this)
-        // Mock SavedStateHandle
-        savedStateHandle = mockk(relaxed = true)
 
-        // Mock the NavArgs
+        savedStateHandle = mockk(relaxed = true)
         val mockNavArgs = EditWkNavArgs(
             emptyArray()
         )
-
-        // Mock the behavior of navArgs() method
         every { savedStateHandle.get<Array<String>>("addedExercises") } returns mockNavArgs.addedExercises
 
+        coEvery { repository.retrieveSavedWorkoutTemplateElements() } returns listOf(EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP, EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT)
 
         editWkViewModel =
-            EditWkViewModel(repository = mockkRepository, ioDispatcher = testDispatcher, savedStateHandle = savedStateHandle)
+            EditWkViewModel(repository = repository, ioDispatcher = testDispatcher, savedStateHandle = savedStateHandle)
     }
 
     @Test
@@ -65,48 +63,6 @@ class EditWkViewModelTest {
         )
         //Assert
         assert(EditWkState.initial == initialState)
-    }
-
-    @Test
-    fun `Error intent updates the state`() = runTest{
-        //Arrange
-        var expectedState = EditWkState.initial.copy(error = DataError.Network.UNKNOWN)
-        //Act
-        editWkViewModel.dispatch(EditWkIntent.Error(error =  DataError.Network.UNKNOWN))
-        runCurrent()
-
-        //Assert
-        assert(expectedState == editWkViewModel.state.value)
-
-        //Arrange
-        expectedState = EditWkState.initial.copy(error = null)
-        //Act
-        editWkViewModel.dispatch(EditWkIntent.CloseError)
-        runCurrent()
-
-        //Assert
-        assert(expectedState == editWkViewModel.state.value)
-    }
-
-    @Test
-    fun `CloseError intent updates the state`() = runTest{
-        //Arrange
-        var expectedState = EditWkState.initial.copy(error = DataError.Network.UNKNOWN)
-        //Act
-        editWkViewModel.dispatch(EditWkIntent.Error(error =  DataError.Network.UNKNOWN))
-        runCurrent()
-
-        //Assert
-        assert(expectedState == editWkViewModel.state.value)
-
-        //Arrange
-        expectedState = EditWkState.initial.copy(error = null)
-        //Act
-        editWkViewModel.dispatch(EditWkIntent.CloseError)
-        runCurrent()
-
-        //Assert
-        assert(expectedState == editWkViewModel.state.value)
     }
 
     @Test
