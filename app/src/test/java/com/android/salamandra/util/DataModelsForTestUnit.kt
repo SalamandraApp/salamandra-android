@@ -1,5 +1,6 @@
 package com.android.salamandra.util
 
+import com.android.salamandra._core.data.network.response.WorkoutTemplateResponse
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.User
 import com.android.salamandra._core.domain.model.enums.Equipment
@@ -12,21 +13,22 @@ import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import exercise.ExerciseEntity
 import workout.WorkoutTemplateElementEntity
+import workout.WorkoutTemplateEntity
 import java.time.LocalDate
 
-val EXAMPLE_USER = User(
-    uid = "123",
-    username = "vzkz",
-    displayName = "Vzkz",
-    dateJoined = LocalDate.parse("2022-09-12"),
-    dateOfBirth = LocalDate.parse("2004-03-11"),
-    height = 183,
-    weight = 76.5,
-    gender = Gender.Male,
-    fitnessGoal = FitnessGoal.Bulking,
-    fitnessLevel = FitnessLevel.Amateur
-)
-
+//val EXAMPLE_USER = User(
+//    uid = "123",
+//    username = "vzkz",
+//    displayName = "Vzkz",
+//    dateJoined = LocalDate.parse("2022-09-12"),
+//    dateOfBirth = LocalDate.parse("2004-03-11"),
+//    height = 183,
+//    weight = 76.5,
+//    gender = Gender.Male,
+//    fitnessGoal = FitnessGoal.Bulking,
+//    fitnessLevel = FitnessLevel.Amateur
+//)
+//
 val EXAMPLE_EXERCISE_PUSH_UP = Exercise(
     exId = "exex1",
     name = "Push Up",
@@ -76,7 +78,7 @@ val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_PUSH_UP = WorkoutTemplateElementEnti
     id = "12345",
     wkTemplateId = "TEMPORAL",
     exerciseId = EXAMPLE_EXERCISE_PUSH_UP.exId,
-    position = 1,
+    position = null,
     reps = 15,
     sets = 4,
     weight = null,
@@ -96,12 +98,38 @@ val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_SQUAT = WorkoutTemplateElementEntity
     id = "12",
     wkTemplateId = "TEMPORAL",
     exerciseId = EXAMPLE_EXERCISE_SQUAT.exId,
-    position = 2,
+    position = null,
     reps = 15,
     sets = 4,
     weight = null,
     rest = 120
 )
+
+val EXAMPLE_WORKOUT_TEMPLATE = WorkoutTemplate(
+    wkId = "12",
+    name = "Upper body Strength",
+    elements = listOf(EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP, EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT),
+    description = "This is some cool description",
+    dateCreated = LocalDate.parse("2022-09-12")
+)
+
+val EXAMPLE_WORKOUT_TEMPLATE_RESPONSE = WorkoutTemplateResponse(
+    id = "1",
+    userId = "12",
+    name = "Upper body Strength",
+    elements = listOf(),
+    description = "This is some cool description",
+    dateCreated = "2022-09-12"
+)
+
+val EXAMPLE_WORKOUT_TEMPLATE_ENTITY = WorkoutTemplateEntity(
+    id = "1",
+    name = "Upper body Strength",
+    description = "This is some cool description",
+    dateCreated = LocalDate.parse("2022-09-12"),
+    onlyPreviewAvailable = false
+)
+
 
 
 

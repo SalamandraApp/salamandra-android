@@ -1,6 +1,9 @@
 name: Instrumented tests
 on:
-  push
+  pull_request:
+    branches:
+      - main
+      - develop
 jobs:
   instrumented:
     runs-on: ubuntu-latest

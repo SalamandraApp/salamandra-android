@@ -25,9 +25,13 @@ class SeeWkViewModel @Inject constructor(
     override fun reduce(intent: SeeWkIntent) {
         when (intent) {
             is SeeWkIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is SeeWkIntent.CloseError -> _state.update { it.copy(error = null) }
+
             is SeeWkIntent.NavigateUp -> sendEvent(SeeWkEvent.NavigateUp)
+
             is SeeWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElementIndex = intent.index) }
+
             SeeWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null) }
         }
     }
@@ -35,11 +39,12 @@ class SeeWkViewModel @Inject constructor(
     init {
         val navArgs: SeeWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
-            when(val wkToSee = repository.getWkTemplate(workoutId = navArgs.wkTemplateId)){
+            when (val wkToSee = repository.getWkTemplate(workoutId = navArgs.wkTemplateId)) {
                 is Result.Success -> {
                     _state.update { it.copy(wkTemplate = wkToSee.data) }
                     workoutsRepository.storeWkTemplateInLocal(wkTemplate = wkToSee.data)
                 }
+
                 is Result.Error -> _state.update { it.copy(error = wkToSee.error) }
             }
         }

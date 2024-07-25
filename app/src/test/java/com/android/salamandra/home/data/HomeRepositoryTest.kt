@@ -38,7 +38,6 @@ class HomeRepositoryTest {
     @RelaxedMockK
     private lateinit var dataStoreRepository: DataStoreRepository
 
-
     private lateinit var repository: Repository
 
     @Before

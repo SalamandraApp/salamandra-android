@@ -70,7 +70,14 @@ class EditWkViewModel @Inject constructor(
     init {
         val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
-            _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = repository.retrieveSavedWorkoutTemplateElements())) }
+            _state.update {
+                it.copy(
+                    wkTemplate = it.wkTemplate.copy(
+                        name = it.wkTemplate.name + " (${repository.getWorkoutTemplateCount() + 1})",
+                        elements = repository.retrieveSavedWorkoutTemplateElements()
+                    )
+                )
+            }
             addNewExercisesToTemplate(repository.getAllExercises(navArgs.addedExercises))
         }
     }
@@ -157,7 +164,12 @@ class EditWkViewModel @Inject constructor(
                 removeAt(index)
             }
         }
-        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements), selectedElementIndex = null) }
+        _state.update {
+            it.copy(
+                wkTemplate = state.value.wkTemplate.copy(elements = updatedElements),
+                selectedElementIndex = null
+            )
+        }
     }
 
 }
