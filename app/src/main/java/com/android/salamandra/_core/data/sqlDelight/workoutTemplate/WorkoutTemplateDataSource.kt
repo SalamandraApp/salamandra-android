@@ -69,6 +69,11 @@ class WorkoutTemplateDataSource @Inject constructor(
         }
     }
 
+    suspend fun getWorkoutTemplateCount(): Int = withContext(ioDispatcher) {
+        val result = queries.countElements().executeAsOneOrNull()
+        result?.toInt() ?: 0
+    }
+
     suspend fun insertWkPreviewList(wkPreviewList: List<WorkoutPreview>): Result<Unit, DataError.Local> {
         var errorOccurred = false
         wkPreviewList.forEach { wkPreview ->
