@@ -113,4 +113,6 @@ class RepositoryImpl(
         }
     }
 
+    override suspend fun getWorkoutTemplateCount(): Int = localDbRepository.countWorkoutTemplateElements()
+
 }
