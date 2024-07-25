@@ -36,7 +36,6 @@ class ExerciseDataSource @Inject constructor(
     suspend fun insertExercise(
         exercise: Exercise
     ): Result<Unit, DataError.Local> {
-        //TODO insert only if it doesn't exist
         return withContext(ioDispatcher) {
             queries.insertExercise(
                 id = exercise.exId,

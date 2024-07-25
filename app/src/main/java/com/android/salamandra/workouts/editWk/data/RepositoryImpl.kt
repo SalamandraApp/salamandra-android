@@ -33,7 +33,7 @@ class RepositoryImpl(
             when (val exercise = localDbRepository.getExerciseByID(id)) {
                 is Result.Success -> exerciseList.add(exercise.data.toExercise())
                 is Result.Error -> Log.e(
-                    "ADD EXERCISE",
+                    "SLM",
                     "Error occurred while getting exercise from local: ${exercise.error}"
                 )
             }
@@ -47,10 +47,13 @@ class RepositoryImpl(
                 is Result.Success -> {
                     val wkTemplateResponse = salamandraApiService.createWkTemplate(
                         userId = uid.data,
-                        wkTemplate = workoutTemplate.copy(dateCreated = LocalDate.now()).toCreateWorkoutTemplateRequest()
+                        wkTemplate = workoutTemplate.copy(dateCreated = LocalDate.now())
+                            .toCreateWorkoutTemplateRequest()
                     )
 
-                    when (val insertion = localDbRepository.insertWkTemplate( wkTemplateResponse.toDomain(workoutTemplate))) {
+                    when (val insertion = localDbRepository.insertWkTemplate(
+                        wkTemplateResponse.toDomain(workoutTemplate)
+                    )) {
                         is Result.Success -> Result.Success(Unit)
                         is Result.Error -> Result.Error(insertion.error)
                     }
