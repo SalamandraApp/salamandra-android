@@ -5,9 +5,12 @@ import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.domain.DataStoreRepository
 import com.android.salamandra._core.domain.LocalDbRepository
+import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
+import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP_ENTITY
+import com.android.salamandra.util.EXAMPLE_EXERCISE_SQUAT
 import com.android.salamandra.util.EXAMPLE_EXERCISE_SQUAT_ENTITY
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_SQUAT
@@ -18,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runCurrent
@@ -45,9 +49,6 @@ class EditWkRepositoryTest {
     @RelaxedMockK
     private lateinit var dataStoreRepository: DataStoreRepository
 
-    @RelaxedMockK
-    private lateinit var log: Log
-
     private lateinit var repository: RepositoryImpl
 
     companion object {
@@ -57,12 +58,31 @@ class EditWkRepositoryTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkStatic(Log::class)
+        every { Log.i(any(), any()) } returns 0
+        every { Log.e(any(), any()) } returns 0
         repository = RepositoryImpl(
             localDbRepository = localDbRepository,
             salamandraApiService = salamandraApiService,
             dataStoreRepository = dataStoreRepository,
             retrofitExceptionHandler = retrofitExceptionHandler
         )
+    }
+
+    @Test
+    fun `when an exercise is not found in local, its not added to the final list`() = runTest {
+        // Arrange
+        val expectedList = listOf(EXAMPLE_EXERCISE_PUSH_UP, EXAMPLE_EXERCISE_SQUAT)
+        coEvery { localDbRepository.getExerciseByID("1") } returns Result.Success(EXAMPLE_EXERCISE_PUSH_UP_ENTITY)
+        coEvery { localDbRepository.getExerciseByID("2") } returns Result.Success(EXAMPLE_EXERCISE_SQUAT_ENTITY)
+        coEvery { localDbRepository.getExerciseByID("3") } returns Result.Error(DataError.Local.EXERCISE_NOT_FOUND)
+
+        // Act
+        val result = repository.getAllExercises(arrayOf("1", "3", "2"))
+
+        // Assert
+        assert(result == expectedList)
+        verify(exactly = 1) { Log.e(any(), any()) }
     }
 
     @Test
@@ -82,8 +102,7 @@ class EditWkRepositoryTest {
         coEvery { localDbRepository.getExerciseByID(EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_SQUAT.exerciseId) } returns Result.Success(
             EXAMPLE_EXERCISE_SQUAT_ENTITY
         )
-        mockkStatic(Log::class)
-        every { Log.i(any(), any()) } returns 0
+
 
         //Act
         val elementList = repository.retrieveSavedWorkoutTemplateElements()
