@@ -103,7 +103,7 @@ private fun ScreenBody(
             OtpTextField(
                 modifier = Modifier.weight(textFieldWeight),
                 otpText = state.code,
-                onOtpTextChange = { value, otpInputFilled ->
+                onOtpTextChange = { value, _ ->
                     sendIntent(VerifyCodeIntent.ChangeCode(value))
                 }
             )

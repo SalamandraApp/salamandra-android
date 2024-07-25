@@ -14,7 +14,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     ioDispatcher: CoroutineDispatcher,
-    savedStateHandle: SavedStateHandle,
     private val repository: Repository
 ) :
     BaseViewModel<SettingsState, SettingsIntent, SettingsEvent>(SettingsState.initial, ioDispatcher) {
@@ -29,10 +28,6 @@ class SettingsViewModel @Inject constructor(
 
             SettingsIntent.Logout -> onLogout()
         }
-    }
-
-    init {
-        val navArgs: SettingsNavArgs = savedStateHandle.navArgs()
     }
 
     private fun onLogout(){

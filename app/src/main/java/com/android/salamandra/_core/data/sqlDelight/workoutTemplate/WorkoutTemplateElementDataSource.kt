@@ -24,10 +24,7 @@ class WorkoutTemplateElementDataSource @Inject constructor(
     suspend fun getWkTemplateElementsById(wkTemplateId: String): Result<List<WorkoutTemplateElementEntity>, DataError.Local> {
         return withContext(ioDispatcher) {
             try {
-                val result =queries.getAllElementsOfWk(wkTemplateId = wkTemplateId).executeAsList()
                 Result.Success(queries.getAllElementsOfWk(wkTemplateId = wkTemplateId).executeAsList())
-
-
             } catch (e: Exception) {
                 Log.e("SLM", "${e.message}")
                 Result.Error(DataError.Local.WORKOUT_TEMPLATE_ELEMENT_NOT_FOUND)

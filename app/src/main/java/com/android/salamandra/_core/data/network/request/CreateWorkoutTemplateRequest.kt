@@ -32,7 +32,7 @@ fun WorkoutTemplate.toCreateWorkoutTemplateRequest() =
 
 fun WkTemplateElement.toCreateWorkoutTemplateElementRequest() = CreateWorkoutTemplateElementRequest(
     exerciseId = exercise.exId,
-    position = position,
+    position = position ?: throw IllegalArgumentException("A non null position is mandatory"),
     reps = reps,
     sets = sets,
     weight = weight,

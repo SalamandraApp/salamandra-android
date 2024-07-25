@@ -13,7 +13,6 @@ import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_PUSH_
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_SQUAT
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT
-import com.android.salamandra.workouts.editWk.data.RepositoryImpl.Companion.TEMPORARY_SAVED_ELEMENTS_ID
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -46,6 +45,10 @@ class EditWkRepositoryImplTest {
     private lateinit var log: Log
 
     private lateinit var repository: RepositoryImpl
+
+    companion object {
+        private const val TEMPORARY_SAVED_ELEMENTS_ID = "TEMPORAL"
+    }
 
     @Before
     fun setUp() {

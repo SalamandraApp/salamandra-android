@@ -78,7 +78,7 @@ class EditWkViewModel @Inject constructor(
     private fun addNewExercisesToTemplate(exercises: List<Exercise>) {
         val elements = state.value.wkTemplate.elements.toMutableList()
         exercises.forEach { exercise ->
-            elements.add(WkTemplateElement(exercise = exercise, position = elements.size + 1))
+            elements.add(WkTemplateElement(exercise = exercise))
         }
         _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = elements)) }
     }
@@ -94,6 +94,12 @@ class EditWkViewModel @Inject constructor(
 
     private fun createWorkout() {
         ioLaunch {
+            val updatedElements = state.value.wkTemplate.elements.mapIndexed { index, element ->
+                element.copy(position = index + 1)
+            }
+
+            _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = updatedElements)) }
+
             when (val creation = repository.createWorkout(state.value.wkTemplate)) {
                 is Result.Success -> sendEvent(EditWkEvent.NavigateToHome)
                 is Result.Error -> _state.update { it.copy(error = creation.error) }
@@ -120,6 +126,7 @@ class EditWkViewModel @Inject constructor(
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             this[index] = this[index].copy(reps = newReps)
         }
+        state.value.wkTemplate.elements.map { it.copy(reps = newReps) }
         _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
 
@@ -145,16 +152,12 @@ class EditWkViewModel @Inject constructor(
     }
 
     private fun deleteWkElement(index: Int) {
-        removeWkElement(index)
-        _state.update { it.copy(selectedElementIndex = null) }
-    }
-
-    private fun removeWkElement(index: Int) {
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             if (index in indices) {
                 removeAt(index)
             }
         }
-        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
+        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements), selectedElementIndex = null) }
     }
+
 }

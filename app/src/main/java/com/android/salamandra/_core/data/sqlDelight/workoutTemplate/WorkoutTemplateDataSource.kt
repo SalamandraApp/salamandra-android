@@ -72,7 +72,7 @@ class WorkoutTemplateDataSource @Inject constructor(
     suspend fun insertWkPreviewList(wkPreviewList: List<WorkoutPreview>): Result<Unit, DataError.Local> {
         var errorOccurred = false
         wkPreviewList.forEach { wkPreview ->
-            when (val insertion = insertWk(
+            when (insertWk(
                 id = wkPreview.wkId,
                 name = wkPreview.name,
                 onlyPreviewAvailable = true,
@@ -85,7 +85,7 @@ class WorkoutTemplateDataSource @Inject constructor(
                 is Result.Error -> errorOccurred = true
             }
         }
-        return if (errorOccurred) Result.Success(Unit)
+        return if (!errorOccurred) Result.Success(Unit)
         else Result.Error(DataError.Local.ERROR_INSERTING_WK_TEMPLATES)
     }
 }

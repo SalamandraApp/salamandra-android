@@ -43,8 +43,7 @@ class WorkoutTemplateDataSourceTest {
     @Test
     fun testBasicInsertionAndGet() = runTest {
         // Act
-        val insertion =
-            dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
+        dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
         runCurrent()
         val wk = dataSource.getWkByID(id)
         runCurrent()
@@ -66,7 +65,7 @@ class WorkoutTemplateDataSourceTest {
             // Insert a new item and ensure the list updates
             dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
             runCurrent()
-            list = awaitItem()
+            awaitItem()
             //assert(list.size == 1 && list[0] == expectedWorkoutTemplateEntity)
 
             // Clear the database and ensure the list updates

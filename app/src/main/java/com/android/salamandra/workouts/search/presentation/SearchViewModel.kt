@@ -19,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    savedStateHandle: SavedStateHandle,
     private val repository: Repository
 ) :
     BaseViewModel<SearchState, SearchIntent, SearchEvent>(SearchState.initial, ioDispatcher) {
@@ -37,9 +36,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    init {
-        val navArgs: SearchNavArgs = savedStateHandle.navArgs()
-    }
 
     private fun searchExercise() {
         viewModelScope.launch {

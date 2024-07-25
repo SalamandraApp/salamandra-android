@@ -4,7 +4,7 @@ CREATE TABLE WorkoutTemplateElementEntity (
     id TEXT NOT NULL PRIMARY KEY,
     wkTemplateId TEXT NOT NULL,
     exerciseId TEXT NOT NULL,
-    position INTEGER AS Int NOT NULL,
+    position INTEGER AS Int,
     reps INTEGER AS Int NOT NULL,
     sets INTEGER AS Int NOT NULL,
     weight REAL,

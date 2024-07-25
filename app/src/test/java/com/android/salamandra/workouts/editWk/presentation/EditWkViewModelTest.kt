@@ -1,10 +1,10 @@
 package com.android.salamandra.workouts.editWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
+import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
-import com.android.salamandra._core.util.EXERCISE
-import com.android.salamandra._core.util.WORKOUT_TEMPLATE_ELEMENT
 import com.android.salamandra.util.CoroutineRule
+import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT
 import com.android.salamandra.workouts.editWk.domain.Repository
@@ -46,10 +46,18 @@ class EditWkViewModelTest {
         )
         every { savedStateHandle.get<Array<String>>("addedExercises") } returns mockNavArgs.addedExercises
 
-        coEvery { repository.retrieveSavedWorkoutTemplateElements() } returns listOf(EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP, EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT)
+        coEvery { repository.retrieveSavedWorkoutTemplateElements() } returns listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT
+        )
+        coEvery { repository.getAllExercises(any()) } returns listOf(EXAMPLE_EXERCISE_PUSH_UP)
 
         editWkViewModel =
-            EditWkViewModel(repository = repository, ioDispatcher = testDispatcher, savedStateHandle = savedStateHandle)
+            EditWkViewModel(
+                repository = repository,
+                ioDispatcher = testDispatcher,
+                savedStateHandle = savedStateHandle
+            )
     }
 
     @Test
@@ -66,56 +74,161 @@ class EditWkViewModelTest {
     }
 
     @Test
-    fun `Change description working`() = runTest{
-        //Arrange
-        val dummyDesc = "Dummy desc"
-        val expectedState = EditWkState.initial.wkTemplate.copy(description = dummyDesc)
-        //Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeWkDescription(dummyDesc))
+    fun `when entering edit from search, all exercises loaded`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT,
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP)
+        )
+
+
+        // Act
+        editWkViewModel = EditWkViewModel(testDispatcher, savedStateHandle, repository)
         runCurrent()
-        //Assert
-        assert(expectedState == editWkViewModel.state.value.wkTemplate)
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
     }
 
     @Test
-    fun `When empty description sent, value is set to null`() = runTest{
+    fun `when entering edit from home, no exercises loaded`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = emptyList<WkTemplateElement>()
+        coEvery { repository.retrieveSavedWorkoutTemplateElements() } returns emptyList()
+        coEvery { repository.getAllExercises(any()) } returns emptyList()
+        // Act
+        editWkViewModel = EditWkViewModel(testDispatcher, savedStateHandle, repository)
+        runCurrent()
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
+    }
+
+    @Test
+    fun `Change description working`() = runTest {
         //Arrange
-        val dummyDesc = "Dummy desc"
-        val expectedState = EditWkState.initial.wkTemplate.copy(description = null)
-        editWkViewModel.dispatch(EditWkIntent.ChangeWkDescription(dummyDesc))
+        val expectedValue = "Dummy desc"
         //Act
+        editWkViewModel.dispatch(EditWkIntent.ChangeWkDescription(expectedValue))
+        runCurrent()
+        //Assert
+        assert(expectedValue == editWkViewModel.state.value.wkTemplate.description)
+    }
+
+    @Test
+    fun `Change description with empty description keeps it null`() = runTest {
+        //Arrange
+        val expectedValue = null
+        //Act
+        editWkViewModel.dispatch(EditWkIntent.ChangeWkDescription("dummy so that desc is not null"))
         editWkViewModel.dispatch(EditWkIntent.ChangeWkDescription(""))
         runCurrent()
         //Assert
-        assert(expectedState == editWkViewModel.state.value.wkTemplate)
+        assert(expectedValue == editWkViewModel.state.value.wkTemplate.description)
     }
 
     @Test
-    fun `When adding multiple exercises, positions are set correctly`() = runTest {
-        //Arrange
-        val resultList = listOf(
-            WORKOUT_TEMPLATE_ELEMENT.copy(position = 1),
-            WORKOUT_TEMPLATE_ELEMENT.copy(position = 2),
-            WORKOUT_TEMPLATE_ELEMENT.copy(position = 3),
-            WORKOUT_TEMPLATE_ELEMENT.copy(exercise = EXERCISE.copy(name = "Squat"), position = 4),
-            WORKOUT_TEMPLATE_ELEMENT.copy(position = 5),
-            WORKOUT_TEMPLATE_ELEMENT.copy(position = 6),
-            WORKOUT_TEMPLATE_ELEMENT.copy(position = 7)
+    fun `Creating a workout gets the positions correctly`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP.copy(position = 1),
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT.copy(position = 2),
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP, position = 3)
         )
-        val expectedState = EditWkState.initial.copy(wkTemplate = WorkoutTemplate(elements = resultList))
 
-//        //Act
-//        for (i in 0..2) {
-//            editWkViewModel.dispatch(EditWkIntent.AddExercisesToTemplate(EXERCISE))
-//            runCurrent()
-//        }
-//        editWkViewModel.dispatch(EditWkIntent.AddExercisesToTemplate(EXERCISE.copy(name = "Squat")))
-//        runCurrent()
-//        for (i in 0..2) {
-//            editWkViewModel.dispatch(EditWkIntent.AddExercisesToTemplate(EXERCISE))
-//            runCurrent()
-//        }
-//        //Assert
-//        assert(expectedState == editWkViewModel.state.value)
+        // Act
+        editWkViewModel.dispatch(EditWkIntent.CreateWorkout)
+        runCurrent()
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements )
     }
+
+    @Test
+    fun `Changing reps works`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP.copy(reps = 12),
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT,
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP).copy(reps = 1)
+        )
+
+        // Act
+        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 12, index = 0))
+        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 1, index = 2))
+        runCurrent()
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
+    }
+
+    @Test
+    fun `Changing sets works`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT.copy(sets = 6),
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP)
+        )
+
+        // Act
+        editWkViewModel.dispatch(EditWkIntent.ChangeSets(newSets = 6, index = 1))
+        runCurrent()
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
+    }
+
+    @Test
+    fun `Changing weight works`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT,
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP).copy(weight = 134.6)
+        )
+
+        // Act
+        editWkViewModel.dispatch(EditWkIntent.ChangeWeight(newWeight = 134.6, index = 2))
+        runCurrent()
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
+    }
+
+    @Test
+    fun `Changing rest works`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT,
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP).copy(rest = 15)
+        )
+
+        // Act
+        editWkViewModel.dispatch(EditWkIntent.ChangeRest(newRest = 15, index = 2))
+        runCurrent()
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
+    }
+
+    @Test
+    fun `removing element works`() = runTest {
+        // Arrange
+        val expectedWkTemplateElements = listOf(
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP)
+        )
+
+        // Act
+        editWkViewModel.dispatch(EditWkIntent.DeleteWkElement(1))
+        runCurrent()
+
+        // Assert
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
+    }
+
+
 }

@@ -24,7 +24,7 @@ class RepositoryImpl(
     private val retrofitExceptionHandler: RetrofitExceptionHandler
 ) : Repository {
     companion object {
-        const val TEMPORARY_SAVED_ELEMENTS_ID = "TEMPORAL"
+        private const val TEMPORARY_SAVED_ELEMENTS_ID = "TEMPORAL"
     }
 
     override suspend fun getAllExercises(exerciseIdList: Array<String>): List<Exercise> {

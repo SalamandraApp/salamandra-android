@@ -6,7 +6,7 @@ import java.util.UUID
 data class WkTemplateElement(
     val templateElementId: String = "",
     val exercise: Exercise,
-    val position: Int,
+    val position: Int? = null,
     val reps: Int = 1,
     val sets: Int = 1,
     val weight: Double? = 0.0,

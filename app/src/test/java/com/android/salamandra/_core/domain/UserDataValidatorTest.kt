@@ -58,7 +58,6 @@ class UserDataValidatorTest{
     @Test
     fun `Different special characters work`() = runTest {
         // Arrange
-        val expectedError = PasswordError.NO_SPECIAL_CHARACTER
         val password = "longEnoughUppercaseDigit9NoSpecialCharacter"
         // Act and assert
         var result = userDataValidator.validatePassword("$password:")

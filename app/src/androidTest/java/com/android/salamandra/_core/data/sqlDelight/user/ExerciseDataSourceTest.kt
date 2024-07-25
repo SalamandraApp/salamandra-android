@@ -47,7 +47,7 @@ class ExerciseDataSourceTest {
     @Test
     fun testBasicInsertionAndGet() = runTest {
         // Act
-        val insertion = dataSource.insertUser(EXAMPLE_USER)
+        dataSource.insertUser(EXAMPLE_USER)
         runCurrent()
         val wk = dataSource.getUserByID(EXAMPLE_USER.uid)
         runCurrent()

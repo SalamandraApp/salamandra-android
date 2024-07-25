@@ -68,9 +68,6 @@ fun EditWkTemplateElement(
     Column (
         modifier = Modifier.imePadding()
     ){
-        val keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        )
         Row {
             Text(
                 text = element.exercise.name,

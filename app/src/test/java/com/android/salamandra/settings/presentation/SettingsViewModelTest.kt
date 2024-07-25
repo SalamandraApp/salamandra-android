@@ -27,7 +27,7 @@ class SettingsViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        settingsViewModel = SettingsViewModel(testDispatcher, savedStateHandle, repository)
+        settingsViewModel = SettingsViewModel(testDispatcher, repository)
     }
 
     @Test

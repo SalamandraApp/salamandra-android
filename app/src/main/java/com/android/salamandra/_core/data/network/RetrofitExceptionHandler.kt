@@ -9,7 +9,7 @@ class RetrofitExceptionHandler @Inject constructor() {
     fun handleException(exception: Exception): DataError.Network{
         return when (exception) {
             is HttpException -> handleHTTPException(exception)
-            is ConnectException -> handleNoConnectionException(exception)
+            is ConnectException -> DataError.Network.NO_CONNECTION
             else -> DataError.Network.UNKNOWN
         }
     }
@@ -24,9 +24,5 @@ class RetrofitExceptionHandler @Inject constructor() {
             500 ->DataError.Network.INTERNAL_SERVER_ERROR
             else -> DataError.Network.UNKNOWN
         }
-    }
-
-    private fun handleNoConnectionException(exception: ConnectException): DataError.Network{
-        return DataError.Network.NO_CONNECTION
     }
 }
