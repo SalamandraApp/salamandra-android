@@ -70,7 +70,6 @@ class EditWkViewModel @Inject constructor(
     init {
         val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
-            repository.getWorkoutTemplateCount()
             _state.update {
                 it.copy(
                     wkTemplate = it.wkTemplate.copy(

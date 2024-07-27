@@ -103,6 +103,14 @@ val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_SQUAT = WorkoutTemplateElementEntity
     rest = 120
 )
 
+val EXAMPLE_WORKOUT_TEMPLATE = WorkoutTemplate(
+    wkId = "12",
+    name = "Upper body Strength",
+    elements = listOf(EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP, EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT),
+    description = "This is some cool description",
+    dateCreated = LocalDate.parse("2022-09-12")
+)
+
 
 
 

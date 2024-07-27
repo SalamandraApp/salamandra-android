@@ -18,13 +18,14 @@ class RepositoryImpl(
 ) : Repository {
 
     override suspend fun getWkTemplate(workoutId: String): Result<WorkoutTemplate, DataError> {
+        val full = true.toString()
         return try {
             when (val uid = dataStoreRepository.getUidFromDatastore()) {
                 is Result.Success -> {
                     when(val localWkTemplate = localDbRepository.getWkPreviewByID(workoutId)){
                         is Result.Success -> {
                             if(localWkTemplate.data.onlyPreviewAvailable){
-                                Result.Success(salamandraApiService.getWorkoutById(userId = uid.data, wkId = workoutId, full = "true").toDomain())
+                                Result.Success(salamandraApiService.getWorkoutById(userId = uid.data, wkId = workoutId, full = full).toDomain())
                             } else {
                                 when(val wkTemplate = localDbRepository.getWkTemplate(workoutId)){
                                     is Result.Success -> Result.Success(wkTemplate.data)
@@ -34,7 +35,7 @@ class RepositoryImpl(
                         }
                         is Result.Error -> {
                             Log.e("SLM", "${localWkTemplate.error}")
-                            Result.Success(salamandraApiService.getWorkoutById(userId = uid.data, wkId = workoutId, full = "true").toDomain())
+                            Result.Success(salamandraApiService.getWorkoutById(userId = uid.data, wkId = workoutId, full = full).toDomain())
                         }
                     }
                 }
