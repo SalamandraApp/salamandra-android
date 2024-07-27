@@ -7,12 +7,33 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+/.idea/deploymentTargetSelector.xml
 .DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+<component name="deploymentTargetSelector">
+<selectionStates>
+<SelectionState runConfigName="app">
+<option name="selectionMode" value="DROPDOWN" />
+</SelectionState>
+<SelectionState runConfigName="ScreenPreview (2)">
+<option name="selectionMode" value="DROPDOWN" />
+</SelectionState>
+<SelectionState runConfigName="LightPreview">
+<option name="selectionMode" value="DROPDOWN" />
+</SelectionState>
+<SelectionState runConfigName="LightPreview (1)">
+<option name="selectionMode" value="DROPDOWN" />
+</SelectionState>
+</selectionStates>
+</component>
+</project>
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
@@ -35,23 +56,4 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="deploymentTargetSelector">
-    <selectionStates>
-      <SelectionState runConfigName="app">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="ScreenPreview (2)">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="LightPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="LightPreview (1)">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-    </selectionStates>
-  </component>
-</project>
-.idea/deploymentTargetSelector.xml
+
