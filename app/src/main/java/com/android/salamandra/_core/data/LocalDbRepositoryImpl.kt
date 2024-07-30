@@ -30,6 +30,8 @@ class LocalDbRepositoryImpl @Inject constructor(
     override suspend fun isWkTemplateEntityEmpty(): Boolean =
         workoutTemplateDataSource.isWkTemplateEntityEmpty()
 
+    override suspend fun countWorkoutTemplateElements(): Int = workoutTemplateDataSource.getWorkoutTemplateCount()
+
     override suspend fun insertWkPreviewList(wkPreviewList: List<WorkoutPreview>): Result<Unit, DataError.Local> =
         workoutTemplateDataSource.insertWkPreviewList(wkPreviewList)
 

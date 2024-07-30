@@ -71,14 +71,12 @@ class RepositoryImpl(
         return when (val wkTemplateElements =
             localDbRepository.getWkTemplateElementsById(TEMPORARY_SAVED_ELEMENTS_ID)) {
             is Result.Success -> {
-                Log.i("SLM", "$wkTemplateElements")
                 val wkTemplateElementList = wkTemplateElements.data.mapNotNull {
                     when (val exercise = localDbRepository.getExerciseByID(it.exerciseId)) {
                         is Result.Success -> it.toWkTemplateElement(exercise.data.toExercise())
                         is Result.Error -> {
                             Log.e(
-                                "SLM",
-                                "Error occurred while getting exercise from local: ${exercise.error}"
+                                "SLM",                                "Error occurred while getting exercise from local: ${exercise.error}"
                             )
                             null
                         }
@@ -112,5 +110,7 @@ class RepositoryImpl(
             }
         }
     }
+
+    override suspend fun getWorkoutTemplateCount(): Int = localDbRepository.countWorkoutTemplateElements()
 
 }

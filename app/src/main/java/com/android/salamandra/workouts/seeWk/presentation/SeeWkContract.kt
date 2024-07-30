@@ -10,14 +10,12 @@ import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 
 
 data class SeeWkState(
-    val loading: Boolean,
     val error: RootError?,
     val wkTemplate: WorkoutTemplate,
     val selectedElementIndex: Int?,
 ) : State {
     companion object {
         val initial: SeeWkState = SeeWkState(
-            loading = false,
             error = null,
             wkTemplate = WorkoutTemplate(),
             selectedElementIndex = null
@@ -27,9 +25,13 @@ data class SeeWkState(
 
 sealed class SeeWkIntent: Intent {
     data class Error(val error: RootError): SeeWkIntent()
+
     data object CloseError: SeeWkIntent()
+
     data object NavigateUp: SeeWkIntent()
+
     data class ShowBottomSheet(val index: Int): SeeWkIntent()
+
     data object HideBottomSheet: SeeWkIntent()
 }
 

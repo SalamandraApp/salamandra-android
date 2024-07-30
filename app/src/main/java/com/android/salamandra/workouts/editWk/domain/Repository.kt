@@ -12,4 +12,5 @@ interface Repository {
     suspend fun retrieveSavedWorkoutTemplateElements(): List<WkTemplateElement>
     suspend fun saveWorkoutTemplateElementsTemporarly(wkTemplateElementList: List<WkTemplateElement>)
     suspend fun deleteTemporalTemplateElements()
+    suspend fun getWorkoutTemplateCount(): Int
 }

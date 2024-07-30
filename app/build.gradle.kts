@@ -42,7 +42,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://api.api-ninjas.com/v1/exercises/\"") //This would be the url used in production
+            buildConfigField("String", "BASE_URL", "\"https://z1xb9bwrh1.execute-api.eu-west-3.amazonaws.com/dev/\"") //This would be the url used in production
 
         }
 
