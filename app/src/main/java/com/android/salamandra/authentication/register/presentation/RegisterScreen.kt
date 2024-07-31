@@ -316,7 +316,7 @@ private fun ScreenBody(
                 colors = textFieldColors
             )
 
-            LaunchedEffect(key1 = state.password) {
+            LaunchedEffect(key1 = state.password, key2 = repeatPassword) {
                 isSamePassword = state.password == repeatPassword
             }
 

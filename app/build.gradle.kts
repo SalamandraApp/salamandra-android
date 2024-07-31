@@ -75,12 +75,21 @@ android {
     }
 }
 
+//configurations.all {
+//    resolutionStrategy {
+//        val bomVersion = "4.12.0"
+//        force("com.squareup.okhttp3:okhttp:$bomVersion")
+//        force("com.squareup.okhttp3:logging-interceptor:$bomVersion")
+//        force("com.squareup.okhttp3:mockwebserver:$bomVersion")
+//    }
+//}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.compose.bom)
+    implementation(platform(libs.androidx.compose.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -96,7 +105,7 @@ dependencies {
     //Ui test
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.compose.compose.bom)
+    androidTestImplementation(platform(libs.androidx.compose.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
@@ -124,8 +133,10 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    //Interceptor
-    implementation(libs.logging.interceptor)
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    testImplementation(libs.okhttp.mockwebserver)
+    implementation(libs.okhttp.logging.interceptor)
 
     //Cognito
     // Amplify core dependency
@@ -138,9 +149,9 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     
     //SLQDelight
-    implementation("app.cash.sqldelight:android-driver:2.0.2")
-    implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
+    implementation(libs.android.driver)
+    implementation(libs.coroutines.extensions)
     //Turbine for testing flows
-    androidTestImplementation("app.cash.turbine:turbine:1.1.0")
+    androidTestImplementation(libs.turbine)
 
 }

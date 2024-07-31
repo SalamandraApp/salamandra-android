@@ -20,10 +20,7 @@ data class WkPreviewsResponse(
 
 data class WkTemplate(
     @SerializedName("id") val id: String,
-    @SerializedName("user_id") val userId: String,
     @SerializedName("name") val name: String,
-    @SerializedName("description") val description: String?,
-    @SerializedName("date_created") val dateCreated: Date,
 ) {
     fun toDomain():  WorkoutPreview {
         return WorkoutPreview (
