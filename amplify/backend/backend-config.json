@@ -1,6 +1,6 @@
 {
   "auth": {
-    "salamandra0fcc254c": {
+    "salamandra1b039443": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -9,35 +9,35 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_salamandra0fcc254c_nativeClientId": {
+    "AMPLIFY_auth_salamandra1b039443_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandra0fcc254c"
+          "resourceName": "salamandra1b039443"
         }
       ]
     },
-    "AMPLIFY_auth_salamandra0fcc254c_userPoolId": {
+    "AMPLIFY_auth_salamandra1b039443_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandra0fcc254c"
+          "resourceName": "salamandra1b039443"
         }
       ]
     },
-    "AMPLIFY_auth_salamandra0fcc254c_userPoolName": {
+    "AMPLIFY_auth_salamandra1b039443_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandra0fcc254c"
+          "resourceName": "salamandra1b039443"
         }
       ]
     },
-    "AMPLIFY_auth_salamandra0fcc254c_webClientId": {
+    "AMPLIFY_auth_salamandra1b039443_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "salamandra0fcc254c"
+          "resourceName": "salamandra1b039443"
         }
       ]
     }
