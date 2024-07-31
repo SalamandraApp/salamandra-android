@@ -1,5 +1,6 @@
 package com.android.salamandra.workouts.search.data.di
 
+import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra.workouts.search.data.RepositoryImpl
@@ -17,8 +18,9 @@ object NetworkModule {
     @Provides
     fun provideRepository(
         salamandraApiService: SalamandraApiService,
-        localDbRepository: LocalDbRepository
+        localDbRepository: LocalDbRepository,
+        retrofitExceptionHandler: RetrofitExceptionHandler
     ): Repository {
-       return RepositoryImpl(salamandraApiService, localDbRepository)
+        return RepositoryImpl(salamandraApiService, localDbRepository, retrofitExceptionHandler)
     }
 }

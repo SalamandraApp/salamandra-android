@@ -9,40 +9,47 @@ import com.android.salamandra._core.domain.model.Exercise
 
 
 data class SearchState(
-    val loading: Boolean,
     val error: RootError?,
     val searchTerm: String,
     val searchResultExercises: List<Exercise>,
-    val addedExercisesIds: Array<String>,
+    val addedExercisesIds: List<String>,
     val selectedExercise: Exercise?
 ) : State {
     companion object {
         val initial: SearchState = SearchState(
-            loading = false,
             error = null,
             searchTerm = "",
             searchResultExercises = emptyList(),
-            addedExercisesIds = emptyArray(),
+            addedExercisesIds = emptyList(),
             selectedExercise = null
         )
     }
+
+
 }
 
-sealed class SearchIntent: Intent {
-    data class Error(val error: RootError): SearchIntent()
-    data object CloseError: SearchIntent()
+sealed class SearchIntent : Intent {
+    data class Error(val error: RootError) : SearchIntent()
+
+    data object CloseError : SearchIntent()
+
     data class ChangeSearchTerm(val newTerm: String) : SearchIntent()
+
     data class AddExercise(val exercise: Exercise) : SearchIntent()
+
     data object SearchExercise : SearchIntent()
+
     data object NavigateToEdit : SearchIntent()
-    data object HideBottomSheet: SearchIntent()
-    data class ShowBottomSheet(val exercise: Exercise): SearchIntent()
+
+    data object HideBottomSheet : SearchIntent()
+
+    data class ShowBottomSheet(val exercise: Exercise) : SearchIntent()
 }
 
-sealed class SearchEvent: Event{
+sealed class SearchEvent : Event {
     data object NavigateToEdit : SearchEvent()
 }
 
 data class SearchNavArgs(
     val dummy: Int? = null
-): NavArgs
+) : NavArgs

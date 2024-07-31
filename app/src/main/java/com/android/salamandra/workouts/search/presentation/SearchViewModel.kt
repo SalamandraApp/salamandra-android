@@ -1,12 +1,9 @@
 package com.android.salamandra.workouts.search.presentation
 
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra.navArgs
 import com.android.salamandra.workouts.search.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,17 +22,24 @@ class SearchViewModel @Inject constructor(
 
     override fun reduce(intent: SearchIntent) {
         when (intent) {
+
             is SearchIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is SearchIntent.CloseError -> _state.update { it.copy(error = null) }
+
             is SearchIntent.AddExercise -> addExerciseToTemplate(intent.exercise)
+
             is SearchIntent.ChangeSearchTerm -> _state.update { it.copy(searchTerm = intent.newTerm) }
-            SearchIntent.SearchExercise ->  searchExercise()
+
+            SearchIntent.SearchExercise -> searchExercise()
+
             SearchIntent.NavigateToEdit -> sendEvent(SearchEvent.NavigateToEdit)
+
             SearchIntent.HideBottomSheet -> _state.update { it.copy(selectedExercise = null) }
+
             is SearchIntent.ShowBottomSheet -> _state.update { it.copy(selectedExercise = intent.exercise) }
         }
     }
-
 
     private fun searchExercise() {
         viewModelScope.launch {
@@ -50,7 +54,7 @@ class SearchViewModel @Inject constructor(
 
     private fun addExerciseToTemplate(exercise: Exercise) {
         ioLaunch {
-            when(val insertion = repository.insertExerciseInLocal(exercise = exercise)){
+            when (val insertion = repository.insertExerciseInLocal(exercise = exercise)) {
                 is Result.Success -> {}
                 is Result.Error -> _state.update { it.copy(error = insertion.error) }
             }

@@ -38,7 +38,7 @@ class CognitoService @Inject constructor(
     suspend fun getAccessToken(): String? =
         (Amplify.Auth.fetchAuthSession() as AWSCognitoAuthSession).accessToken
 
-    suspend fun getUserId(): Result<String, DataError.Cognito> = try {
+    private suspend fun getUserId(): Result<String, DataError.Cognito> = try {
         val userId = (Amplify.Auth.fetchAuthSession() as AWSCognitoAuthSession).userSubResult.value
         if (userId != null) {
             dataStore.saveUid(userId)
