@@ -52,4 +52,4 @@ sealed class SearchEvent : Event {
 
 data class SearchNavArgs(
     val dummy: Int? = null
-) : NavArgs
+)
