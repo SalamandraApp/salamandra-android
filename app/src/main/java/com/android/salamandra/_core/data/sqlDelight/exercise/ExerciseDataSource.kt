@@ -4,17 +4,12 @@ import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra._core.domain.model.User
 import com.android.salamandra._core.domain.model.enums.toEquipment
 import com.android.salamandra._core.domain.model.enums.toExerciseType
-import com.android.salamandra._core.domain.model.enums.toFitnessGoal
-import com.android.salamandra._core.domain.model.enums.toFitnessLevel
-import com.android.salamandra._core.domain.model.enums.toGender
 import com.android.salamandra._core.domain.model.enums.toMuscleGroup
 import exercise.ExerciseEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import user.UserEntity
 import javax.inject.Inject
 
 class ExerciseDataSource @Inject constructor(

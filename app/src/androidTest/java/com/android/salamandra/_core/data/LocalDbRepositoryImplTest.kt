@@ -18,6 +18,7 @@ import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,6 +51,14 @@ class LocalDbRepositoryImplTest {
             exerciseDataSource = exerciseDataSource,
             userDataSource = userDataSource
         )
+    }
+
+    @After
+    fun clearDatabase() = runTest {
+        userDataSource.clearDatabase()
+        exerciseDataSource.clearDatabase()
+        workoutTemplateDataSource.clearDatabase()
+        workoutTemplateElementDataSource.clearDatabase()
     }
 
     @Test

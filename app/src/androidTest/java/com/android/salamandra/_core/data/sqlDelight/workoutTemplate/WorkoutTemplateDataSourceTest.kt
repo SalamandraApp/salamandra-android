@@ -4,11 +4,18 @@ import app.cash.turbine.test
 import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.data.sqlDelight.util.DbInstantiation
 import com.android.salamandra._core.domain.error.Result
+import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra.util.CoroutineRule
+import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
+import com.android.salamandra.util.EXAMPLE_USER
+import com.android.salamandra.util.EXAMPLE_WORKOUT_PREVIEW
+import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE
+import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ENTITY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,26 +33,25 @@ class WorkoutTemplateDataSourceTest {
     private lateinit var dataSource: WorkoutTemplateDataSource
     private lateinit var db: SalamandraLocalDB
 
-    private val id = "123"
-    private val name = "Push up"
-    private val description = "This is a dummy description"
-    private val dateCreated = LocalDate.parse("2024-02-02")
-    private val onlyPreviewAvailable = false
-    private val expectedWorkoutTemplateEntity =
-        WorkoutTemplateEntity(id, name, description, dateCreated, onlyPreviewAvailable)
-
     @Before
     fun setUp() {
         db = DbInstantiation.instantiateTestDB()
         dataSource = WorkoutTemplateDataSource(db, testDispatcher)
     }
 
+    @After
+    fun clearDatabase() = runTest {
+        dataSource.clearDatabase()
+    }
+
     @Test
     fun testBasicInsertionAndGet() = runTest {
+        // Arrange
+        val expectedWorkoutTemplateEntity = EXAMPLE_WORKOUT_TEMPLATE_ENTITY
         // Act
-        dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
+        dataSource.insertWk(EXAMPLE_WORKOUT_TEMPLATE.wkId, EXAMPLE_WORKOUT_TEMPLATE.name, EXAMPLE_WORKOUT_TEMPLATE.description, EXAMPLE_WORKOUT_TEMPLATE.dateCreated, false)
         runCurrent()
-        val wk = dataSource.getWkByID(id)
+        val wk = dataSource.getWkByID(EXAMPLE_WORKOUT_TEMPLATE.wkId)
         runCurrent()
 
         // Assert
@@ -55,6 +61,10 @@ class WorkoutTemplateDataSourceTest {
 
     @Test
     fun whenInsertingWKTheFlowIsUpdated() = runTest {
+        // Arrange
+        val expectedWorkoutTemplateEntity = EXAMPLE_WORKOUT_PREVIEW
+
+        // Act
         val wkFlow = dataSource.getAllWkPreviews()
 
         wkFlow.test {
@@ -63,10 +73,10 @@ class WorkoutTemplateDataSourceTest {
             assert(list.isEmpty())
 
             // Insert a new item and ensure the list updates
-            dataSource.insertWk(id, name, description, dateCreated, onlyPreviewAvailable)
+            dataSource.insertWk(EXAMPLE_WORKOUT_TEMPLATE.wkId, EXAMPLE_WORKOUT_TEMPLATE.name, EXAMPLE_WORKOUT_TEMPLATE.description, dateCreated = null, onlyPreviewAvailable = true)
             runCurrent()
-            awaitItem()
-            //assert(list.size == 1 && list[0] == expectedWorkoutTemplateEntity)
+            list = awaitItem()
+            assert(list.size == 1 && list[0] == expectedWorkoutTemplateEntity)
 
             // Clear the database and ensure the list updates
             dataSource.clearDatabase()
@@ -77,6 +87,29 @@ class WorkoutTemplateDataSourceTest {
             // Ensure no more events are emitted
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    @Test
+    fun testClearWorkoutTemplateDb() = runTest {
+        // Arrange
+        dataSource.insertWk(EXAMPLE_WORKOUT_TEMPLATE.wkId, EXAMPLE_WORKOUT_TEMPLATE.name, EXAMPLE_WORKOUT_TEMPLATE.description, dateCreated = null, onlyPreviewAvailable = true)
+        dataSource.insertWk("0", EXAMPLE_WORKOUT_TEMPLATE.name, EXAMPLE_WORKOUT_TEMPLATE.description, dateCreated = null, onlyPreviewAvailable = true)
+        dataSource.insertWk("1", EXAMPLE_WORKOUT_TEMPLATE.name, EXAMPLE_WORKOUT_TEMPLATE.description, dateCreated = null, onlyPreviewAvailable = true)
+        dataSource.insertWk("2", EXAMPLE_WORKOUT_TEMPLATE.name, EXAMPLE_WORKOUT_TEMPLATE.description, dateCreated = null, onlyPreviewAvailable = true)
+        dataSource.insertWk("3", EXAMPLE_WORKOUT_TEMPLATE.name, EXAMPLE_WORKOUT_TEMPLATE.description, dateCreated = null, onlyPreviewAvailable = true)
+        runCurrent()
+
+        // Act
+        val firstExerciseCount = dataSource.countElements().toInt()
+        dataSource.deleteWkByID("0")
+        val secondExerciseCount = dataSource.countElements().toInt()
+        dataSource.clearDatabase()
+        val thirdExerciseCount = dataSource.countElements().toInt()
+        val isDbEmpty = dataSource.isWkTemplateEntityEmpty()
+        runCurrent()
+
+        // Assert
+        assert(firstExerciseCount == 5 && secondExerciseCount == 4 && thirdExerciseCount == 0 && isDbEmpty)
     }
 
 

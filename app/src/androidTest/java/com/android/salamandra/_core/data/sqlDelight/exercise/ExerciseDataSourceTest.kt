@@ -55,7 +55,7 @@ class ExerciseDataSourceTest {
     }
 
     @Test
-    fun testClearDb() = runTest {
+    fun testClearExerciseDb() = runTest {
         // Arrange
         exerciseDataSource.insertExercise(EXAMPLE_EXERCISE_PUSH_UP)
         exerciseDataSource.insertExercise(EXAMPLE_EXERCISE_PUSH_UP.copy(exId = "0"))

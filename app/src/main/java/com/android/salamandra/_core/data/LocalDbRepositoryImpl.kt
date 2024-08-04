@@ -28,7 +28,7 @@ class LocalDbRepositoryImpl @Inject constructor(
         workoutTemplateDataSource.isWkTemplateEntityEmpty()
 
     override suspend fun countWorkoutTemplateElements() =
-        workoutTemplateDataSource.getWorkoutTemplateCount()
+        workoutTemplateDataSource.countElements().toInt()
 
     override suspend fun insertWkPreviewList(wkPreviewList: List<WorkoutPreview>) =
         workoutTemplateDataSource.insertWkPreviewList(wkPreviewList)

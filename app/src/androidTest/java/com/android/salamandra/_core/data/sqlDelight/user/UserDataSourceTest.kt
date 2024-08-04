@@ -4,6 +4,7 @@ import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.data.sqlDelight.util.DbInstantiation
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
+import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_USER
 import com.android.salamandra.util.EXAMPLE_USER_ENTITY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +38,6 @@ class UserDataSourceTest {
         userDataSource.clearDatabase()
     }
 
-
     @Test
     fun testBasicInsertionAndGet() = runTest {
         // Arrange
@@ -45,12 +45,35 @@ class UserDataSourceTest {
 
         // Act
         userDataSource.insertUser(EXAMPLE_USER)
-        runCurrent()
         val wk = userDataSource.getUserByID(EXAMPLE_USER.uid)
         runCurrent()
 
         // Assert
         assert(wk is Result.Success && wk.data == expectedUserEntity)
-//        userDataSource.clearDatabase()
     }
+
+    @Test
+    fun testClearUserDb() = runTest {
+        // Arrange
+        userDataSource.insertUser(EXAMPLE_USER)
+        userDataSource.insertUser(EXAMPLE_USER.copy(uid = "0"))
+        userDataSource.insertUser(EXAMPLE_USER.copy(uid = "1"))
+        userDataSource.insertUser(EXAMPLE_USER.copy(uid = "2"))
+        userDataSource.insertUser(EXAMPLE_USER.copy(uid = "3"))
+        runCurrent()
+
+        // Act
+        val firstExerciseCount = userDataSource.countElements().toInt()
+        userDataSource.deleteUserByID("0")
+        val secondExerciseCount = userDataSource.countElements().toInt()
+        userDataSource.clearDatabase()
+        val thirdExerciseCount = userDataSource.countElements().toInt()
+        runCurrent()
+
+        // Assert
+        assert(firstExerciseCount == 5 && secondExerciseCount == 4 && thirdExerciseCount == 0)
+
+    }
+
+
 }

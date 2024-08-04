@@ -9,8 +9,10 @@ import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.domain.model.enums.Gender
 import com.android.salamandra._core.domain.model.enums.MuscleGroup
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import user.UserEntity
+import workout.WorkoutTemplateEntity
 import java.time.LocalDate
 
 
@@ -28,7 +30,7 @@ val EXAMPLE_USER = User(
 )
 
 val EXAMPLE_USER_ENTITY = UserEntity(
-    id= "123",
+    id = "123",
     username = "vzkz",
     displayName = "Vzkz",
     dateJoined = LocalDate.parse("2022-09-12"),
@@ -87,5 +89,19 @@ val EXAMPLE_WORKOUT_TEMPLATE = WorkoutTemplate(
     ),
     description = "This is a test workout to see if local db works",
     dateCreated = LocalDate.parse("2024-02-02")
+)
+
+val EXAMPLE_WORKOUT_TEMPLATE_ENTITY = WorkoutTemplateEntity(
+    id = "12345",
+    name = "Leg Hypertrophy",
+    description = "This is a test workout to see if local db works",
+    dateCreated = LocalDate.parse("2024-02-02"),
+    onlyPreviewAvailable = false
+)
+
+val EXAMPLE_WORKOUT_PREVIEW = WorkoutPreview(
+    wkId = "12345",
+    name = "Leg Hypertrophy",
+    onlyPreviewAvailable = true
 )
 

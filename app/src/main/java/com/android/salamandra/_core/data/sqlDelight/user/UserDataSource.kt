@@ -54,6 +54,9 @@ class UserDataSource @Inject constructor(
         }
     }
 
+    suspend fun countElements() = withContext(ioDispatcher) {
+        queries.countElements().executeAsOne()
+    }
 
     suspend fun clearDatabase(): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {
