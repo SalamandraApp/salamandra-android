@@ -35,4 +35,3 @@ val WORKOUT_TEMPLATE = WorkoutTemplate(wkId = "", elements = List(20) { WORKOUT_
 
 val EXERCISE_LIST = listOf(EXERCISE, EXERCISE.copy(name = "Push ups"), EXERCISE.copy(name = "Dumbbell Bench press"), EXERCISE.copy(name = "Cable fly"))
 //val LONG_EXERCISE_LIST = List(4) { EXERCISE_LIST}.flatten()
-

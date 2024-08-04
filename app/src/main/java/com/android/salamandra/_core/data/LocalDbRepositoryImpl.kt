@@ -26,21 +26,23 @@ class LocalDbRepositoryImpl @Inject constructor(
     private val exerciseDataSource: ExerciseDataSource,
     private val userDataSource: UserDataSource
 ) : LocalDbRepository {
+
     //Workout template
-    override suspend fun isWkTemplateEntityEmpty(): Boolean =
+    override suspend fun isWkTemplateEntityEmpty() =
         workoutTemplateDataSource.isWkTemplateEntityEmpty()
 
-    override suspend fun countWorkoutTemplateElements(): Int = workoutTemplateDataSource.getWorkoutTemplateCount()
+    override suspend fun countWorkoutTemplateElements() =
+        workoutTemplateDataSource.getWorkoutTemplateCount()
 
-    override suspend fun insertWkPreviewList(wkPreviewList: List<WorkoutPreview>): Result<Unit, DataError.Local> =
+    override suspend fun insertWkPreviewList(wkPreviewList: List<WorkoutPreview>) =
         workoutTemplateDataSource.insertWkPreviewList(wkPreviewList)
 
-    override fun getAllWkPreviews(): Flow<List<WorkoutPreview>> =
+    override fun getAllWkPreviews() =
         workoutTemplateDataSource.getAllWkPreviews()
 
     override suspend fun getWkPreviewByID(id: String) = workoutTemplateDataSource.getWkByID(id)
 
-    override suspend fun insertWkTemplate(wkTemplate: WorkoutTemplate): Result<Unit, DataError.Local> { //TODO handle errors
+    override suspend fun insertWkTemplate(wkTemplate: WorkoutTemplate) {
         wkTemplate.elements.forEach { wkTemplateElement ->
             //Exercise
             exerciseDataSource.insertExercise(wkTemplateElement.exercise)
@@ -58,7 +60,6 @@ class LocalDbRepositoryImpl @Inject constructor(
             dateCreated = wkTemplate.dateCreated,
             onlyPreviewAvailable = false
         )
-        return Result.Success(Unit)
     }
 
     override suspend fun getWkTemplate(wkId: String): Result<WorkoutTemplate, DataError.Local> {
@@ -101,17 +102,19 @@ class LocalDbRepositoryImpl @Inject constructor(
     override suspend fun insertWkTemplateElement(
         wkTemplateId: String,
         wkTemplateElement: WkTemplateElement
-    ): Result<Unit, DataError.Local> = workoutTemplateElementDataSource.insertWkTemplateElement(wkTemplateId, wkTemplateElement)
+    ) = workoutTemplateElementDataSource.insertWkTemplateElement(wkTemplateId, wkTemplateElement)
 
-    override suspend fun getWkTemplateElementsById(wkTemplateId: String): Result<List<WorkoutTemplateElementEntity>, DataError.Local> = workoutTemplateElementDataSource.getWkTemplateElementsById(wkTemplateId)
+    override suspend fun getWkTemplateElementsById(wkTemplateId: String) =
+        workoutTemplateElementDataSource.getWkTemplateElementsById(wkTemplateId)
 
-    override suspend fun deleteTemplateElementById(wkTemplateId: String) = workoutTemplateElementDataSource.deleteTemplateElementById(wkTemplateId)
+    override suspend fun deleteTemplateElementById(wkTemplateId: String) =
+        workoutTemplateElementDataSource.deleteTemplateElementById(wkTemplateId)
 
     //User
-    override suspend fun insertUser(user: User): Result<Unit, DataError.Local> =
+    override suspend fun insertUser(user: User) =
         userDataSource.insertUser(user)
 
-    override suspend fun getUserByID(id: String): Result<UserEntity, DataError.Local> =
+    override suspend fun getUserByID(id: String) =
         userDataSource.getUserByID(id)
 
     override suspend fun clearAllDatabase() {
@@ -124,8 +127,8 @@ class LocalDbRepositoryImpl @Inject constructor(
     //Exercise
     override suspend fun insertExercise(
         exercise: Exercise
-    ): Result<Unit, DataError.Local> = exerciseDataSource.insertExercise(exercise)
+    ) = exerciseDataSource.insertExercise(exercise)
 
-    override suspend fun getExerciseByID(id: String): Result<ExerciseEntity, DataError.Local> = exerciseDataSource.getExerciseByID(id)
+    override suspend fun getExerciseByID(id: String) = exerciseDataSource.getExerciseByID(id)
 
 }
