@@ -7,7 +7,6 @@ import com.android.salamandra._core.domain.model.enums.MuscleGroup
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
-import java.util.UUID
 
 val WORKOUT_PREVIEW = WorkoutPreview(wkId = "", name = "Upper Body Hypertrophy Summer Training 2024")
 val WORKOUT_PREVIEW2 = WorkoutPreview(wkId = "", name = "Legs")
@@ -33,5 +32,5 @@ val WORKOUT_TEMPLATE_ELEMENT = WkTemplateElement(
 val WORKOUT_TEMPLATE = WorkoutTemplate(wkId = "", elements = List(20) { WORKOUT_TEMPLATE_ELEMENT })
 
 
-val EXERCISE_LIST = listOf(EXERCISE, EXERCISE.copy(name = "Push ups"), EXERCISE.copy(name = "Dumbbell Bench press"), EXERCISE.copy(name = "Cable fly"))
+//val EXERCISE_LIST = listOf(EXERCISE, EXERCISE.copy(name = "Push ups"), EXERCISE.copy(name = "Dumbbell Bench press"), EXERCISE.copy(name = "Cable fly"))
 //val LONG_EXERCISE_LIST = List(4) { EXERCISE_LIST}.flatten()

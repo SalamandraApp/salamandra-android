@@ -2,8 +2,6 @@ package com.android.salamandra._core.data
 
 import android.util.Log
 import com.android.salamandra._core.data.cognito.CognitoService
-import com.android.salamandra._core.data.network.RetrofitExceptionHandler
-import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.domain.CoreRepository
 import com.android.salamandra._core.domain.DataStoreRepository
 import com.android.salamandra._core.domain.LocalDbRepository
@@ -11,7 +9,6 @@ import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_USER
 import com.android.salamandra.util.EXAMPLE_USER_ENTITY
-import com.android.salamandra.workouts.seeWk.data.RepositoryImpl
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -24,7 +21,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import user.UserEntity
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoreRepositoryTest {

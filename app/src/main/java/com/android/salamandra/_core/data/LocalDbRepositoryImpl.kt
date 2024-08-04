@@ -14,10 +14,6 @@ import com.android.salamandra._core.domain.model.User
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
-import exercise.ExerciseEntity
-import kotlinx.coroutines.flow.Flow
-import user.UserEntity
-import workout.WorkoutTemplateElementEntity
 import javax.inject.Inject
 
 class LocalDbRepositoryImpl @Inject constructor(

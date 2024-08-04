@@ -1,8 +1,6 @@
 package com.android.salamandra._core.data.network.interceptor
 
 import com.android.salamandra._core.data.cognito.CognitoService
-import com.android.salamandra._core.domain.DataStoreRepository
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
