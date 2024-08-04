@@ -10,7 +10,9 @@ import com.android.salamandra._core.domain.model.enums.Gender
 import com.android.salamandra._core.domain.model.enums.MuscleGroup
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import user.UserEntity
 import java.time.LocalDate
+
 
 val EXAMPLE_USER = User(
     uid = "123",
@@ -23,6 +25,19 @@ val EXAMPLE_USER = User(
     gender = Gender.Male,
     fitnessGoal = FitnessGoal.Bulking,
     fitnessLevel = FitnessLevel.Amateur
+)
+
+val EXAMPLE_USER_ENTITY = UserEntity(
+    id= "123",
+    username = "vzkz",
+    displayName = "Vzkz",
+    dateJoined = LocalDate.parse("2022-09-12"),
+    dateOfBirth = LocalDate.parse("2004-03-11"),
+    height = 183,
+    weight = 76.5,
+    gender = 0,
+    fitnessGoal = 5,
+    fitnessLevel = 4
 )
 
 val EXAMPLE_EXERCISE_PUSH_UP = Exercise(
