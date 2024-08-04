@@ -4,10 +4,7 @@ import app.cash.turbine.test
 import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.data.sqlDelight.util.DbInstantiation
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra.util.CoroutineRule
-import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
-import com.android.salamandra.util.EXAMPLE_USER
 import com.android.salamandra.util.EXAMPLE_WORKOUT_PREVIEW
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ENTITY
@@ -19,8 +16,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import workout.WorkoutTemplateEntity
-import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WorkoutTemplateDataSourceTest {

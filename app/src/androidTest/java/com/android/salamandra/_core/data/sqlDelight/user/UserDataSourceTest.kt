@@ -4,7 +4,6 @@ import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.data.sqlDelight.util.DbInstantiation
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
-import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_USER
 import com.android.salamandra.util.EXAMPLE_USER_ENTITY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
