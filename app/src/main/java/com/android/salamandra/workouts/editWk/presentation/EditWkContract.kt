@@ -22,7 +22,6 @@ data class EditWkState @OptIn(ExperimentalMaterial3Api::class) constructor(
             loading = false,
             error = null,
             wkTemplate = WorkoutTemplate(),
-
             selectedElementIndex = null,
         )
     }
@@ -30,20 +29,29 @@ data class EditWkState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
 sealed class EditWkIntent: Intent {
     data class Error(val error: RootError): EditWkIntent()
+
     data object CloseError: EditWkIntent()
+
     data object NavigateToHome: EditWkIntent()
+
     data object NavigateToSearch: EditWkIntent()
 
     data class ShowBottomSheet(val index: Int): EditWkIntent()
+
     data object HideBottomSheet: EditWkIntent()
 
     data class ChangeWkName(val newName: String): EditWkIntent()
+
     data class ChangeWkDescription(val newDescription: String): EditWkIntent()
 
     data class ChangeSets(val newSets: Int, val index: Int): EditWkIntent()
+
     data class ChangeReps(val newReps: Int, val index: Int): EditWkIntent()
+
     data class ChangeWeight(val newWeight: Double, val index: Int): EditWkIntent()
+
     data class ChangeRest(val newRest: Int, val index: Int): EditWkIntent()
+
     data class DeleteWkElement(val index: Int): EditWkIntent()
 
     data object CreateWorkout: EditWkIntent()
@@ -51,6 +59,7 @@ sealed class EditWkIntent: Intent {
 
 sealed class EditWkEvent: Event{
     data object NavigateToHome: EditWkEvent()
+
     data object NavigateToSearch: EditWkEvent()
 }
 
