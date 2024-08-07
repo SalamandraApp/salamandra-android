@@ -27,5 +27,8 @@ deleteElementsById:
 DELETE FROM WorkoutTemplateElementEntity
 WHERE wkTemplateId = :wkTemplateId;
 
+countElements:
+SELECT COUNT(*) FROM WorkoutTemplateElementEntity;
+
 clearDatabase:
 DELETE FROM WorkoutTemplateElementEntity;

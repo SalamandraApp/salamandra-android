@@ -19,6 +19,8 @@ INSERT OR REPLACE
 INTO ExerciseEntity
 VALUES (?,?,?,?,?,?);
 
+countElements:
+SELECT COUNT(*) FROM ExerciseEntity;
 
 clearDatabase:
 DELETE FROM ExerciseEntity;

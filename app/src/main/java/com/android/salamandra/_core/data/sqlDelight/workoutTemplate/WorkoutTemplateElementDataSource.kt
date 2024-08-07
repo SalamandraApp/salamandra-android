@@ -6,12 +6,9 @@ import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import workout.WorkoutTemplateElementEntity
-import workout.WorkoutTemplateEntity
-import java.time.LocalDate
 import javax.inject.Inject
 
 class WorkoutTemplateElementDataSource @Inject constructor(
@@ -21,7 +18,7 @@ class WorkoutTemplateElementDataSource @Inject constructor(
 
     private val queries = db.workoutTemplateElementEntityQueries
 
-    suspend fun getWkTemplateElementsById(wkTemplateId: String): Result<List<WorkoutTemplateElementEntity>, DataError.Local> {
+    suspend fun getWkTemplateElementsByWorkoutTemplateId(wkTemplateId: String): Result<List<WorkoutTemplateElementEntity>, DataError.Local> {
         return withContext(ioDispatcher) {
             try {
                 Result.Success(queries.getAllElementsOfWk(wkTemplateId = wkTemplateId).executeAsList())
@@ -54,6 +51,10 @@ class WorkoutTemplateElementDataSource @Inject constructor(
 
     suspend fun deleteTemplateElementById(wkTemplateId: String){
         withContext(ioDispatcher) { queries.deleteElementsById(wkTemplateId) }
+    }
+
+    suspend fun countElements() = withContext(ioDispatcher) {
+        queries.countElements().executeAsOne()
     }
 
     suspend fun clearDatabase(): Result<Unit, DataError.Local> {

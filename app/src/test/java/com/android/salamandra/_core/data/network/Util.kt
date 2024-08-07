@@ -7,6 +7,7 @@ import com.android.salamandra._core.domain.model.enums.Equipment
 import com.android.salamandra._core.domain.model.enums.ExerciseType
 import com.android.salamandra._core.domain.model.enums.MuscleGroup
 
+// searchExercise
 val jsonSuccessfulSearchExerciseResponse = """
     {
       "exercises": [
@@ -42,3 +43,33 @@ val toDomainExerciseResponse = listOf(Exercise(
     exerciseType = ExerciseType.FreeWeights
 ))
 
+// getWkPreviews
+//val jsonSuccessfulGetWkPreviewsResponse = """
+//    {
+//      "exercises": [
+//        {
+//          "id": "4495fa60-f5c6-4ec5-9942-203acf751822",
+//          "name": "Push Up",
+//          "main_muscle_group": 1,
+//          "secondary_muscle_group": 15,
+//          "necessary_equipment": 1,
+//          "exercise_type": 1
+//        }
+//      ]
+//    }
+//""".trimIndent()
+//
+//val parsedGetWkPreviewsResponse = WkPreviewsResponse(
+//    count = 0,
+//    items = emptyList()
+//)
+//
+//val toDomainGetWkPreviewsResponse = listOf(Exercise(
+//    exId = "4495fa60-f5c6-4ec5-9942-203acf751822",
+//    name = "Push Up",
+//    mainMuscleGroup = MuscleGroup.LowerChest,
+//    secondaryMuscleGroup = MuscleGroup.Quadriceps,
+//    necessaryEquipment = Equipment.Barbell,
+//    exerciseType = ExerciseType.FreeWeights
+//))
+//

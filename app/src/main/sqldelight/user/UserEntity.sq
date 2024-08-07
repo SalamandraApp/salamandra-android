@@ -28,5 +28,8 @@ deleteUserById:
 DELETE FROM UserEntity
 WHERE id = :id;
 
+countElements:
+SELECT COUNT(*) FROM UserEntity;
+
 clearDatabase:
 DELETE FROM UserEntity;
