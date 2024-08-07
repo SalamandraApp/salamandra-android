@@ -54,24 +54,11 @@ class WorkoutTemplateDataSource @Inject constructor(
         }
     }
 
-    suspend fun clearDatabase(): Result<Unit, DataError.Local> {
-        return withContext(ioDispatcher) {
-            queries.clearDatabase()
-            Result.Success(Unit)
-
-        }
-    }
-
     suspend fun isWkTemplateEntityEmpty(): Boolean {
         return withContext(ioDispatcher) {
             val result = queries.countElements().executeAsOneOrNull()
             !(result == null || result > 0)
         }
-    }
-
-    suspend fun getWorkoutTemplateCount(): Int = withContext(ioDispatcher) {
-        val result = queries.countElements().executeAsOneOrNull()
-        result?.toInt() ?: 0
     }
 
     suspend fun insertWkPreviewList(wkPreviewList: List<WorkoutPreview>): Result<Unit, DataError.Local> {
@@ -92,6 +79,18 @@ class WorkoutTemplateDataSource @Inject constructor(
         }
         return if (!errorOccurred) Result.Success(Unit)
         else Result.Error(DataError.Local.ERROR_INSERTING_WK_TEMPLATES)
+    }
+
+    suspend fun countElements() = withContext(ioDispatcher) {
+        queries.countElements().executeAsOne()
+    }
+
+    suspend fun clearDatabase(): Result<Unit, DataError.Local> {
+        return withContext(ioDispatcher) {
+            queries.clearDatabase()
+            Result.Success(Unit)
+
+        }
     }
 }
 

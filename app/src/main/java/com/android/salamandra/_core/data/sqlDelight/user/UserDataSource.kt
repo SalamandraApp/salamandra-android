@@ -54,6 +54,9 @@ class UserDataSource @Inject constructor(
         }
     }
 
+    suspend fun countElements() = withContext(ioDispatcher) {
+        queries.countElements().executeAsOne()
+    }
 
     suspend fun clearDatabase(): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {
@@ -70,10 +73,10 @@ fun UserEntity.toUser(): User {
         displayName = displayName,
         dateJoined = dateJoined,
         dateOfBirth = dateOfBirth,
-        height = height?.toInt(),
+        height = height,
         weight = weight,
-        gender = gender?.toInt()?.toGender(),
-        fitnessGoal = fitnessGoal?.toInt()?.toFitnessGoal(),
-        fitnessLevel = fitnessLevel?.toInt()?.toFitnessLevel()
+        gender = gender?.toGender(),
+        fitnessGoal = fitnessGoal?.toFitnessGoal(),
+        fitnessLevel = fitnessLevel?.toFitnessLevel()
     )
 }

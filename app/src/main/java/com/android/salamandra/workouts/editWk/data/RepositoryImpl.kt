@@ -50,13 +50,10 @@ class RepositoryImpl(
                         wkTemplate = workoutTemplate.copy(dateCreated = LocalDate.now())
                             .toCreateWorkoutTemplateRequest()
                     )
-
-                    when (val insertion = localDbRepository.insertWkTemplate(
+                    localDbRepository.insertWkTemplate(
                         wkTemplateResponse.toDomain(workoutTemplate)
-                    )) {
-                        is Result.Success -> Result.Success(Unit)
-                        is Result.Error -> Result.Error(insertion.error)
-                    }
+                    )
+                    Result.Success(Unit)
                 }
 
                 is Result.Error -> Result.Error(uid.error)
