@@ -6,16 +6,13 @@ import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_USER
 import com.android.salamandra.util.EXAMPLE_USER_ENTITY
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class UserDataSourceTest {
 
     private val testDispatcher = StandardTestDispatcher()
@@ -33,7 +30,7 @@ class UserDataSourceTest {
     }
 
     @After
-    fun clearDatabase() = runTest{
+    fun clearDatabase() = runTest {
         userDataSource.clearDatabase()
     }
 
@@ -45,7 +42,6 @@ class UserDataSourceTest {
         // Act
         userDataSource.insertUser(EXAMPLE_USER)
         val wk = userDataSource.getUserByID(EXAMPLE_USER.uid)
-        runCurrent()
 
         // Assert
         assert(wk is Result.Success && wk.data == expectedUserEntity)
@@ -59,7 +55,6 @@ class UserDataSourceTest {
         userDataSource.insertUser(EXAMPLE_USER.copy(uid = "1"))
         userDataSource.insertUser(EXAMPLE_USER.copy(uid = "2"))
         userDataSource.insertUser(EXAMPLE_USER.copy(uid = "3"))
-        runCurrent()
 
         // Act
         val firstExerciseCount = userDataSource.countElements().toInt()
@@ -67,7 +62,6 @@ class UserDataSourceTest {
         val secondExerciseCount = userDataSource.countElements().toInt()
         userDataSource.clearDatabase()
         val thirdExerciseCount = userDataSource.countElements().toInt()
-        runCurrent()
 
         // Assert
         assert(firstExerciseCount == 5 && secondExerciseCount == 4 && thirdExerciseCount == 0)

@@ -6,16 +6,13 @@ import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class ExerciseDataSourceTest {
     private val testDispatcher = StandardTestDispatcher()
 
@@ -41,12 +38,10 @@ class ExerciseDataSourceTest {
     fun testGettingAWk() = runTest {
         // Arrange
         exerciseDataSource.insertExercise(EXAMPLE_EXERCISE_PUSH_UP)
-        runCurrent()
 
         // Act
         val successResult = exerciseDataSource.getExerciseByID(EXAMPLE_EXERCISE_PUSH_UP.exId)
         val failureResult = exerciseDataSource.getExerciseByID("dummy")
-        runCurrent()
 
         // Assert
         assert(successResult is Result.Success && successResult.data.toExercise() == EXAMPLE_EXERCISE_PUSH_UP)
@@ -61,13 +56,11 @@ class ExerciseDataSourceTest {
         exerciseDataSource.insertExercise(EXAMPLE_EXERCISE_PUSH_UP.copy(exId = "0"))
         exerciseDataSource.insertExercise(EXAMPLE_EXERCISE_PUSH_UP.copy(exId = "1"))
         exerciseDataSource.insertExercise(EXAMPLE_EXERCISE_PUSH_UP.copy(exId = "2"))
-        runCurrent()
 
         // Act
         val firstExerciseCount = exerciseDataSource.countElements().toInt()
         exerciseDataSource.clearDatabase()
         val secondExerciseCount = exerciseDataSource.countElements().toInt()
-        runCurrent()
 
         // Assert
         assert(firstExerciseCount == 4 && secondExerciseCount == 0)

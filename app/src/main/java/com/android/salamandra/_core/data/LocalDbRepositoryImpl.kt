@@ -60,7 +60,7 @@ class LocalDbRepositoryImpl @Inject constructor(
 
     override suspend fun getWkTemplate(wkId: String): Result<WorkoutTemplate, DataError.Local> {
         when (val wkTemplateElements =
-            workoutTemplateElementDataSource.getWkTemplateElementsById(wkTemplateId = wkId)) {
+            workoutTemplateElementDataSource.getWkTemplateElementsByWorkoutTemplateId(wkTemplateId = wkId)) {
             is Result.Success -> {
                 val wkTemplateElementList: MutableList<WkTemplateElement> = mutableListOf()
                 wkTemplateElements.data.forEach { wkTemplateElementEntity ->
@@ -101,7 +101,7 @@ class LocalDbRepositoryImpl @Inject constructor(
     ) = workoutTemplateElementDataSource.insertWkTemplateElement(wkTemplateId, wkTemplateElement)
 
     override suspend fun getWkTemplateElementsById(wkTemplateId: String) =
-        workoutTemplateElementDataSource.getWkTemplateElementsById(wkTemplateId)
+        workoutTemplateElementDataSource.getWkTemplateElementsByWorkoutTemplateId(wkTemplateId)
 
     override suspend fun deleteTemplateElementById(wkTemplateId: String) =
         workoutTemplateElementDataSource.deleteTemplateElementById(wkTemplateId)

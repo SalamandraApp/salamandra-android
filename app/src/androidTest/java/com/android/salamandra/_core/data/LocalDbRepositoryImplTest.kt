@@ -15,7 +15,6 @@ import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -23,7 +22,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LocalDbRepositoryImplTest {
     private val testDispatcher = StandardTestDispatcher()
 
