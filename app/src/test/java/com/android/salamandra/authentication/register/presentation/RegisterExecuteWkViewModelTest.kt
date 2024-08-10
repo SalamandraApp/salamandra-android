@@ -1,6 +1,5 @@
 package com.android.salamandra.authentication.register.presentation
 
-import arrow.core.extensions.function0.monad.tailRecM
 import com.android.salamandra._core.domain.UserDataValidator
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.PasswordError
@@ -9,7 +8,6 @@ import com.android.salamandra.authentication.register.domain.Repository
 import com.android.salamandra.util.CoroutineRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -20,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RegisterViewModelTest {
+class RegisterExecuteWkViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

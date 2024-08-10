@@ -5,8 +5,7 @@ import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
-import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 
 
 data class SeeWkState(

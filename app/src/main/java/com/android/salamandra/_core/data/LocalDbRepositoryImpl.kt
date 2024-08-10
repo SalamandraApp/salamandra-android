@@ -11,9 +11,9 @@ import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.User
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import javax.inject.Inject
 
 class LocalDbRepositoryImpl @Inject constructor(

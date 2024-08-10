@@ -4,9 +4,9 @@ import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.enums.Equipment
 import com.android.salamandra._core.domain.model.enums.ExerciseType
 import com.android.salamandra._core.domain.model.enums.MuscleGroup
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 
 val WORKOUT_PREVIEW = WorkoutPreview(wkId = "", name = "Upper Body Hypertrophy Summer Training 2024")
 val WORKOUT_PREVIEW2 = WorkoutPreview(wkId = "", name = "Legs")

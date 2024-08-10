@@ -7,7 +7,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.android.salamandra.R
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
 
 // Set of Material typography styles to start with
 val Typography = Typography(

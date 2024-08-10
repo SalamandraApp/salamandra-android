@@ -4,8 +4,8 @@ import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.enums.toEquipment
 import com.android.salamandra._core.domain.model.enums.toExerciseType
 import com.android.salamandra._core.domain.model.enums.toMuscleGroup
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 

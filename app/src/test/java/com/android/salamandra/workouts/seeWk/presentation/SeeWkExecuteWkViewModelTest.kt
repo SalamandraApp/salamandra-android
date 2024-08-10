@@ -2,12 +2,10 @@ package com.android.salamandra.workouts.seeWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.android.salamandra.util.CoroutineRule
-import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE
 import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
-import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
 import com.android.salamandra.workouts.seeWk.domain.Repository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -23,7 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SeeWkViewModelTest {
+class SeeWkExecuteWkViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

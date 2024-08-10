@@ -1,8 +1,8 @@
 package com.android.salamandra.workouts.editWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP
@@ -22,7 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class EditWkViewModelTest {
+class EditWkExecuteWkViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

@@ -9,8 +9,8 @@ import com.android.salamandra._core.domain.model.enums.FitnessGoal
 import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.domain.model.enums.Gender
 import com.android.salamandra._core.domain.model.enums.MuscleGroup
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import exercise.ExerciseEntity
 import user.UserEntity
 import workout.WorkoutTemplateElementEntity

@@ -1,7 +1,7 @@
 package com.android.salamandra.workouts.commons.data
 
 import com.android.salamandra._core.domain.LocalDbRepository
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
 
 class WorkoutsRepositoryImpl(

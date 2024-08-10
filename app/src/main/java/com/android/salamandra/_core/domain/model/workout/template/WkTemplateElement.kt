@@ -1,7 +1,6 @@
-package com.android.salamandra._core.domain.model.workout
+package com.android.salamandra._core.domain.model.workout.template
 
 import com.android.salamandra._core.domain.model.Exercise
-import java.util.UUID
 
 data class WkTemplateElement(
     val templateElementId: String = "",

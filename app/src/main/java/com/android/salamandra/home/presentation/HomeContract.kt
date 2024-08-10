@@ -1,14 +1,11 @@
 package com.android.salamandra.home.presentation
 
 import com.android.salamandra._core.boilerplate.Event
-import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
-import com.android.salamandra._core.util.WORKOUT_PREVIEW_LIST
+import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
 

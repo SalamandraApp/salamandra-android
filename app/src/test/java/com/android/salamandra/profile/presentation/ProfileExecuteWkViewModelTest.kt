@@ -19,7 +19,7 @@ import org.junit.Test
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ProfileViewModelTest{
+class ProfileExecuteWkViewModelTest{
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

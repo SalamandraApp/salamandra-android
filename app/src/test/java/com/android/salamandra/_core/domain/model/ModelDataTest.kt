@@ -1,6 +1,6 @@
 package com.android.salamandra._core.domain.model
 
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import org.junit.Test
 
 class DataModelsTest{

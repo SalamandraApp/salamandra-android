@@ -7,7 +7,7 @@ import com.android.salamandra._core.domain.DataStoreRepository
 import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.android.salamandra.workouts.seeWk.domain.Repository
 
 class RepositoryImpl(

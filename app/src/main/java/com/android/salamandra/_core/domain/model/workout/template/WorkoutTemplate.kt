@@ -1,4 +1,4 @@
-package com.android.salamandra._core.domain.model.workout
+package com.android.salamandra._core.domain.model.workout.template
 
 import java.time.LocalDate
 
