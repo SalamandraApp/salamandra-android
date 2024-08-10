@@ -1,6 +1,8 @@
 package com.android.salamandra._core.domain.model.workout.template
 
 import com.android.salamandra._core.domain.model.Exercise
+import com.android.salamandra._core.domain.model.workout.executions.WkExecutionElement
+import com.android.salamandra._core.domain.model.workout.executions.WkExecutionSet
 
 data class WkTemplateElement(
     val templateElementId: String = "",
@@ -10,5 +12,25 @@ data class WkTemplateElement(
     val sets: Int = 1,
     val weight: Double? = 0.0,
     val rest: Int = 0,
-    val superSet: Int? = null
-)
+    val superset: Int? = null
+) {
+    fun toWkExecutionSet(): WkExecutionSet {
+        val executionElements = mutableListOf<WkExecutionElement>()
+        for (i in 0 until reps)
+            executionElements.add(
+                WkExecutionElement(
+                    exercise = exercise,
+                    setNumber = i + 1,
+                    reps = reps,
+                    weight = weight,
+                    rest = rest,
+                    superset = superset
+                )
+            )
+        return WkExecutionSet(
+            executionElements = executionElements,
+            position = position
+                ?: throw IllegalArgumentException("Position is mandatory for a WkTemplateElement")
+        )
+    }
+}

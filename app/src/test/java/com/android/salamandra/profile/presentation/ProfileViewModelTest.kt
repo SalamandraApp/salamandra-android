@@ -3,8 +3,6 @@ package com.android.salamandra.profile.presentation
 import com.android.salamandra._core.domain.CoreRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra.home.domain.Repository
-import com.android.salamandra.home.presentation.HomeViewModel
 import com.android.salamandra.util.CoroutineRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -19,7 +17,7 @@ import org.junit.Test
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ProfileExecuteWkViewModelTest{
+class ProfileViewModelTest{
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

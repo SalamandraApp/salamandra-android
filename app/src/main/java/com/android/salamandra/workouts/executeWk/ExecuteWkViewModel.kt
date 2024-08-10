@@ -16,13 +16,13 @@ class ExecuteWkViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher, 
     override fun reduce(intent: ExecuteWkIntent) {
         when (intent) {
             is ExecuteWkIntent.Error -> _state.update { it.copy(error = intent.error) }
-
             is ExecuteWkIntent.CloseError -> _state.update { it.copy(error = null) }
         }
     }
 
     init {
         val navArgs: ExecuteWkNavArgs = savedStateHandle.navArgs()
+
     }
 
 }

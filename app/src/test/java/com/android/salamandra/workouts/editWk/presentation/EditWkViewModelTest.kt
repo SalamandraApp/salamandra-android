@@ -22,7 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class EditWkExecuteWkViewModelTest {
+class EditWkViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

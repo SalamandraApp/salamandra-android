@@ -13,7 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SearchExecuteWkViewModelTest {
+class SearchViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule

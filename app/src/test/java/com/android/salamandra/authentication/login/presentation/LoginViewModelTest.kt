@@ -2,7 +2,6 @@ package com.android.salamandra.authentication.login.presentation
 
 import com.android.salamandra.authentication.login.domain.Repository
 import com.android.salamandra._core.domain.error.DataError
-import com.android.salamandra._core.domain.error.PasswordError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import io.mockk.MockKAnnotations
@@ -17,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class LoginExecuteWkViewModelTest {
+class LoginViewModelTest {
     @get:Rule
     val coroutineRule = CoroutineRule()
 

@@ -36,5 +36,5 @@ fun WkTemplateElement.toCreateWorkoutTemplateElementRequest() = CreateWorkoutTem
     sets = sets,
     weight = weight,
     rest = rest,
-    superSet = superSet,
+    superSet = superset,
 )

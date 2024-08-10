@@ -26,9 +26,10 @@ fun ExecuteWkScreen(navigator: DestinationsNavigator, viewModel: ExecuteWkViewMo
     val state by viewModel.state.collectAsState()
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
-        TODO()
+
         when (events) {
             null -> {}
+            else -> {}
         }
     }
 
