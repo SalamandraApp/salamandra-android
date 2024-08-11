@@ -32,10 +32,14 @@ sealed class SeeWkIntent: Intent {
     data class ShowBottomSheet(val index: Int): SeeWkIntent()
 
     data object HideBottomSheet: SeeWkIntent()
+
+    data object StartWk: SeeWkIntent()
 }
 
 sealed class SeeWkEvent: Event{
     data object NavigateUp: SeeWkEvent()
+
+    data object StartWk: SeeWkEvent()
 }
 
 data class SeeWkNavArgs(

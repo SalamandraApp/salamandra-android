@@ -2,7 +2,9 @@ package com.android.salamandra.workouts.executeWk
 
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.navArgs
+import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
@@ -10,19 +12,59 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ExecuteWkViewModel @Inject constructor(ioDispatcher: CoroutineDispatcher, savedStateHandle: SavedStateHandle) :
-    BaseViewModel<ExecuteWkState, ExecuteWkIntent, ExecuteWkEvent>(ExecuteWkState.initial, ioDispatcher) {
+class ExecuteWkViewModel @Inject constructor(
+    ioDispatcher: CoroutineDispatcher,
+    savedStateHandle: SavedStateHandle,
+    private val workoutsRepository: WorkoutsRepository
+) :
+    BaseViewModel<ExecuteWkState, ExecuteWkIntent, ExecuteWkEvent>(
+        ExecuteWkState.initial,
+        ioDispatcher
+    ) {
 
     override fun reduce(intent: ExecuteWkIntent) {
         when (intent) {
             is ExecuteWkIntent.Error -> _state.update { it.copy(error = intent.error) }
             is ExecuteWkIntent.CloseError -> _state.update { it.copy(error = null) }
+            ExecuteWkIntent.LogAction -> logAction()
         }
     }
 
     init {
         val navArgs: ExecuteWkNavArgs = savedStateHandle.navArgs()
+        ioLaunch {
+            when (val workoutTemplate = workoutsRepository.getWkTemplate(navArgs.wkTemplateId)) {
+                is Result.Success -> {
+                    val workoutExecutionExercises =
+                        workoutTemplate.data.elements.map { it.toWkExecutionExercise() }
+                    val firstExercise = workoutExecutionExercises.first()
+                    _state.update {
+                        it.copy(
+                            executionExercises = workoutExecutionExercises,
+                            currentExercise = firstExercise
+                        )
+                    }
+                }
 
+                is Result.Error -> _state.update { it.copy(error = workoutTemplate.error) }
+            }
+        }
+    }
+
+    private fun logAction() {
+        val currentExercise = state.value.currentExercise
+        val currentSet = state.value.currentSet
+        val exerciseList = state.value.executionExercises
+        if (currentSet == currentExercise?.executionElements?.size) {
+            if (currentExercise == exerciseList.last()) { //End Execution
+                sendEvent(ExecuteWkEvent.EndWorkout)
+            } else _state.update { // Next Exercise
+                it.copy(
+                    currentExercise = exerciseList[exerciseList.indexOf(currentExercise) + 1],
+                    currentSet = 1
+                )
+            }
+        } else _state.update { it.copy(currentSet = currentSet + 1) } // Next rep
     }
 
 }

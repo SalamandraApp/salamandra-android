@@ -83,7 +83,7 @@ fun ButtonsRow (
             containerColor = primaryVariant.copy(0.3f),
             contentColor = primaryVariant,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
-            onClick = { onExecuteWk() }) {
+            onClick = onExecuteWk){
             Icon(
                 imageVector = Icons.Filled.PlayCircle,
                 contentDescription = "Execute Workout",

@@ -1,4 +1,4 @@
-package com.android.salamandra.workouts.seeWk.data
+package com.android.salamandra.workouts.commons.data
 
 import android.util.Log
 import com.android.salamandra._core.data.network.RetrofitExceptionHandler
@@ -10,7 +10,7 @@ import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ENTITY
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_RESPONSE
-import com.android.salamandra.workouts.seeWk.domain.Repository
+import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -24,8 +24,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
-class SeeWkRepositoryTest {
+class WorkoutsRepositoryTest{
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule
@@ -42,7 +41,7 @@ class SeeWkRepositoryTest {
     @RelaxedMockK
     private lateinit var localDbRepository: LocalDbRepository
 
-    private lateinit var repository: Repository
+    private lateinit var repository: WorkoutsRepository
 
     @Before
     fun setUp() {
@@ -52,7 +51,7 @@ class SeeWkRepositoryTest {
         every { Log.e(any(), any()) } returns 0
 
         coEvery { dataStoreRepository.getUidFromDatastore() } returns Result.Success("")
-        repository = RepositoryImpl(
+        repository = WorkoutsRepositoryImpl(
             salamandraApiService,
             dataStoreRepository,
             retrofitExceptionHandler,
@@ -87,7 +86,9 @@ class SeeWkRepositoryTest {
     @Test
     fun `When wk is saved in local, no remote call is made`() = runTest {
         // Arrange
-        coEvery { localDbRepository.getWkPreviewByID(any()) } returns Result.Success(EXAMPLE_WORKOUT_TEMPLATE_ENTITY)
+        coEvery { localDbRepository.getWkPreviewByID(any()) } returns Result.Success(
+            EXAMPLE_WORKOUT_TEMPLATE_ENTITY
+        )
 
         // Act
         repository.getWkTemplate("")
@@ -96,14 +97,3 @@ class SeeWkRepositoryTest {
         coVerify(exactly = 0) { salamandraApiService.getWorkoutById(any(), any(), any()) }
     }
 }
-
-
-
-
-
-
-
-
-
-
-

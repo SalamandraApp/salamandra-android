@@ -6,5 +6,5 @@ data class WorkoutExecution(
     private val id: String,
     private val date: LocalDate,
     private val survey: Int,
-    private val repElements: List<WkExecutionSet>
+    private val repElements: List<WkExecutionExercise>
 )

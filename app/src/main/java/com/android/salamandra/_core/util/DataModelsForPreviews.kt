@@ -4,6 +4,8 @@ import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.enums.Equipment
 import com.android.salamandra._core.domain.model.enums.ExerciseType
 import com.android.salamandra._core.domain.model.enums.MuscleGroup
+import com.android.salamandra._core.domain.model.workout.executions.WkExecutionElement
+import com.android.salamandra._core.domain.model.workout.executions.WkExecutionExercise
 import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
@@ -31,6 +33,21 @@ val WORKOUT_TEMPLATE_ELEMENT = WkTemplateElement(
 
 val WORKOUT_TEMPLATE = WorkoutTemplate(wkId = "", elements = List(20) { WORKOUT_TEMPLATE_ELEMENT })
 
+val WORKOUT_EXECUTION_ELEMENT = WkExecutionElement(
+    currentRep = 1,
+    reps = 12,
+    weight = 75.0,
+)
 
-//val EXERCISE_LIST = listOf(EXERCISE, EXERCISE.copy(name = "Push ups"), EXERCISE.copy(name = "Dumbbell Bench press"), EXERCISE.copy(name = "Cable fly"))
-//val LONG_EXERCISE_LIST = List(4) { EXERCISE_LIST}.flatten()
+
+val WK_EXECUTION_EXERCISE = WkExecutionExercise(
+    exercise = EXERCISE,
+    executionElements = listOf(
+        WORKOUT_EXECUTION_ELEMENT,
+        WORKOUT_EXECUTION_ELEMENT.copy(currentRep = 2),
+        WORKOUT_EXECUTION_ELEMENT.copy(currentRep = 3),
+        WORKOUT_EXECUTION_ELEMENT.copy(currentRep = 4),
+    ),
+    setNumber = 1,
+
+)
