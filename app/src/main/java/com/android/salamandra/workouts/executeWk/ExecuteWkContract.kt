@@ -12,22 +12,36 @@ data class ExecuteWkState(
     val error: RootError?,
     val executionExercises: List<WkExecutionExercise>,
     val currentExercise: WkExecutionExercise?,
-    val currentSet: Int
+    val currentSet: Int,
+    val workoutEnded: Boolean,
+    val survey: Int?
 ) : State {
     companion object {
         val initial: ExecuteWkState = ExecuteWkState(
             error = null,
             executionExercises = emptyList(),
             currentExercise = null,
-            currentSet = 1
+            currentSet = 1,
+            workoutEnded = false,
+            survey = null
         )
     }
 }
 
 sealed class ExecuteWkIntent: Intent {
     data class Error(val error: RootError): ExecuteWkIntent()
+
     data object CloseError: ExecuteWkIntent()
+
     data object LogAction: ExecuteWkIntent()
+
+    data object ChangeSurveyToSad: ExecuteWkIntent()
+
+    data object ChangeSurveyToNeutral: ExecuteWkIntent()
+
+    data object ChangeSurveyToHappy: ExecuteWkIntent()
+
+    data object EndWorkout: ExecuteWkIntent()
 }
 
 sealed class ExecuteWkEvent: Event{

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Remove
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -30,11 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.executions.WkExecutionElement
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
@@ -89,10 +92,20 @@ private fun ScreenBody(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(modifier = Modifier.padding(bottom = 8.dp).padding(vertical = 12.dp)) {
-                    for(i in 0 ..< state.executionExercises.size){
-                        val color = if(i == state.executionExercises.indexOf(state.currentExercise)) primary else title
-                        Box(Modifier.height(4.dp).background(color).weight(1f))
+                Row(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .padding(vertical = 12.dp)
+                ) {
+                    for (i in 0..<state.executionExercises.size) {
+                        val color =
+                            if (i == state.executionExercises.indexOf(state.currentExercise)) primary else title
+                        Box(
+                            Modifier
+                                .height(4.dp)
+                                .background(color)
+                                .weight(1f)
+                        )
                         Spacer(Modifier.size(4.dp))
                     }
                 }
@@ -127,6 +140,52 @@ private fun ScreenBody(
 
         }
 
+        if (state.workoutEnded) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(tertiary),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Spacer(Modifier.weight(1f))
+                Text(text = "Workout Ended", color = title, fontSize = 34.sp)
+                Text(text = "How do you feel?", color = title, fontSize = 22.sp)
+                Spacer(Modifier.size(12.dp))
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { sendIntent(ExecuteWkIntent.ChangeSurveyToSad) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.sad_face),
+                            contentDescription = "bad",
+                            tint = surveyIconColor(typeOfIcon = 0, surveyState = state.survey)
+                        )
+                    }
+                    IconButton(onClick = { sendIntent(ExecuteWkIntent.ChangeSurveyToNeutral) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.neutral_face),
+                            contentDescription = "neutral",
+                            tint = surveyIconColor(typeOfIcon = 1, surveyState = state.survey)
+                        )
+                    }
+                    IconButton(onClick = { sendIntent(ExecuteWkIntent.ChangeSurveyToHappy) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.happy_face),
+                            contentDescription = "good",
+                            tint = surveyIconColor(typeOfIcon = 2, surveyState = state.survey)
+                        )
+                    }
+                }
+                Spacer(Modifier.weight(1f))
+                Button(onClick = { sendIntent(ExecuteWkIntent.EndWorkout) }) {
+                    Text("End Workout", color = onPrimary)
+                }
+
+            }
+        }
+
 
         if (state.error != null)
             ErrorDialog(
@@ -137,15 +196,17 @@ private fun ScreenBody(
     }
 }
 
+private fun surveyIconColor(typeOfIcon: Int, surveyState: Int?) =
+    if (typeOfIcon == surveyState) primary else onPrimary
+
 @Composable
 private fun WkElementContainer(wkExecutionElement: WkExecutionElement, currentSet: Int) {
     val iconToShow: ImageVector
     val containerColor: Color
-    if(wkExecutionElement.currentRep < currentSet){
+    if (wkExecutionElement.currentRep < currentSet) {
         iconToShow = Icons.Outlined.CheckCircle
         containerColor = colorMessage
-    }
-    else if(wkExecutionElement.currentRep == currentSet) {
+    } else if (wkExecutionElement.currentRep == currentSet) {
         iconToShow = Icons.Outlined.PlayArrow
         containerColor = primary
     } else {
@@ -184,9 +245,15 @@ private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
             state = ExecuteWkState.initial.copy(
-                executionExercises = listOf(WK_EXECUTION_EXERCISE, WK_EXECUTION_EXERCISE.copy(setNumber = 2), WK_EXECUTION_EXERCISE.copy(setNumber = 3)),
+                executionExercises = listOf(
+                    WK_EXECUTION_EXERCISE,
+                    WK_EXECUTION_EXERCISE.copy(setNumber = 2),
+                    WK_EXECUTION_EXERCISE.copy(setNumber = 3)
+                ),
                 currentExercise = WK_EXECUTION_EXERCISE,
-                currentSet = 3
+                currentSet = 3,
+                workoutEnded = true,
+                survey = 1
             ),
             sendIntent = {}
         )

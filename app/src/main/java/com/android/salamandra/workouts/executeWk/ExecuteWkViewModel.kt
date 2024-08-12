@@ -25,8 +25,18 @@ class ExecuteWkViewModel @Inject constructor(
     override fun reduce(intent: ExecuteWkIntent) {
         when (intent) {
             is ExecuteWkIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is ExecuteWkIntent.CloseError -> _state.update { it.copy(error = null) }
+
             ExecuteWkIntent.LogAction -> logAction()
+
+            ExecuteWkIntent.ChangeSurveyToSad -> _state.update { it.copy(survey = 0) }
+
+            ExecuteWkIntent.ChangeSurveyToNeutral -> _state.update { it.copy(survey = 1) }
+
+            ExecuteWkIntent.ChangeSurveyToHappy -> _state.update { it.copy(survey = 2) }
+
+            ExecuteWkIntent.EndWorkout -> endWorkout()
         }
     }
 
@@ -56,15 +66,19 @@ class ExecuteWkViewModel @Inject constructor(
         val currentSet = state.value.currentSet
         val exerciseList = state.value.executionExercises
         if (currentSet == currentExercise?.executionElements?.size) {
-            if (currentExercise == exerciseList.last()) { //End Execution
-                sendEvent(ExecuteWkEvent.EndWorkout)
-            } else _state.update { // Next Exercise
+            if (currentExercise == exerciseList.last()) _state.update { it.copy(workoutEnded = true) } // End Execution
+            else _state.update { // Next Exercise
                 it.copy(
                     currentExercise = exerciseList[exerciseList.indexOf(currentExercise) + 1],
                     currentSet = 1
                 )
             }
         } else _state.update { it.copy(currentSet = currentSet + 1) } // Next rep
+    }
+
+    private fun endWorkout(){
+        // TODO Make POST to save execution
+        sendEvent(ExecuteWkEvent.EndWorkout)
     }
 
 }
