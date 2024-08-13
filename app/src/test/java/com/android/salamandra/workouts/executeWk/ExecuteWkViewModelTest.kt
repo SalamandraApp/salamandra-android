@@ -54,7 +54,10 @@ class ExecuteWkViewModelTest {
             error = null,
             exerciseList = emptyList(),
             currentExercise = null,
-            currentSet = 1
+            currentSet = 1,
+            workoutEnded = false,
+            survey = null,
+            startOfSetCurrentTimeMillis = 0
         )
         assert(ExecuteWkState.initial == expectedState)
     }
