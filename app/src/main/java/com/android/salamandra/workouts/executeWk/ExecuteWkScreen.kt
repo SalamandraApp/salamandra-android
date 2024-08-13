@@ -157,49 +157,13 @@ private fun ScreenBody(
         }
 
         if (state.workoutEnded) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(tertiary),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Spacer(Modifier.weight(1f))
-                Text(text = "Workout Ended", color = title, fontSize = 34.sp)
-                Text(text = "How do you feel?", color = title, fontSize = 22.sp)
-                Spacer(Modifier.size(12.dp))
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = { sendIntent(ExecuteWkIntent.ChangeSurveyToSad) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.sad_face),
-                            contentDescription = "bad",
-                            tint = surveyIconColor(typeOfIcon = 0, surveyState = state.survey)
-                        )
-                    }
-                    IconButton(onClick = { sendIntent(ExecuteWkIntent.ChangeSurveyToNeutral) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.neutral_face),
-                            contentDescription = "neutral",
-                            tint = surveyIconColor(typeOfIcon = 1, surveyState = state.survey)
-                        )
-                    }
-                    IconButton(onClick = { sendIntent(ExecuteWkIntent.ChangeSurveyToHappy) }) {
-                        Icon(
-                            painter = painterResource(R.drawable.happy_face),
-                            contentDescription = "good",
-                            tint = surveyIconColor(typeOfIcon = 2, surveyState = state.survey)
-                        )
-                    }
-                }
-                Spacer(Modifier.weight(1f))
-                Button(onClick = { sendIntent(ExecuteWkIntent.EndWorkout) }) {
-                    Text("End Workout", color = onPrimary)
-                }
-
-            }
+            EndWorkoutScreen(
+                state.survey,
+                onChangeSurveyToSad = { sendIntent(ExecuteWkIntent.ChangeSurveyToSad) },
+                onChangeSurveyToNeutral = { sendIntent(ExecuteWkIntent.ChangeSurveyToNeutral) },
+                onChangeSurveyToHappy = { sendIntent(ExecuteWkIntent.ChangeSurveyToHappy) },
+                onEndWorkout = { sendIntent(ExecuteWkIntent.EndWorkout) }
+            )
         }
 
 
@@ -208,6 +172,59 @@ private fun ScreenBody(
                 error = state.error.asUiText(),
                 onDismiss = { sendIntent(ExecuteWkIntent.CloseError) }
             )
+
+    }
+}
+
+@Composable
+private fun EndWorkoutScreen(
+    surveyState: Int?,
+    onChangeSurveyToSad: () -> Unit,
+    onChangeSurveyToNeutral: () -> Unit,
+    onChangeSurveyToHappy: () -> Unit,
+    onEndWorkout: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(tertiary),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Spacer(Modifier.weight(1f))
+        Text(text = "Workout Ended", color = title, fontSize = 34.sp)
+        Text(text = "How do you feel?", color = title, fontSize = 22.sp)
+        Spacer(Modifier.size(12.dp))
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onChangeSurveyToSad) {
+                Icon(
+                    painter = painterResource(R.drawable.sad_face),
+                    contentDescription = "bad",
+                    tint = surveyIconColor(typeOfIcon = 0, surveyState = surveyState)
+                )
+            }
+            IconButton(onClick = onChangeSurveyToNeutral) {
+                Icon(
+                    painter = painterResource(R.drawable.neutral_face),
+                    contentDescription = "neutral",
+                    tint = surveyIconColor(typeOfIcon = 1, surveyState = surveyState)
+                )
+            }
+            IconButton(onClick = onChangeSurveyToHappy) {
+                Icon(
+                    painter = painterResource(R.drawable.happy_face),
+                    contentDescription = "good",
+                    tint = surveyIconColor(typeOfIcon = 2, surveyState = surveyState)
+                )
+            }
+        }
+        Spacer(Modifier.weight(1f))
+        Button(onClick = onEndWorkout) {
+            Text("End Workout", color = onPrimary)
+        }
 
     }
 }
