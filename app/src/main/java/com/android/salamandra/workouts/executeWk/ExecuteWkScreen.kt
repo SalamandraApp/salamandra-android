@@ -18,9 +18,11 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Remove
+import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -117,7 +119,21 @@ private fun ScreenBody(
                 )
                 Spacer(Modifier.size(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Spacer(Modifier.weight(1f))
+                    Spacer(Modifier.weight(0.5f))
+                    OutlinedButton(onClick = {/*TODO*/ }, shape = RoundedCornerShape(30)) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "Skip Set", color = onPrimary)
+                            Icon(
+                                imageVector = Icons.Outlined.SkipNext,
+                                contentDescription = "Skip Set",
+                                tint = onPrimary
+                            )
+                        }
+                    }
+                    Spacer(Modifier.weight(0.5f))
                     state.currentExercise.executionElements.forEach { element ->
                         WkElementContainer(element, state.currentSet)
                         Spacer(Modifier.weight(1f))
