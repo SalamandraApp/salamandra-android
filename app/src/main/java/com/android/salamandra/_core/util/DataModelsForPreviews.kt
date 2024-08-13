@@ -45,7 +45,7 @@ val WK_EXECUTION_EXERCISE = WkExecutionExercise(
     executionElements = listOf(
         WORKOUT_EXECUTION_ELEMENT,
         WORKOUT_EXECUTION_ELEMENT.copy(currentRep = 2),
-        WORKOUT_EXECUTION_ELEMENT.copy(currentRep = 3),
+        WORKOUT_EXECUTION_ELEMENT.copy(currentRep = 3, weight = null),
         WORKOUT_EXECUTION_ELEMENT.copy(currentRep = 4),
     ),
     setNumber = 1,

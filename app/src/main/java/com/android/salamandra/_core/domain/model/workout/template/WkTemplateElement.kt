@@ -11,7 +11,7 @@ data class WkTemplateElement(
     val reps: Int = 1,
     val sets: Int = 1,
     val weight: Double? = 0.0,
-    val rest: Int = 0,
+    val rest: Int = 60,
     val superset: Int? = null
 ) {
     fun toWkExecutionExercise(): WkExecutionExercise {

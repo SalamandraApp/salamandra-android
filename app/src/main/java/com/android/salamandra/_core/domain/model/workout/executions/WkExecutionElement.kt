@@ -7,7 +7,7 @@ data class WkExecutionElement(
     val currentRep: Int,
     val reps: Int,
     val weight: Double?,
-    val rest: Int? = null,
+    val rest: Int = 60,
     val superset: Int? = null,
     val time: Int? = null,
 )

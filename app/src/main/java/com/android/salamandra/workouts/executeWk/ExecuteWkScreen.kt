@@ -97,9 +97,9 @@ private fun ScreenBody(
                         .padding(bottom = 8.dp)
                         .padding(vertical = 12.dp)
                 ) {
-                    for (i in 0..<state.executionExercises.size) {
+                    for (i in 0..<state.exerciseList.size) {
                         val color =
-                            if (i == state.executionExercises.indexOf(state.currentExercise)) primary else title
+                            if (i == state.exerciseList.indexOf(state.currentExercise)) primary else title
                         Box(
                             Modifier
                                 .height(4.dp)
@@ -123,19 +123,35 @@ private fun ScreenBody(
                         Spacer(Modifier.weight(1f))
                     }
                 }
-                IconButton(modifier = Modifier
-                    .clip(RoundedCornerShape(30))
-                    .background(primary)
-                    .padding(12.dp),
-                    onClick = { sendIntent(ExecuteWkIntent.LogAction) }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        modifier = Modifier.size(36.dp),
-                        imageVector = Icons.Outlined.Done,
-                        contentDescription = "Set done",
-                        tint = onPrimary
+                    val rest = state.currentExercise.executionElements[state.currentSet - 1].rest
+                    Spacer(Modifier.weight(1.5f))
+                    IconButton(modifier = Modifier
+                        .clip(RoundedCornerShape(30))
+                        .background(primary)
+                        .padding(12.dp),
+                        onClick = { sendIntent(ExecuteWkIntent.LogAction) }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(36.dp),
+                            imageVector = Icons.Outlined.Done,
+                            contentDescription = "Set done",
+                            tint = onPrimary
+                        )
+                    }
+                    Spacer(Modifier.weight(0.25f))
+                    Text(
+                        text = "Rest: ${rest}s",
+                        color = onPrimary,
+                        fontSize = 22.sp
                     )
+                    Spacer(Modifier.weight(0.1f))
+
                 }
+
             }
 
         }
@@ -213,6 +229,8 @@ private fun WkElementContainer(wkExecutionElement: WkExecutionElement, currentSe
         iconToShow = Icons.Outlined.Remove
         containerColor = onSecondary
     }
+    val stringToShow =
+        "${wkExecutionElement.reps} reps" + if (wkExecutionElement.weight != null) " X ${wkExecutionElement.weight} Kg" else ""
 
     Row(
         modifier = Modifier
@@ -230,7 +248,7 @@ private fun WkElementContainer(wkExecutionElement: WkExecutionElement, currentSe
         )
         Spacer(Modifier.weight(1f))
         Text(
-            text = "${wkExecutionElement.reps} reps X ${wkExecutionElement.weight} Kg",
+            text = stringToShow,
             color = onPrimary,
             fontSize = 22.sp
         )
@@ -245,14 +263,14 @@ private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
             state = ExecuteWkState.initial.copy(
-                executionExercises = listOf(
+                exerciseList = listOf(
                     WK_EXECUTION_EXERCISE,
                     WK_EXECUTION_EXERCISE.copy(setNumber = 2),
                     WK_EXECUTION_EXERCISE.copy(setNumber = 3)
                 ),
                 currentExercise = WK_EXECUTION_EXERCISE,
                 currentSet = 3,
-                workoutEnded = true,
+                workoutEnded = false,
                 survey = 1
             ),
             sendIntent = {}

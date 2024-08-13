@@ -10,20 +10,22 @@ import com.android.salamandra._core.domain.model.workout.executions.WkExecutionE
 
 data class ExecuteWkState(
     val error: RootError?,
-    val executionExercises: List<WkExecutionExercise>,
+    val exerciseList: List<WkExecutionExercise>,
     val currentExercise: WkExecutionExercise?,
     val currentSet: Int,
     val workoutEnded: Boolean,
-    val survey: Int?
+    val survey: Int?,
+    val startOfSetCurrentTimeMillis: Long
 ) : State {
     companion object {
         val initial: ExecuteWkState = ExecuteWkState(
             error = null,
-            executionExercises = emptyList(),
+            exerciseList = emptyList(),
             currentExercise = null,
             currentSet = 1,
             workoutEnded = false,
-            survey = null
+            survey = null,
+            startOfSetCurrentTimeMillis = 0
         )
     }
 }

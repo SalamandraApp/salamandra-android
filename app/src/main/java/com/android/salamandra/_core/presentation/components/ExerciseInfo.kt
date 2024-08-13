@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra._core.domain.model.Exercise
+import com.android.salamandra._core.util.EXERCISE
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.primary
@@ -82,5 +84,11 @@ fun ExerciseInfo(
             Text(text = stringResource(exercise.exerciseType.stringId), color = Color.Gray)
             Spacer(modifier = Modifier.width(20.dp))
         }
-    }
+   }
+}
+
+@Composable
+@Preview
+private fun ExerciseInfoPreview(){
+    ExerciseInfo(EXERCISE)
 }

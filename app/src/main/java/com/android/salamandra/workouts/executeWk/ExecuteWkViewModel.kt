@@ -50,8 +50,9 @@ class ExecuteWkViewModel @Inject constructor(
                     val firstExercise = workoutExecutionExercises.first()
                     _state.update {
                         it.copy(
-                            executionExercises = workoutExecutionExercises,
-                            currentExercise = firstExercise
+                            exerciseList = workoutExecutionExercises,
+                            currentExercise = firstExercise,
+                            startOfSetCurrentTimeMillis = System.currentTimeMillis()
                         )
                     }
                 }
@@ -64,19 +65,35 @@ class ExecuteWkViewModel @Inject constructor(
     private fun logAction() {
         val currentExercise = state.value.currentExercise
         val currentSet = state.value.currentSet
-        val exerciseList = state.value.executionExercises
-        if (currentSet == currentExercise?.executionElements?.size) {
-            if (currentExercise == exerciseList.last()) _state.update { it.copy(workoutEnded = true) } // End Execution
+        val exerciseList = state.value.exerciseList.toMutableList()
+
+        val currentTime = System.currentTimeMillis()
+        val timeOfSet = (currentTime - state.value.startOfSetCurrentTimeMillis).toInt()
+        _state.update { it.copy(startOfSetCurrentTimeMillis = currentTime) }
+
+        val indexOfCurrentExercise = exerciseList.indexOf(currentExercise)
+        val executionElements = exerciseList[indexOfCurrentExercise].executionElements
+        val updatedSet = executionElements[currentSet - 1].copy(time = timeOfSet)
+        val updatedExecutionElements = executionElements.toMutableList()
+        updatedExecutionElements[currentSet - 1] = updatedSet
+
+        exerciseList[exerciseList.indexOf(currentExercise)] = exerciseList[exerciseList.indexOf(currentExercise)].copy(executionElements = updatedExecutionElements)
+        _state.update { it.copy(exerciseList = exerciseList) } // record the time of current set
+
+        _state.update { it.copy(currentExercise = exerciseList[indexOfCurrentExercise]) } // Update Current exercise
+
+        if (currentSet == state.value.currentExercise?.executionElements?.size) {
+            if (state.value.currentExercise == exerciseList.last()) _state.update { it.copy(workoutEnded = true) } // End Execution
             else _state.update { // Next Exercise
                 it.copy(
-                    currentExercise = exerciseList[exerciseList.indexOf(currentExercise) + 1],
+                    currentExercise = exerciseList[indexOfCurrentExercise + 1],
                     currentSet = 1
                 )
             }
         } else _state.update { it.copy(currentSet = currentSet + 1) } // Next rep
     }
 
-    private fun endWorkout(){
+    private fun endWorkout() {
         // TODO Make POST to save execution
         sendEvent(ExecuteWkEvent.EndWorkout)
     }

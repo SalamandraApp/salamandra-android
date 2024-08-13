@@ -52,7 +52,7 @@ class ExecuteWkViewModelTest {
     fun `Assert initial state`() {
         val expectedState = ExecuteWkState(
             error = null,
-            executionExercises = emptyList(),
+            exerciseList = emptyList(),
             currentExercise = null,
             currentSet = 1
         )
@@ -77,7 +77,7 @@ class ExecuteWkViewModelTest {
         runCurrent()
 
         // Assert
-        assert(executeWkViewModel.state.value.executionExercises == expectedExecutionExerciseList && executeWkViewModel.state.value.currentExercise == expectedInitialExercise)
+        assert(executeWkViewModel.state.value.exerciseList == expectedExecutionExerciseList && executeWkViewModel.state.value.currentExercise == expectedInitialExercise)
     }
 }
 
