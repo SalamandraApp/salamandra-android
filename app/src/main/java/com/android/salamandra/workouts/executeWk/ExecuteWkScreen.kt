@@ -120,7 +120,7 @@ private fun ScreenBody(
                 Spacer(Modifier.size(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Spacer(Modifier.weight(0.5f))
-                    OutlinedButton(onClick = {/*TODO*/ }, shape = RoundedCornerShape(30)) {
+                    OutlinedButton(onClick = { sendIntent(ExecuteWkIntent.SkipSet) }, shape = RoundedCornerShape(30)) {
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
@@ -252,10 +252,10 @@ private fun surveyIconColor(typeOfIcon: Int, surveyState: Int?) =
 private fun WkElementContainer(wkExecutionElement: WkExecutionElement, currentSet: Int) {
     val iconToShow: ImageVector
     val containerColor: Color
-    if (wkExecutionElement.currentRep < currentSet) {
+    if (wkExecutionElement.currentSet < currentSet) {
         iconToShow = Icons.Outlined.CheckCircle
         containerColor = colorMessage
-    } else if (wkExecutionElement.currentRep == currentSet) {
+    } else if (wkExecutionElement.currentSet == currentSet) {
         iconToShow = Icons.Outlined.PlayArrow
         containerColor = primary
     } else {

@@ -43,6 +43,8 @@ sealed class ExecuteWkIntent: Intent {
 
     data object ChangeSurveyToHappy: ExecuteWkIntent()
 
+    data object SkipSet: ExecuteWkIntent()
+
     data object EndWorkout: ExecuteWkIntent()
 }
 

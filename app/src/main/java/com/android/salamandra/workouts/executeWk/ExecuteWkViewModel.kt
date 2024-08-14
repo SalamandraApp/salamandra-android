@@ -37,6 +37,8 @@ class ExecuteWkViewModel @Inject constructor(
             ExecuteWkIntent.ChangeSurveyToHappy -> _state.update { it.copy(survey = 2) }
 
             ExecuteWkIntent.EndWorkout -> endWorkout()
+
+            ExecuteWkIntent.SkipSet -> skipSet()
         }
     }
 
@@ -91,6 +93,20 @@ class ExecuteWkViewModel @Inject constructor(
                 )
             }
         } else _state.update { it.copy(currentSet = currentSet + 1) } // Next rep
+    }
+
+    private fun skipSet(){
+        val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
+        val updatedExecutionElement = state.value.exerciseList[indexOfExercise].executionElements.toMutableList()
+        updatedExecutionElement.removeAt(state.value.currentSet - 1)
+        for(i in (state.value.currentSet - 1 ..< updatedExecutionElement.size )){
+            updatedExecutionElement[i] = updatedExecutionElement[i].copy(currentSet = i + 1)
+        }
+
+        val updatedList = state.value.exerciseList.toMutableList()
+        updatedList[indexOfExercise] = state.value.exerciseList[indexOfExercise].copy(executionElements = updatedExecutionElement)
+
+        _state.update { it.copy(exerciseList = updatedList, currentExercise = updatedList[indexOfExercise]) }
     }
 
     private fun endWorkout() {
