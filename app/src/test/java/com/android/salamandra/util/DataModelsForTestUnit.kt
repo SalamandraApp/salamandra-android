@@ -155,28 +155,28 @@ val EXAMPLE_EXECUTION_EXERCISE = WkExecutionExercise(
             reps = 4,
             weight = null,
             rest = 120,
-            currentSet = 1
+            setNumber = 1
         ),
         WkExecutionElement(
             reps = 4,
             weight = null,
             rest = 120,
-            currentSet = 2
+            setNumber = 2
         ),
         WkExecutionElement(
             reps = 4,
             weight = null,
             rest = 120,
-            currentSet = 3
+            setNumber = 3
         ),
         WkExecutionElement(
             reps = 4,
             weight = null,
             rest = 120,
-            currentSet = 4
+            setNumber = 4
         )
     ),
-    setNumber = 1
+    exerciseNumber = 1
 )
 
 val EXAMPLE_EXECUTION_EXERCISES_LIST = listOf(
@@ -188,28 +188,28 @@ val EXAMPLE_EXECUTION_EXERCISES_LIST = listOf(
                 reps = 4,
                 weight = null,
                 rest = 120,
-                currentSet = 1
+                setNumber = 1
             ),
             WkExecutionElement(
                 reps = 4,
                 weight = null,
                 rest = 120,
-                currentSet = 2
+                setNumber = 2
             ),
             WkExecutionElement(
                 reps = 4,
                 weight = null,
                 rest = 120,
-                currentSet = 3
+                setNumber = 3
             ),
             WkExecutionElement(
                 reps = 4,
                 weight = null,
                 rest = 120,
-                currentSet = 4
+                setNumber = 4
             )
         ),
-        setNumber = 2
+        exerciseNumber = 2
     ),
 
 )

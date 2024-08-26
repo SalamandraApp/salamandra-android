@@ -19,7 +19,7 @@ data class WkTemplateElement(
         for (i in 0..< sets)
             executionElements.add(
                 WkExecutionElement(
-                    currentSet = i + 1,
+                    setNumber = i + 1,
                     reps = reps,
                     weight = weight,
                     rest = rest,
@@ -29,7 +29,7 @@ data class WkTemplateElement(
         return WkExecutionExercise(
             executionElements = executionElements,
             exercise = exercise,
-            setNumber = position
+            exerciseNumber = position
                 ?: throw IllegalArgumentException("Position is mandatory for a WkTemplateElement")
         )
     }

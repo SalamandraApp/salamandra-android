@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -49,7 +50,9 @@ import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onPrimary
 import com.android.salamandra.ui.theme.onSecondary
+import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.primary
+import com.android.salamandra.ui.theme.secondaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 import com.ramcosta.composedestinations.annotation.Destination
@@ -120,7 +123,10 @@ private fun ScreenBody(
                 Spacer(Modifier.size(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Spacer(Modifier.weight(0.5f))
-                    OutlinedButton(onClick = { sendIntent(ExecuteWkIntent.SkipSet) }, shape = RoundedCornerShape(30)) {
+                    OutlinedButton(
+                        onClick = { sendIntent(ExecuteWkIntent.SkipSet) },
+                        shape = RoundedCornerShape(30)
+                    ) {
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
@@ -158,13 +164,17 @@ private fun ScreenBody(
                             tint = onPrimary
                         )
                     }
-                    Spacer(Modifier.weight(0.25f))
+                    Spacer(Modifier.weight(0.1f))
                     Text(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(secondaryVariant)
+                            .padding(8.dp),
                         text = "Rest: ${rest}s",
-                        color = onPrimary,
+                        color = onSecondaryVariant,
                         fontSize = 22.sp
                     )
-                    Spacer(Modifier.weight(0.1f))
+                    Spacer(Modifier.weight(0.05f))
 
                 }
 
@@ -174,7 +184,8 @@ private fun ScreenBody(
 
         if (state.workoutEnded) {
             EndWorkoutScreen(
-                state.survey,
+                surveyState = state.survey,
+                totalExercises = state.exerciseList.size,
                 onChangeSurveyToSad = { sendIntent(ExecuteWkIntent.ChangeSurveyToSad) },
                 onChangeSurveyToNeutral = { sendIntent(ExecuteWkIntent.ChangeSurveyToNeutral) },
                 onChangeSurveyToHappy = { sendIntent(ExecuteWkIntent.ChangeSurveyToHappy) },
@@ -195,6 +206,7 @@ private fun ScreenBody(
 @Composable
 private fun EndWorkoutScreen(
     surveyState: Int?,
+    totalExercises: Int,
     onChangeSurveyToSad: () -> Unit,
     onChangeSurveyToNeutral: () -> Unit,
     onChangeSurveyToHappy: () -> Unit,
@@ -237,6 +249,8 @@ private fun EndWorkoutScreen(
                 )
             }
         }
+        Spacer(Modifier.size(12.dp))
+        Text(text = "$totalExercises exercises", color = title, fontSize = 19.sp)
         Spacer(Modifier.weight(1f))
         Button(onClick = onEndWorkout) {
             Text("End Workout", color = onPrimary)
@@ -252,10 +266,10 @@ private fun surveyIconColor(typeOfIcon: Int, surveyState: Int?) =
 private fun WkElementContainer(wkExecutionElement: WkExecutionElement, currentSet: Int) {
     val iconToShow: ImageVector
     val containerColor: Color
-    if (wkExecutionElement.currentSet < currentSet) {
+    if (wkExecutionElement.setNumber < currentSet) {
         iconToShow = Icons.Outlined.CheckCircle
         containerColor = colorMessage
-    } else if (wkExecutionElement.currentSet == currentSet) {
+    } else if (wkExecutionElement.setNumber == currentSet) {
         iconToShow = Icons.Outlined.PlayArrow
         containerColor = primary
     } else {
@@ -298,12 +312,12 @@ private fun ScreenPreview() {
             state = ExecuteWkState.initial.copy(
                 exerciseList = listOf(
                     WK_EXECUTION_EXERCISE,
-                    WK_EXECUTION_EXERCISE.copy(setNumber = 2),
-                    WK_EXECUTION_EXERCISE.copy(setNumber = 3)
+                    WK_EXECUTION_EXERCISE.copy(exerciseNumber = 2),
+                    WK_EXECUTION_EXERCISE.copy(exerciseNumber = 3)
                 ),
                 currentExercise = WK_EXECUTION_EXERCISE,
                 currentSet = 3,
-                workoutEnded = false,
+                workoutEnded = true,
                 survey = 1
             ),
             sendIntent = {}

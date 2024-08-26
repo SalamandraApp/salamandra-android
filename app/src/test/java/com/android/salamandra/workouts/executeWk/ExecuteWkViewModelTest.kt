@@ -82,6 +82,8 @@ class ExecuteWkViewModelTest {
         // Assert
         assert(executeWkViewModel.state.value.exerciseList == expectedExecutionExerciseList && executeWkViewModel.state.value.currentExercise == expectedInitialExercise)
     }
+
+
 }
 
 

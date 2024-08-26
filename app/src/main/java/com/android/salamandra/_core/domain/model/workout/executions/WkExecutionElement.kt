@@ -2,7 +2,7 @@ package com.android.salamandra._core.domain.model.workout.executions
 
 data class WkExecutionElement(
     val id: String = "",
-    val currentSet: Int,
+    val setNumber: Int,
     val reps: Int,
     val weight: Double?,
     val rest: Int = 60,
