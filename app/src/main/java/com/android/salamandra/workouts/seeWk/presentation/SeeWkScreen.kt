@@ -39,9 +39,11 @@ import com.android.salamandra.workouts.commons.presentation.components.WkElement
 import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
 import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
+import com.android.salamandra.destinations.ExecuteWkScreenDestination
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
+import com.android.salamandra.workouts.executeWk.ExecuteWkNavArgs
 import com.android.salamandra.workouts.seeWk.presentation.components.BannerTitleRow
 import com.android.salamandra.workouts.seeWk.presentation.components.ButtonsRow
 import com.android.salamandra.workouts.seeWk.presentation.components.SeeWkBannerTopRow
@@ -59,6 +61,10 @@ fun SeeWkScreen(navigator: DestinationsNavigator, viewModel: SeeWkViewModel = hi
         when (events) {
             SeeWkEvent.NavigateUp -> navigator.navigateUp()
             // TODO: navigate to EditWk
+            SeeWkEvent.StartWk -> navigator.navigate(
+                ExecuteWkScreenDestination(ExecuteWkNavArgs(wkTemplateId = state.wkTemplate.wkId))
+            )
+
             null -> {}
         }
     }
@@ -109,8 +115,8 @@ private fun ScreenBody(
             ) {
                 SeeWkFixedBanner(
                     wkName = state.wkTemplate.name,
-                    onGoBack = {sendIntent(SeeWkIntent.NavigateUp)},
-                    onExecuteWk = {/* TODO */},
+                    onGoBack = { sendIntent(SeeWkIntent.NavigateUp) },
+                    onExecuteWk = { sendIntent(SeeWkIntent.StartWk) },
                     modifier = Modifier
                         .height(fixedBannerHeight)
                         .background(mainColor)
@@ -133,14 +139,14 @@ private fun ScreenBody(
                     wkName = state.wkTemplate.name,
                     wkDescription = state.wkTemplate.description,
                     onGoBack = { sendIntent(SeeWkIntent.NavigateUp) },
-                    onExecuteWk = { }
+                    onExecuteWk = { sendIntent(SeeWkIntent.StartWk) },
                 )
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    onOption = {sendIntent(SeeWkIntent.ShowBottomSheet(index))},
+                    onOption = { sendIntent(SeeWkIntent.ShowBottomSheet(index)) },
                     wkElement = element,
                     startPad = 10.dp,
                     fgColor = tertiary
@@ -153,13 +159,12 @@ private fun ScreenBody(
             )
             BottomSheet(
                 sheetState = sheetState,
-                onDismiss = {sendIntent(SeeWkIntent.HideBottomSheet)},
+                onDismiss = { sendIntent(SeeWkIntent.HideBottomSheet) },
                 content = { ExerciseInfo(state.wkTemplate.elements[state.selectedElementIndex].exercise) }
             )
         }
     }
 }
-
 
 
 @Composable
@@ -204,11 +209,11 @@ fun SeeWkBigBanner(
     modifier: Modifier = Modifier,
 ) {
 
-    val dpTopRow     = WkTemplateScreenConstants.bannerRowHeights.top
-    val dpTitle      = WkTemplateScreenConstants.bannerRowHeights.picture
-    val dpTags       = WkTemplateScreenConstants.bannerRowHeights.tags
-    val dpButtons    = WkTemplateScreenConstants.bannerRowHeights.buttons
-    val dpLabels     = WkTemplateScreenConstants.bannerRowHeights.labels
+    val dpTopRow = WkTemplateScreenConstants.bannerRowHeights.top
+    val dpTitle = WkTemplateScreenConstants.bannerRowHeights.picture
+    val dpTags = WkTemplateScreenConstants.bannerRowHeights.tags
+    val dpButtons = WkTemplateScreenConstants.bannerRowHeights.buttons
+    val dpLabels = WkTemplateScreenConstants.bannerRowHeights.labels
 
     val dpSideMargin = WkTemplateScreenConstants.sideMargin
     val dpInBetweenMargin = WkTemplateScreenConstants.bannerInBetweenMargin
@@ -250,7 +255,7 @@ fun SeeWkBigBanner(
             onEdit = {},
             onShare = {},
             onStats = {},
-            onExecuteWk = {},
+            onExecuteWk = onExecuteWk,
         )
         WkTemplateViewLabels(
             modifier = Modifier

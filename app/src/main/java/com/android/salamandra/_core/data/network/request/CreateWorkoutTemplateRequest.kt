@@ -1,9 +1,8 @@
 package com.android.salamandra._core.data.network.request
 
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDate
 
 data class CreateWorkoutTemplateRequest(
     @SerializedName("name") val name: String,
@@ -37,5 +36,5 @@ fun WkTemplateElement.toCreateWorkoutTemplateElementRequest() = CreateWorkoutTem
     sets = sets,
     weight = weight,
     rest = rest,
-    superSet = superSet,
+    superSet = superset,
 )

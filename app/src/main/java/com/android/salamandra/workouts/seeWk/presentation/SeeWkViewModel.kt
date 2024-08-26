@@ -3,10 +3,8 @@ package com.android.salamandra.workouts.seeWk.presentation
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
 import com.android.salamandra.navArgs
 import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
-import com.android.salamandra.workouts.seeWk.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
@@ -17,7 +15,6 @@ import javax.inject.Inject
 class SeeWkViewModel @Inject constructor(
     ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
-    private val repository: Repository,
     private val workoutsRepository: WorkoutsRepository
 ) :
     BaseViewModel<SeeWkState, SeeWkIntent, SeeWkEvent>(SeeWkState.initial, ioDispatcher) {
@@ -33,13 +30,15 @@ class SeeWkViewModel @Inject constructor(
             is SeeWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElementIndex = intent.index) }
 
             SeeWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null) }
+
+            SeeWkIntent.StartWk -> sendEvent(SeeWkEvent.StartWk)
         }
     }
 
     init {
         val navArgs: SeeWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
-            when (val wkToSee = repository.getWkTemplate(workoutId = navArgs.wkTemplateId)) {
+            when (val wkToSee = workoutsRepository.getWkTemplate(workoutId = navArgs.wkTemplateId)) {
                 is Result.Success -> {
                     _state.update { it.copy(wkTemplate = wkToSee.data) }
                     workoutsRepository.storeWkTemplateInLocal(wkTemplate = wkToSee.data)

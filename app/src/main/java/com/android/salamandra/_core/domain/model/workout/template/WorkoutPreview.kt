@@ -1,6 +1,4 @@
-package com.android.salamandra._core.domain.model.workout
-
-import java.util.UUID
+package com.android.salamandra._core.domain.model.workout.template
 
 data class WorkoutPreview (
     val wkId: String,

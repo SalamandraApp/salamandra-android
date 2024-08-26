@@ -1,14 +1,12 @@
 package com.android.salamandra.workouts.editWk.presentation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetState
 import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 
 
 data class EditWkState @OptIn(ExperimentalMaterial3Api::class) constructor(

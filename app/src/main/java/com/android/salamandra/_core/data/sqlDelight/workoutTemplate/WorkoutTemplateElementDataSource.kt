@@ -5,7 +5,7 @@ import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import workout.WorkoutTemplateElementEntity

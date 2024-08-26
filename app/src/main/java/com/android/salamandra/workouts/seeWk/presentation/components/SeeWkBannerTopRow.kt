@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
@@ -61,4 +62,15 @@ fun SeeWkBannerTopRow(
                 )
             }
     }
+}
+
+@Composable
+@Preview
+private fun BannerPreview(){
+    SeeWkBannerTopRow(
+        onGoBack = {},
+        onExecuteWk = {},
+        middleContent = {},
+        executeButton = true
+    )
 }

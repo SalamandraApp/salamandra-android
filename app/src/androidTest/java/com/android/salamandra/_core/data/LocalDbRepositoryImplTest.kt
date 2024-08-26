@@ -10,7 +10,7 @@ import com.android.salamandra._core.data.sqlDelight.workoutTemplate.WorkoutTempl
 import com.android.salamandra._core.data.sqlDelight.workoutTemplate.toWkTemplateElement
 import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP

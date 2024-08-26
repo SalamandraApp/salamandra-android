@@ -5,7 +5,7 @@ import app.cash.sqldelight.coroutines.mapToList
 import com.android.salamandra.SalamandraLocalDB
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
+import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

@@ -485,7 +485,7 @@ private fun ProfileBanner(
 private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
-            state = ProfileState.initial,
+            state = ProfileState.initial.copy(isSignedIn = true),
             sendIntent = {}
         )
     }

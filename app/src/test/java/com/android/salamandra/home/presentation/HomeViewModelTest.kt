@@ -2,16 +2,13 @@ package com.android.salamandra.home.presentation
 
 import com.android.salamandra._core.domain.CoreRepository
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
 import com.android.salamandra.home.domain.Repository
 import com.android.salamandra.util.CoroutineRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runCurrent

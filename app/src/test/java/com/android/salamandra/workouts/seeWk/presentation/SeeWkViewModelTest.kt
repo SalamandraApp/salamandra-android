@@ -2,13 +2,10 @@ package com.android.salamandra.workouts.seeWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.android.salamandra.util.CoroutineRule
-import com.android.salamandra.util.EXAMPLE_EXERCISE_PUSH_UP
 import com.android.salamandra.util.EXAMPLE_WORKOUT_TEMPLATE
 import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
-import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
-import com.android.salamandra.workouts.seeWk.domain.Repository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -32,9 +29,6 @@ class SeeWkViewModelTest {
     private lateinit var seeWkViewModel: SeeWkViewModel
 
     @RelaxedMockK
-    private lateinit var repository: Repository
-
-    @RelaxedMockK
     private lateinit var workoutsRepository: WorkoutsRepository
 
     private lateinit var savedStateHandle: SavedStateHandle
@@ -48,7 +42,7 @@ class SeeWkViewModelTest {
         every { savedStateHandle.get<String>("wkTemplateId") } returns mockNavArgs.wkTemplateId
 
         seeWkViewModel =
-            SeeWkViewModel(testDispatcher, savedStateHandle, repository, workoutsRepository)
+            SeeWkViewModel(testDispatcher, savedStateHandle, workoutsRepository)
     }
 
     @Test
@@ -65,11 +59,11 @@ class SeeWkViewModelTest {
     fun `When WkTemplate is successfully retrieved, state changed`() = runTest {
         // Arrange
         val expectedValue = EXAMPLE_WORKOUT_TEMPLATE
-        coEvery { repository.getWkTemplate(any()) } returns Result.Success(EXAMPLE_WORKOUT_TEMPLATE)
+        coEvery { workoutsRepository.getWkTemplate(any()) } returns Result.Success(EXAMPLE_WORKOUT_TEMPLATE)
 
         // Act
         seeWkViewModel =
-            SeeWkViewModel(testDispatcher, savedStateHandle, repository, workoutsRepository)
+            SeeWkViewModel(testDispatcher, savedStateHandle, workoutsRepository)
         runCurrent()
 
         // Assert

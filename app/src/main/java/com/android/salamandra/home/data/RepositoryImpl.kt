@@ -6,7 +6,7 @@ import com.android.salamandra._core.domain.DataStoreRepository
 import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.workout.WorkoutPreview
+import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.android.salamandra.home.domain.Repository
 import kotlinx.coroutines.flow.Flow
 
