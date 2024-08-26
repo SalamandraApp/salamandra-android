@@ -37,13 +37,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        DestinationsNavHost(navGraph = NavGraphs.root)
-                    }
+                    DestinationsNavHost(navGraph = NavGraphs.root)
                 }
             }
         }

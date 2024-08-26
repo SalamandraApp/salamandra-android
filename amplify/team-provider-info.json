@@ -1,23 +1,23 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-salamandra-dev-7dd8a-authRole",
-      "UnauthRoleArn": "arn:aws:iam::533267061967:role/amplify-salamandra-dev-7dd8a-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::533267061967:role/amplify-salamandra-dev-7dd8a-authRole",
+      "AuthRoleName": "amplify-salamandra-dev-6425d-authRole",
+      "UnauthRoleArn": "arn:aws:iam::533267061967:role/amplify-salamandra-dev-6425d-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::533267061967:role/amplify-salamandra-dev-6425d-authRole",
       "Region": "eu-west-3",
-      "DeploymentBucketName": "amplify-salamandra-dev-7dd8a-deployment",
-      "UnauthRoleName": "amplify-salamandra-dev-7dd8a-unauthRole",
-      "StackName": "amplify-salamandra-dev-7dd8a",
-      "StackId": "arn:aws:cloudformation:eu-west-3:533267061967:stack/amplify-salamandra-dev-7dd8a/10c01c80-4f48-11ef-b39d-0ef1f3f992cf",
-      "AmplifyAppId": "d23q5avekjygre"
+      "DeploymentBucketName": "amplify-salamandra-dev-6425d-deployment",
+      "UnauthRoleName": "amplify-salamandra-dev-6425d-unauthRole",
+      "StackName": "amplify-salamandra-dev-6425d",
+      "StackId": "arn:aws:cloudformation:eu-west-3:533267061967:stack/amplify-salamandra-dev-6425d/d9c6aa10-5568-11ef-951d-0e2e2d905bdd",
+      "AmplifyAppId": "d2gbuyls8zrv8l"
     },
     "categories": {
       "auth": {
-        "salamandra1b039443": {
-          "userPoolId": "eu-west-3_eOfDNCRU7",
+        "salamandra2d82b966": {
+          "userPoolId": "eu-west-3_RLESyKJjD",
           "userPoolName": "UserPool-dev",
-          "webClientId": "15hspjntqvk30q3b1ftuevrjnr",
-          "nativeClientId": "15hspjntqvk30q3b1ftuevrjnr"
+          "webClientId": "6tcg5efnsnklg1ti4tt9942ht2",
+          "nativeClientId": "6tcg5efnsnklg1ti4tt9942ht2"
         }
       }
     }

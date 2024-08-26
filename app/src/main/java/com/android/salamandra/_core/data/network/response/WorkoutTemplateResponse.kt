@@ -4,8 +4,8 @@ import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.enums.toEquipment
 import com.android.salamandra._core.domain.model.enums.toExerciseType
 import com.android.salamandra._core.domain.model.enums.toMuscleGroup
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 
@@ -39,9 +39,9 @@ data class ExerciseInWkTemplateResponse(
     @SerializedName("position") private val position: Int,
     @SerializedName("reps") private val reps: Int,
     @SerializedName("sets") private val sets: Int,
-    @SerializedName("weight") private val weight: Double,
+    @SerializedName("weight") private val weight: Double?,
     @SerializedName("rest") private val rest: Int,
-    @SerializedName("super_set") private val superSet: Boolean,
+    @SerializedName("super_set") private val superset: Int?,
 ) {
     fun toDomain(): WkTemplateElement {
         return WkTemplateElement(
@@ -58,7 +58,8 @@ data class ExerciseInWkTemplateResponse(
             reps = reps,
             sets = sets,
             weight = weight,
-            rest = rest
+            rest = rest,
+            superset = superset
         )
     }
 }

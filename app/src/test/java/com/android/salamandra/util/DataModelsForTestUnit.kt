@@ -9,8 +9,10 @@ import com.android.salamandra._core.domain.model.enums.FitnessGoal
 import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.domain.model.enums.Gender
 import com.android.salamandra._core.domain.model.enums.MuscleGroup
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
-import com.android.salamandra._core.domain.model.workout.WorkoutTemplate
+import com.android.salamandra._core.domain.model.workout.executions.WkExecutionElement
+import com.android.salamandra._core.domain.model.workout.executions.WkExecutionExercise
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import exercise.ExerciseEntity
 import user.UserEntity
 import workout.WorkoutTemplateElementEntity
@@ -82,38 +84,40 @@ val EXAMPLE_EXERCISE_SQUAT_ENTITY = ExerciseEntity(
 val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP = WkTemplateElement(
     templateElementId = "12345",
     exercise = EXAMPLE_EXERCISE_PUSH_UP,
-    reps = 15,
+    reps = 4,
     sets = 4,
     weight = null,
-    rest = 120
+    rest = 120,
+    position = 1
 )
 
 val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_PUSH_UP = WorkoutTemplateElementEntity(
     id = "12345",
     wkTemplateId = "TEMPORAL",
     exerciseId = EXAMPLE_EXERCISE_PUSH_UP.exId,
-    position = null,
-    reps = 15,
+    position = 1,
+    reps = 4,
     sets = 4,
     weight = null,
-    rest = 120
+    rest = 120,
 )
 
 val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT = WkTemplateElement(
     templateElementId = "12",
     exercise = EXAMPLE_EXERCISE_SQUAT,
-    reps = 15,
+    reps = 4,
     sets = 4,
     weight = null,
-    rest = 120
+    rest = 120,
+    position = 2
 )
 
 val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_SQUAT = WorkoutTemplateElementEntity(
     id = "12",
     wkTemplateId = "TEMPORAL",
     exerciseId = EXAMPLE_EXERCISE_SQUAT.exId,
-    position = null,
-    reps = 15,
+    position = 2,
+    reps = 4,
     sets = 4,
     weight = null,
     rest = 120
@@ -144,6 +148,71 @@ val EXAMPLE_WORKOUT_TEMPLATE_ENTITY = WorkoutTemplateEntity(
     onlyPreviewAvailable = false
 )
 
+val EXAMPLE_EXECUTION_EXERCISE = WkExecutionExercise(
+    exercise = EXAMPLE_EXERCISE_PUSH_UP,
+    executionElements = listOf(
+        WkExecutionElement(
+            reps = 4,
+            weight = null,
+            rest = 120,
+            setNumber = 1
+        ),
+        WkExecutionElement(
+            reps = 4,
+            weight = null,
+            rest = 120,
+            setNumber = 2
+        ),
+        WkExecutionElement(
+            reps = 4,
+            weight = null,
+            rest = 120,
+            setNumber = 3
+        ),
+        WkExecutionElement(
+            reps = 4,
+            weight = null,
+            rest = 120,
+            setNumber = 4
+        )
+    ),
+    exerciseNumber = 1
+)
+
+val EXAMPLE_EXECUTION_EXERCISES_LIST = listOf(
+    EXAMPLE_EXECUTION_EXERCISE,
+    WkExecutionExercise(
+        exercise = EXAMPLE_EXERCISE_SQUAT,
+        executionElements = listOf(
+            WkExecutionElement(
+                reps = 4,
+                weight = null,
+                rest = 120,
+                setNumber = 1
+            ),
+            WkExecutionElement(
+                reps = 4,
+                weight = null,
+                rest = 120,
+                setNumber = 2
+            ),
+            WkExecutionElement(
+                reps = 4,
+                weight = null,
+                rest = 120,
+                setNumber = 3
+            ),
+            WkExecutionElement(
+                reps = 4,
+                weight = null,
+                rest = 120,
+                setNumber = 4
+            )
+        ),
+        exerciseNumber = 2
+    ),
+
+)
 
 
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
-import com.android.salamandra._core.domain.model.workout.WkTemplateElement
+import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import com.android.salamandra.navArgs
 import com.android.salamandra.workouts.editWk.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -70,7 +70,6 @@ class EditWkViewModel @Inject constructor(
     init {
         val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
-            repository.getWorkoutTemplateCount()
             _state.update {
                 it.copy(
                     wkTemplate = it.wkTemplate.copy(

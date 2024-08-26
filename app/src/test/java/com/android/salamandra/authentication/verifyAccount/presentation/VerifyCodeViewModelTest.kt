@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.authentication.verifyAccount.domain.Repository
-import com.android.salamandra.navArgs
 import com.android.salamandra.util.CoroutineRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
