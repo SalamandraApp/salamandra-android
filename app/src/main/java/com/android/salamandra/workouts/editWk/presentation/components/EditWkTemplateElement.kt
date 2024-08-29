@@ -326,17 +326,3 @@ fun EditWkTemplateElement(
         }
     }
 }
-
-@Preview
-@Composable
-private fun EditWkTemplateElementPreview(){
-    EditWkTemplateElement(
-        element = ,
-        index = ,
-        onEditSets = ,
-        onEditReps = ,
-        onEditWeight = ,
-        onEditRest = ,
-        onDeleteElement =
-    )
-}

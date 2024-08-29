@@ -74,7 +74,7 @@ class EditWkViewModel @Inject constructor(
                 it.copy(
                     wkTemplate = it.wkTemplate.copy(
                         name = it.wkTemplate.name + " (${repository.getWorkoutTemplateCount() + 1})",
-                        elements = repository.retrieveSavedWorkoutTemplateElements()
+                        elements = repository.retrieveSavedWorkoutTemplateElements().take(Short.MAX_VALUE.toInt())
                     )
                 )
             }
