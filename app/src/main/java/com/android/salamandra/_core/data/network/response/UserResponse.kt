@@ -16,11 +16,11 @@ data class UserResponse(
     @SerializedName("display_name") val displayName: String,
     @SerializedName("date_joined") val dateJoined: String,
     @SerializedName("date_of_birth") val dateOfBirth: String?,
-    @SerializedName("height") val height: Int?,
+    @SerializedName("height") val height: Short?,
     @SerializedName("weight") val weight: Float?,
-    @SerializedName("gender") val gender: Int?,
-    @SerializedName("fitness_goal") val fitnessGoal: Int?,
-    @SerializedName("fitness_level") val fitnessLevel: Int?
+    @SerializedName("gender") val gender: Short?,
+    @SerializedName("fitness_goal") val fitnessGoal: Short?,
+    @SerializedName("fitness_level") val fitnessLevel: Short?
 ) {
     fun toDomain(): User {
         return User(
@@ -29,11 +29,11 @@ data class UserResponse(
             displayName = displayName,
             dateJoined = LocalDate.parse(dateJoined),
             dateOfBirth = if (dateOfBirth != null) LocalDate.parse(dateOfBirth) else null,
-            height = height,
+            height = height?.toInt(),
             weight = weight?.toDouble(),
-            gender = gender?.toGender(),
-            fitnessGoal = fitnessGoal?.toFitnessGoal(),
-            fitnessLevel = fitnessLevel?.toFitnessLevel()
+            gender = gender?.toInt()?.toGender(),
+            fitnessGoal = fitnessGoal?.toInt()?.toFitnessGoal(),
+            fitnessLevel = fitnessLevel?.toInt()?.toFitnessLevel()
         )
     }
 }
