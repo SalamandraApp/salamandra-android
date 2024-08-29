@@ -32,16 +32,16 @@ data class ExerciseInWkTemplateResponse(
     @SerializedName("id") private val templateElementId: String,
     @SerializedName("exercise_id") private val exerciseId: String,
     @SerializedName("exercise_name") private val exName: String,
-    @SerializedName("main_muscle_group") private val mainMuscleGroup: Int,
-    @SerializedName("secondary_muscle_group") private val secondaryMuscleGroup: Int,
-    @SerializedName("necessary_equipment") private val necessaryEquipment: Int,
-    @SerializedName("exercise_type") private val exerciseType: Int,
-    @SerializedName("position") private val position: Int,
-    @SerializedName("reps") private val reps: Int,
-    @SerializedName("sets") private val sets: Int,
+    @SerializedName("main_muscle_group") private val mainMuscleGroup: Short,
+    @SerializedName("secondary_muscle_group") private val secondaryMuscleGroup: Short,
+    @SerializedName("necessary_equipment") private val necessaryEquipment: Short,
+    @SerializedName("exercise_type") private val exerciseType: Short,
+    @SerializedName("position") private val position: Short,
+    @SerializedName("reps") private val reps: Short,
+    @SerializedName("sets") private val sets: Short,
     @SerializedName("weight") private val weight: Double?,
-    @SerializedName("rest") private val rest: Int,
-    @SerializedName("super_set") private val superset: Int?,
+    @SerializedName("rest") private val rest: Short,
+    @SerializedName("super_set") private val superset: Short?,
 ) {
     fun toDomain(): WkTemplateElement {
         return WkTemplateElement(
@@ -49,17 +49,17 @@ data class ExerciseInWkTemplateResponse(
             exercise = Exercise(
                 exId = exerciseId,
                 name = exName,
-                mainMuscleGroup = mainMuscleGroup.toMuscleGroup(),
-                secondaryMuscleGroup = secondaryMuscleGroup.toMuscleGroup(),
-                necessaryEquipment = necessaryEquipment.toEquipment(),
-                exerciseType = exerciseType.toExerciseType()
+                mainMuscleGroup = mainMuscleGroup.toInt().toMuscleGroup(),
+                secondaryMuscleGroup = secondaryMuscleGroup.toInt().toMuscleGroup(),
+                necessaryEquipment = necessaryEquipment.toInt().toEquipment(),
+                exerciseType = exerciseType.toInt().toExerciseType()
             ),
-            position = position,
-            reps = reps,
-            sets = sets,
+            position = position.toInt(),
+            reps = reps.toInt(),
+            sets = sets.toInt(),
             weight = weight,
-            rest = rest,
-            superset = superset
+            rest = rest.toInt(),
+            superset = superset?.toInt()
         )
     }
 }

@@ -21,19 +21,19 @@ data class ExerciseResponse(
 data class SingleExercise(
     @SerializedName("id") val id: String,
     @SerializedName("name") val name: String,
-    @SerializedName("main_muscle_group") val mainMuscleGroup: Int,
-    @SerializedName("secondary_muscle_group") val secondaryMuscleGroup: Int,
-    @SerializedName("necessary_equipment") val necessaryEquipment: Int,
-    @SerializedName("exercise_type") val exerciseType: Int,
+    @SerializedName("main_muscle_group") val mainMuscleGroup: Short,
+    @SerializedName("secondary_muscle_group") val secondaryMuscleGroup: Short,
+    @SerializedName("necessary_equipment") val necessaryEquipment: Short,
+    @SerializedName("exercise_type") val exerciseType: Short,
 ) {
     fun toDomain(): Exercise {
         return Exercise(
             exId = id,
             name = name,
-            mainMuscleGroup = mainMuscleGroup.toMuscleGroup(),
-            secondaryMuscleGroup = secondaryMuscleGroup.toMuscleGroup(),
-            necessaryEquipment = necessaryEquipment.toEquipment(),
-            exerciseType = exerciseType.toExerciseType()
+            mainMuscleGroup = mainMuscleGroup.toInt().toMuscleGroup(),
+            secondaryMuscleGroup = secondaryMuscleGroup.toInt().toMuscleGroup(),
+            necessaryEquipment = necessaryEquipment.toInt().toEquipment(),
+            exerciseType = exerciseType.toInt().toExerciseType()
         )
     }
 }

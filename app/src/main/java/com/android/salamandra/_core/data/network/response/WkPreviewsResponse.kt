@@ -4,7 +4,7 @@ import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.google.gson.annotations.SerializedName
 
 data class WkPreviewsResponse(
-    @SerializedName("count") val count: Int,
+    @SerializedName("count") val count: Short,
     @SerializedName("templates") val items: List<WkTemplate>,
 ) {
     fun toDomain(): List<WorkoutPreview> {

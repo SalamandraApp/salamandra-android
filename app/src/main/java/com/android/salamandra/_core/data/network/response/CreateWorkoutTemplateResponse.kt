@@ -26,11 +26,11 @@ data class CreateWorkoutTemplateResponse(
 data class ExerciseInCreateWkTemplateResponse(
     @SerializedName("id") val templateElementId: String,
     @SerializedName("exercise_id") val exerciseId: String,
-    @SerializedName("position") val position: Int,
-    @SerializedName("reps") val reps: Int,
-    @SerializedName("sets") val sets: Int,
+    @SerializedName("position") val position: Short,
+    @SerializedName("reps") val reps: Short,
+    @SerializedName("sets") val sets: Short,
     @SerializedName("weight") val weight: Double,
-    @SerializedName("rest") val rest: Int,
+    @SerializedName("rest") val rest: Short,
     @SerializedName("super_set") val superSet: Boolean,
 )
 
