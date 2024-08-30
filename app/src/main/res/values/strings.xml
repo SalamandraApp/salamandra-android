@@ -109,4 +109,5 @@
     <string name="machine_movement">Machine Movement</string>
     <string name="cardio">Cardio</string>
     <string name="mobility">Mobility</string>
+    <string name="name">Name</string>
 </resources>

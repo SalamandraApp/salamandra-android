@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,9 +75,11 @@ private fun ScreenBody(
     state: VerifyCodeState,
     sendIntent: (VerifyCodeIntent) -> Unit,
 ) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(tertiary), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(tertiary), contentAlignment = Alignment.Center
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -97,9 +101,11 @@ private fun ScreenBody(
 
             Spacer(modifier = Modifier.weight(verticalPadWeight))
             SlmLogo()
-            Spacer(modifier = Modifier
-                .weight(middlePadWeight)
-                .fillMaxWidth())
+            Spacer(
+                modifier = Modifier
+                    .weight(middlePadWeight)
+                    .fillMaxWidth()
+            )
             OtpTextField(
                 modifier = Modifier.weight(textFieldWeight),
                 otpText = state.code,
@@ -108,7 +114,7 @@ private fun ScreenBody(
                 }
             )
             val checkMessage =
-                        stringResource(id = R.string.check) +
+                stringResource(id = R.string.check) +
                         " " + state.email +
                         " " + stringResource(id = R.string.for_confirmation_code)
             Text(
@@ -120,7 +126,7 @@ private fun ScreenBody(
             )
             Spacer(modifier = Modifier.weight(middlePadWeight))
 
-            Box (
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(buttonWeight)
@@ -128,11 +134,15 @@ private fun ScreenBody(
                     .clickable { sendIntent(VerifyCodeIntent.ConfirmCode) },
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = stringResource(R.string.login),
-                    fontSize = 16.sp,
-                    color = primaryVariant,
-                )
+                if (state.loading) {
+                    CircularProgressIndicator(Modifier.size(28.dp), color = primaryVariant)
+                } else {
+                    Text(
+                        text = stringResource(R.string.confirm),
+                        fontSize = 16.sp,
+                        color = primaryVariant,
+                    )
+                }
             }
             Spacer(modifier = Modifier.weight(verticalPadWeight))
         }
@@ -151,7 +161,7 @@ private fun OtpTextField(
     otpCount: Int = 6,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
-    Row (modifier = modifier){
+    Row(modifier = modifier) {
         BasicTextField(
             modifier = Modifier
                 .align(Alignment.CenterVertically),
@@ -193,8 +203,12 @@ private fun CharView(
         index > text.length -> ""
         else -> text[index].toString()
     }
-    val borderPixels = if (isFocused) { 2.dp } else { 1.dp }
-    Column (
+    val borderPixels = if (isFocused) {
+        2.dp
+    } else {
+        1.dp
+    }
+    Column(
         modifier = modifier
             .border(
                 borderPixels, when {
@@ -204,7 +218,7 @@ private fun CharView(
             )
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         Text(
             modifier = Modifier
                 .width(40.dp),

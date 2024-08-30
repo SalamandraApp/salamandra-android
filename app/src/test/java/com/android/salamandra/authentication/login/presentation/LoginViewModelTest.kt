@@ -37,6 +37,7 @@ class LoginViewModelTest {
             email = "",
             password = "",
             error = null,
+            loading = false
         )
         assert(LoginState.initial == expectedState)
     }

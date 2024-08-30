@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WkTemplatePicture(
     modifier: Modifier = Modifier,
+    loading: Boolean = false,
+    loadingColor: Color = Color.Gray,
     size: Int = 0,
     shape: Shape = RectangleShape
 ) {
@@ -33,19 +35,28 @@ fun WkTemplatePicture(
     } else {
         80.dp
     }
-    Box(
-        modifier = boxModifier
-            .clip(shape)
-            .background(Color.DarkGray)
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Image,
-            contentDescription = "Image icon",
-            tint = Color.Gray.copy(alpha = 0.7f),
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(iconSize)
+    if (loading){
+        Box(
+            modifier = boxModifier
+                .clip(shape)
+                .background(loadingColor)
+                .shimmerEffect()
         )
+    } else{
+        Box(
+            modifier = boxModifier
+                .clip(shape)
+                .background(Color.DarkGray)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Image,
+                contentDescription = "Image icon",
+                tint = Color.Gray.copy(alpha = 0.7f),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(iconSize)
+            )
+        }
     }
 }
 

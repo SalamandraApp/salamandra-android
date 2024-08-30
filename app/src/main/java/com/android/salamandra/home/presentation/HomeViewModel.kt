@@ -46,6 +46,8 @@ class HomeViewModel @Inject constructor(
             if (coreRepository.isUserLogged() && repository.isLocalDbEmpty())
                 repository.getWkPreviewsFromRemoteAndStoreInLocal()
 
+            _state.update { it.copy(loading = false) }
+
             repository.getWkPreviews().collect { newList ->
                 _state.update { it.copy(wkPreviewList = newList) }
             }

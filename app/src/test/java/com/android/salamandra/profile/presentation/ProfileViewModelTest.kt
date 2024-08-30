@@ -39,7 +39,7 @@ class ProfileViewModelTest{
     @Test
     fun `Assert initial state`(){
         val expectedState =  ProfileState(
-            loading = false,
+            loading = true,
             error = null,
             userData = null,
             isSignedIn = false
@@ -52,7 +52,7 @@ class ProfileViewModelTest{
     fun `When user is not logged in, state is initial`() = runTest {
         // Arrange
         val expectedState =  ProfileState(
-            loading = false,
+            loading = true,
             error = null,
             userData = null,
             isSignedIn = false

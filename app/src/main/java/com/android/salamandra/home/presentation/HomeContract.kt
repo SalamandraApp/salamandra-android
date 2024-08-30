@@ -10,11 +10,13 @@ import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
 
 data class HomeState(
+    val loading: Boolean,
     val error: RootError?,
     val wkPreviewList: List<WorkoutPreview>
 ) : State {
     companion object {
         val initial: HomeState = HomeState(
+            loading = true,
             error = null,
             wkPreviewList = emptyList()
         )

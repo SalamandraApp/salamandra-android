@@ -1,7 +1,6 @@
 package com.android.salamandra.authentication.register.presentation
 
 import com.android.salamandra._core.boilerplate.Event
-import com.android.salamandra._core.presentation.UiText
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.PasswordError
@@ -10,6 +9,7 @@ import com.android.salamandra._core.domain.error.RootError
 
 data class RegisterState(
     val error: RootError?,
+    val loading: Boolean,
     val username: String,
     val email: String,
     val password: String,
@@ -19,6 +19,7 @@ data class RegisterState(
     companion object {
         val initial: RegisterState = RegisterState(
             error = null,
+            loading = false,
             username = "",
             email = "",
             password = "",

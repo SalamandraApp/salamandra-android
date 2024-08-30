@@ -42,6 +42,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun onRegister() {
+        _state.update { it.copy(loading = true) }
         ioLaunch {
             when (val register =
                 repository.register(
@@ -50,7 +51,7 @@ class RegisterViewModel @Inject constructor(
                     username = state.value.username
                 )) {
                 is Result.Success -> sendEvent(RegisterEvent.NavigateToVerifyCode)
-                is Result.Error ->  _state.update { it.copy(error = register.error) }
+                is Result.Error ->  _state.update { it.copy(error = register.error, loading = false) }
             }
         }
     }

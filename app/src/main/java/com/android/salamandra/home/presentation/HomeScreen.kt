@@ -12,14 +12,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SwapVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +32,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,9 +45,11 @@ import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.IconShimmer
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
+import com.android.salamandra._core.presentation.components.shimmerEffect
 import com.android.salamandra._core.util.WORKOUT_PREVIEW_LIST
 import com.android.salamandra.destinations.EditWkScreenDestination
 import com.android.salamandra.destinations.HomeScreenDestination
@@ -106,20 +112,33 @@ private fun ScreenBody(
             verticalArrangement = Arrangement.Top
         ) {
             HomeBanner(
+                loading = state.loading,
                 onCreateExercise = { sendIntent(HomeIntent.NewWk) },
-                onSearchWkTemplate = {/* TODO */}
+                onSearchWkTemplate = {/* TODO */ }
             )
             FadeLip()
-            ListViewToggles()
-            LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
-                items(state.wkPreviewList) { wkPreview ->
-                    WkPreview(
-                        wkPreview = wkPreview,
-                        onClick = {sendIntent(HomeIntent.SeeWk(wkTemplateId = wkPreview.wkId))}
-                    )
-                    Spacer(modifier = Modifier.size(18.dp))
+            ListViewToggles(loading = state.loading)
+            if (!state.loading) {
+                LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
+                    items(state.wkPreviewList) { wkPreview ->
+                        WkPreview(
+                            wkPreview = wkPreview,
+                            onClick = { sendIntent(HomeIntent.SeeWk(wkTemplateId = wkPreview.wkId)) }
+                        )
+                        Spacer(modifier = Modifier.size(18.dp))
+                    }
+                }
+            } else {
+                Column(modifier = Modifier.padding(start = 18.dp)) {
+                    for (i in 0..5) {
+                        LoadingWkPreview()
+                        Spacer(Modifier.size(18.dp))
+                    }
                 }
             }
+
+            if(state.loading)
+                Box(Modifier.fillMaxSize().background(tertiary.copy(alpha = 0.95f)))
 
             if (state.error != null)
                 ErrorDialog(
@@ -133,7 +152,7 @@ private fun ScreenBody(
 }
 
 @Composable
-fun ListViewToggles() {
+fun ListViewToggles(loading: Boolean, loadingBoxColor: Color = Color.Gray) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -143,22 +162,35 @@ fun ListViewToggles() {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = { }
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.SwapVert,
-                    tint = iconColor,
-                    contentDescription = "Add workout"
+            if (loading) IconShimmer(Modifier.padding(start = 12.dp))
+            else {
+                IconButton(
+                    onClick = { }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.SwapVert,
+                        tint = iconColor,
+                        contentDescription = "Add workout"
+                    )
+                }
+            }
+            if (loading) Box(
+                Modifier
+                    .padding(start = 12.dp)
+                    .height(16.dp)
+                    .width(40.dp)
+                    .background(loadingBoxColor)
+                    .shimmerEffect()
+            )
+            else {
+                Text(
+                    text = stringResource(R.string.name),
+                    style = WkTemplateElementTypo,
+                    color = iconColor,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
-            Text(
-                text = "Name",
-                style = WkTemplateElementTypo,
-                color = iconColor,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(start = 8.dp)
-            )
         }
         Row(
             modifier = Modifier
@@ -167,14 +199,17 @@ fun ListViewToggles() {
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = { }
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.GridView,
-                    tint = iconColor,
-                    contentDescription = "Template display toggle"
-                )
+            if (loading) IconShimmer()
+            else {
+                IconButton(
+                    onClick = { }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.GridView,
+                        tint = iconColor,
+                        contentDescription = "Template display toggle"
+                    )
+                }
             }
         }
     }
@@ -183,6 +218,8 @@ fun ListViewToggles() {
 
 @Composable
 fun HomeBanner(
+    loading: Boolean,
+    loadingBoxColor: Color = Color.Gray,
     onCreateExercise: () -> Unit,
     onSearchWkTemplate: () -> Unit,
 ) {
@@ -202,41 +239,70 @@ fun HomeBanner(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(modifier = Modifier.padding(start = 18.dp)) {
-                    ProfilePicture(size = 42)
+                if (loading)
+                    Box(
+                        Modifier
+                            .padding(start = 18.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(loadingBoxColor)
+                            .shimmerEffect()
+                    )
+                else {
+                    Box(modifier = Modifier.padding(start = 18.dp)) {
+                        ProfilePicture(size = 42)
+                    }
                 }
 
-                Text(
-                    text = stringResource(R.string.your_workouts),
-                    color = title,
-                    fontSize = 22.sp,
-                    style = TitleTypo,
-                    modifier = Modifier.padding(start = 18.dp),
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (loading)
+                    Box(
+                        Modifier
+                            .padding(horizontal = 16.dp)
+                            .width(160.dp)
+                            .height(24.dp)
+                            .background(loadingBoxColor)
+                            .shimmerEffect()
+                    )
+                else {
+                    Text(
+                        text = stringResource(R.string.your_workouts),
+                        color = title,
+                        fontSize = 22.sp,
+                        style = TitleTypo,
+                        modifier = Modifier.padding(start = 18.dp),
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier.padding(end = 10.dp)
             ) {
-                IconButton(
-                    onClick = { onSearchWkTemplate() }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        tint = title,
-                        contentDescription = "Search workout"
-                    )
-                }
-                IconButton(
-                    onClick = { onCreateExercise() }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Add,
-                        tint = title,
-                        contentDescription = "Add workout"
-                    )
+                if (loading) {
+                    IconShimmer()
+                    Spacer(Modifier.size(20.dp))
+                    IconShimmer()
+
+                } else {
+                    IconButton(
+                        onClick = { onSearchWkTemplate() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Search,
+                            tint = title,
+                            contentDescription = "Search workout"
+                        )
+                    }
+                    IconButton(
+                        onClick = { onCreateExercise() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            tint = title,
+                            contentDescription = "Add workout"
+                        )
+                    }
                 }
             }
         }
@@ -248,19 +314,29 @@ fun HomeBanner(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Outlined.Construction,
-                contentDescription = "Construction icon",
-                modifier = Modifier.size(20.dp),
-                tint = primaryVariant,
-            )
-            Text(
-                text = "WIP",
-                color = primaryVariant,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(start = 8.dp),
-                style = TitleTypo,
-            )
+            if (loading)
+                Box(
+                    Modifier
+                        .width(52.dp)
+                        .height(20.dp)
+                        .background(loadingBoxColor)
+                        .shimmerEffect()
+                )
+            else {
+                Icon(
+                    imageVector = Icons.Outlined.Construction,
+                    contentDescription = "Construction icon",
+                    modifier = Modifier.size(20.dp),
+                    tint = primaryVariant,
+                )
+                Text(
+                    text = "WIP",
+                    color = primaryVariant,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(start = 8.dp),
+                    style = TitleTypo,
+                )
+            }
         }
     }
 }
@@ -268,6 +344,7 @@ fun HomeBanner(
 
 @Composable
 fun WkPreview(
+    loadingBoxColor: Color = Color.Gray,
     wkPreview: WorkoutPreview,
     onClick: () -> Unit,
 ) {
@@ -279,7 +356,11 @@ fun WkPreview(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        WkTemplatePicture(size = 50, shape = RoundedCornerShape(10))
+        WkTemplatePicture(
+            size = 50,
+            loadingColor = loadingBoxColor,
+            shape = RoundedCornerShape(10)
+        )
         Spacer(modifier = Modifier.size(18.dp))
         Column {
             Text(
@@ -289,6 +370,7 @@ fun WkPreview(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+
             Text(
                 text = "#tag1  #tag2",
                 color = onTertiary,
@@ -300,13 +382,51 @@ fun WkPreview(
     }
 }
 
+@Composable
+fun LoadingWkPreview(
+    loadingBoxColor: Color = Color.Gray,
+) {
+    Row(
+        modifier = Modifier
+            .padding(end = 40.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        WkTemplatePicture(
+            size = 50,
+            loading = true,
+            loadingColor = loadingBoxColor,
+            shape = RoundedCornerShape(10)
+        )
+        Spacer(modifier = Modifier.size(18.dp))
+        Column {
+            Box(
+                Modifier
+                    .width(180.dp)
+                    .height(18.dp)
+                    .background(loadingBoxColor)
+                    .shimmerEffect()
+            )
+            Spacer(Modifier.size(8.dp))
+            Box(
+                Modifier
+                    .width(80.dp)
+                    .height(12.dp)
+                    .background(loadingBoxColor)
+                    .shimmerEffect()
+            )
+        }
+    }
+}
+
 
 @Preview
 @Composable
-fun LightPreview() {
+fun Preview() {
     SalamandraTheme {
         ScreenBody(
-            state = HomeState.initial.copy(wkPreviewList = WORKOUT_PREVIEW_LIST),
+            state = HomeState.initial.copy(wkPreviewList = WORKOUT_PREVIEW_LIST, loading = false),
             sendIntent = {},
         )
     }

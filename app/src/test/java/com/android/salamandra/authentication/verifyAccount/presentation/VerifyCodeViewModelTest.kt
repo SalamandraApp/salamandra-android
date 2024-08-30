@@ -65,7 +65,8 @@ class VerifyCodeViewModelTest {
             username = "",
             email = "",
             code = "",
-            password = ""
+            password = "",
+            loading = false
         )
         assert(VerifyCodeState.initial == expectedState)
     }

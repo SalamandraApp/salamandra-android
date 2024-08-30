@@ -42,7 +42,8 @@ class HomeViewModelTest {
     fun `Assert initial state`() {
         val expectedState = HomeState(
             error = null,
-            wkPreviewList = emptyList()
+            wkPreviewList = emptyList(),
+            loading = true
         )
         assert(HomeState.initial == expectedState)
     }

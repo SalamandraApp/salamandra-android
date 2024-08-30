@@ -50,7 +50,8 @@ class RegisterViewModelTest {
             email = "",
             password = "",
             isEmailValid = true,
-            passwordFormatError = null
+            passwordFormatError = null,
+            loading = false
         )
         assert(RegisterState.initial == expectedState)
     }
