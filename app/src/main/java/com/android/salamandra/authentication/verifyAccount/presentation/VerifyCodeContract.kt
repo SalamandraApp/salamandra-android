@@ -6,10 +6,12 @@ import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
+import com.android.salamandra.splash.presentation.SplashIntent
 
 
 data class VerifyCodeState(
     val error: RootError?,
+    val loading: Boolean,
     val username: String,
     val email: String,
     val code: String,
@@ -18,6 +20,7 @@ data class VerifyCodeState(
     companion object {
         val initial: VerifyCodeState = VerifyCodeState(
             error = null,
+            loading = false,
             username = "",
             email = "",
             code = "",

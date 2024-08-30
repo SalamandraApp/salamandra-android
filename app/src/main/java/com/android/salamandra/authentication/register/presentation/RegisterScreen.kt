@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -47,7 +48,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.ErrorDialog
-import com.android.salamandra._core.presentation.components.MyCircularProgressbar
 import com.android.salamandra._core.presentation.components.SlmLogo
 import com.android.salamandra.authentication.verifyAccount.presentation.VerifyCodeNavArgs
 import com.android.salamandra.destinations.LoginScreenDestination
@@ -81,9 +81,14 @@ fun RegisterScreen(
             RegisterEvent.NavigateToLogin -> navigator.navigate(LoginScreenDestination)
             RegisterEvent.NavigateToVerifyCode -> navigator.navigate(
                 VerifyCodeScreenDestination(
-                    VerifyCodeNavArgs(username = state.username, email = state.email, password = state.password)
+                    VerifyCodeNavArgs(
+                        username = state.username,
+                        email = state.email,
+                        password = state.password
+                    )
                 )
             )
+
             RegisterEvent.NavigateToProfile -> navigator.navigate(ProfileScreenDestination)
             null -> {}
         }
@@ -108,6 +113,12 @@ private fun ScreenBody(
         var repeatPassword by remember { mutableStateOf("") }
         var isSamePassword by remember { mutableStateOf(true) }
         var isUsernameValid by remember { mutableStateOf(true) }
+        var usernameInitialized by remember { mutableStateOf(false) }
+        var emailInitialized by remember { mutableStateOf(false) }
+        var passwordInitialized by remember { mutableStateOf(false) }
+        var repeatPasswordInitialized by remember { mutableStateOf(false) }
+        val inputFieldsInitialized =
+            usernameInitialized && emailInitialized && passwordInitialized && repeatPasswordInitialized
 
         Column(
             modifier = Modifier
@@ -142,6 +153,7 @@ private fun ScreenBody(
                     .fillMaxWidth(),
                 value = state.username,
                 onValueChange = {
+                    usernameInitialized = true
                     isUsernameValid = it.matches(allowedChars.toRegex())
                     sendIntent(RegisterIntent.ChangeUsername(it))
                 },
@@ -187,25 +199,26 @@ private fun ScreenBody(
 
             // -------------------------------- EMAIL
             OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-            value = state.email,
-            onValueChange = {
-                sendIntent(RegisterIntent.ChangeEmail(it))
-            },
-            label = {
-                Text(
-                    text = stringResource(R.string.email),
-                    fontSize = 16.sp,
-                    style = NormalTypo
-                )
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Email
-            ),
-            singleLine = true,
-            shape = RoundedCornerShape(40),
-            colors = textFieldColors
+                modifier = Modifier
+                    .fillMaxWidth(),
+                value = state.email,
+                onValueChange = {
+                    emailInitialized = true
+                    sendIntent(RegisterIntent.ChangeEmail(it))
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.email),
+                        fontSize = 16.sp,
+                        style = NormalTypo
+                    )
+                },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Email
+                ),
+                singleLine = true,
+                shape = RoundedCornerShape(40),
+                colors = textFieldColors
             )
             if (!state.isEmailValid) {
                 Row(
@@ -236,12 +249,16 @@ private fun ScreenBody(
                 Spacer(modifier = Modifier.height(betweenFieldSpacer))
             }
             var passwordVisibility by remember { mutableStateOf(false) }
-            val img = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+            val img =
+                if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth(),
                 value = state.password,
-                onValueChange = { sendIntent(RegisterIntent.ChangePassword(it)) },
+                onValueChange = {
+                    passwordInitialized = true
+                    sendIntent(RegisterIntent.ChangePassword(it))
+                },
                 label = {
                     Text(
                         text = stringResource(R.string.password),
@@ -298,6 +315,7 @@ private fun ScreenBody(
                     .fillMaxWidth(),
                 value = repeatPassword,
                 onValueChange = {
+                    repeatPasswordInitialized = true
                     repeatPassword = it
                 },
                 label = {
@@ -362,27 +380,40 @@ private fun ScreenBody(
                     state.isEmailValid &&
                     (state.passwordFormatError == null)
 
-            val registerButton = if (canRegister) primaryVariant else onTertiary
+//            val registerButton =
+//                if (canRegister && inputFieldsInitialized) primaryVariant else onTertiary
+            val registerButton = primaryVariant
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(buttonHeight)
                     .border(BorderStroke(2.dp, registerButton), RoundedCornerShape(40))
-                    .clickable { if (canRegister) sendIntent(RegisterIntent.OnRegister) },
+                    .clickable(enabled = inputFieldsInitialized && canRegister) {
+                        sendIntent(RegisterIntent.OnRegister)
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = stringResource(R.string.register),
-                    fontSize = 16.sp,
-                    color = registerButton,
-                )
+                if (state.loading) {
+                    CircularProgressIndicator(Modifier.size(28.dp), color = primaryVariant)
+                } else {
+                    Text(
+                        text = stringResource(R.string.register),
+                        fontSize = 16.sp,
+                        color = registerButton,
+                    )
+                }
             }
 
         }
         IconButton(modifier = Modifier
             .align(Alignment.TopStart)
-            .padding(start = 12.dp, top = 12.dp), onClick = { sendIntent(RegisterIntent.GoToHomeNoRegister) }) {
-            Icon(imageVector = Icons.Outlined.Close, contentDescription = "Close login", tint = onSecondary)
+            .padding(start = 12.dp, top = 12.dp),
+            onClick = { sendIntent(RegisterIntent.GoToHomeNoRegister) }) {
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                contentDescription = "Close login",
+                tint = onSecondary
+            )
         }
         if (state.error != null)
             ErrorDialog(

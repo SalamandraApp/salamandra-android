@@ -37,13 +37,14 @@ class ProfileViewModel @Inject constructor(
                     is Result.Success -> _state.update {
                         it.copy(
                             isSignedIn = true,
-                            userData = userData.data
+                            userData = userData.data,
+                            loading = false
                         )
                     }
 
-                    is Result.Error -> _state.update { it.copy(error = userData.error) }
+                    is Result.Error -> _state.update { it.copy(error = userData.error, loading = false) }
                 }
-            }
+            } else _state.update { it.copy(loading = false) }
         }
 
     }

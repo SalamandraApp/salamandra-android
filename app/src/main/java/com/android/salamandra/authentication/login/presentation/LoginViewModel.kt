@@ -38,6 +38,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun onLogin() {
+        _state.update { it.copy(loading = true) }
         ioLaunch {
             when (val result =
                 repository.login(email = state.value.email, password = state.value.password)) {
@@ -45,7 +46,7 @@ class LoginViewModel @Inject constructor(
                     sendEvent(LoginEvent.NavigateToProfile)
                 }
 
-                is Result.Error -> _state.update { it.copy(error = result.error) }
+                is Result.Error -> _state.update { it.copy(error = result.error, loading = false) }
             }
         }
     }

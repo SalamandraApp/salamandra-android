@@ -2,6 +2,7 @@ package com.android.salamandra.profile.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -46,9 +49,11 @@ import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.enums.FitnessGoal
 import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.IconShimmer
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
+import com.android.salamandra._core.presentation.components.shimmerEffect
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.SettingsScreenDestination
@@ -101,6 +106,7 @@ private fun ScreenBody(
 
         val infoWeight = 0.6f
         val bannerWeight = 0.4f
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,6 +115,7 @@ private fun ScreenBody(
         ) {
             ProfileBanner(
                 modifier = Modifier.weight(bannerWeight),
+                loading = state.loading,
                 username = state.userData?.displayName,
                 displayName = state.userData?.displayName,
                 dateJoined = state.userData?.dateJoined,
@@ -118,19 +125,24 @@ private fun ScreenBody(
             InfoSection(
                 modifier = Modifier
                     .weight(infoWeight),
+                loading = state.loading,
                 weight = state.userData?.weight,
                 fitnessLevel = state.userData?.fitnessLevel,
                 fitnessGoal = state.userData?.fitnessGoal,
             )
         }
-        if (!state.isSignedIn) {
-            NotLoggedInCover (
+        if(state.loading)
+            Box(Modifier.fillMaxSize().background(tertiary.copy(alpha = 0.9f)))
+
+        if (!state.isSignedIn && !state.loading) {
+            NotLoggedInCover(
                 onGoToLogin = { sendIntent(ProfileIntent.GoToLogin) }
             )
         }
-
     }
+
 }
+
 @Composable
 private fun NotLoggedInCover(
     onGoToLogin: () -> Unit
@@ -146,7 +158,7 @@ private fun NotLoggedInCover(
         val buttonWeight = 70f
         val spacerWeights = 1000f - buttonWeight
 
-        Spacer(modifier = Modifier.weight(spacerWeights/2))
+        Spacer(modifier = Modifier.weight(spacerWeights / 2))
         Text(
             modifier = Modifier.padding(bottom = 18.dp),
             text = stringResource(R.string.need_to_login),
@@ -169,28 +181,30 @@ private fun NotLoggedInCover(
                 fontSize = 20.sp
             )
         }
-        Spacer(modifier = Modifier.weight(spacerWeights/2))
+        Spacer(modifier = Modifier.weight(spacerWeights / 2))
     }
 }
 
 @Composable
-private fun InfoSection (
+private fun InfoSection(
     modifier: Modifier = Modifier,
+    loading: Boolean,
     weight: Double?,
     fitnessLevel: FitnessLevel?,
     fitnessGoal: FitnessGoal?,
 ) {
     val dpSideMargin = 20.dp
     val dpVerticalPadding = 20.dp
-    LazyColumn (
+    LazyColumn(
         modifier = modifier.fillMaxWidth(),
-    ){
+    ) {
         item {
             BasicInfo(
                 modifier = Modifier
                     .height(300.dp)
                     .fillMaxWidth()
                     .padding(vertical = dpVerticalPadding, horizontal = dpSideMargin),
+                loading = loading,
                 weight = weight,
                 fitnessLevel = fitnessLevel,
                 fitnessGoal = fitnessGoal,
@@ -200,8 +214,9 @@ private fun InfoSection (
 }
 
 @Composable
-private fun BasicInfo (
+private fun BasicInfo(
     modifier: Modifier = Modifier,
+    loading: Boolean,
     weight: Double?,
     fitnessLevel: FitnessLevel?,
     fitnessGoal: FitnessGoal?,
@@ -214,7 +229,7 @@ private fun BasicInfo (
     val weightAnnotatedString = buildAnnotatedString {
         append("Weight: ")
         withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-            append(weight?.toString()?: "???")
+            append(weight?.toString() ?: "???")
             append(" kg")
         }
     }
@@ -222,118 +237,148 @@ private fun BasicInfo (
     val fitnessLvlAnnotatedString = buildAnnotatedString {
         append("Fitness Level: ")
         withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-            append(fitnessLevel?.toString()?: "Beginner")
+            append(fitnessLevel?.toString() ?: "Beginner")
         }
     }
 
     val fitnessGoalAnnotatedString = buildAnnotatedString {
         append("Fitness Goal: ")
         withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-            append(fitnessGoal?.toString()?: "Get in shape")
+            append(fitnessGoal?.toString() ?: "Get in shape")
         }
     }
-    Row (
+    Row(
         modifier = modifier
     ) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-        ){
-            Row (
+        ) {
+            Row(
                 modifier = Modifier
                     .padding(bottom = dpInsidePadding)
                     .weight(1f)
-            ){
-                Column (
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = dpInsidePadding / 2)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(secondary)
-                        .padding(dpBoxMargin),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+            ) {
+                if (loading) {
+                    Box(
+                        Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Gray)
+                            .shimmerEffect()
+                    )
+                    Spacer(Modifier.size(dpInsidePadding))
+                    Box(
+                        Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Gray)
+                            .shimmerEffect()
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = dpInsidePadding / 2)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(secondary)
+                            .padding(dpBoxMargin),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
 
-                ) {
-                    Icon(
-                        modifier = Modifier.size(60.dp),
-                        imageVector = Icons.Filled.QueryStats,
-                        tint = iconColor,
-                        contentDescription = "WIP"
-                    )
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(60.dp),
+                            imageVector = Icons.Filled.QueryStats,
+                            tint = iconColor,
+                            contentDescription = "WIP"
+                        )
 
-                    Text(
-                        modifier = Modifier.padding(top = 10.dp),
-                        text = weightAnnotatedString,
-                        color = textColor,
-                        style = SemiTypo,
-                        fontSize = 16.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Column (
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = dpInsidePadding / 2)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(secondary)
-                        .padding(dpBoxMargin),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(60.dp),
-                        imageVector = Icons.Filled.FitnessCenter,
-                        tint = iconColor,
-                        contentDescription = "WIP"
-                    )
+                        Text(
+                            modifier = Modifier.padding(top = 10.dp),
+                            text = weightAnnotatedString,
+                            color = textColor,
+                            style = SemiTypo,
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = dpInsidePadding / 2)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(secondary)
+                            .padding(dpBoxMargin),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(60.dp),
+                            imageVector = Icons.Filled.FitnessCenter,
+                            tint = iconColor,
+                            contentDescription = "WIP"
+                        )
 
-                    Text(
-                        modifier = Modifier.padding(top = 10.dp),
-                        text = "Volume: ???",
-                        color = textColor,
-                        style = SemiTypo,
-                        fontSize = 16.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                        Text(
+                            modifier = Modifier.padding(top = 10.dp),
+                            text = "Volume: ???",
+                            color = textColor,
+                            style = SemiTypo,
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
 
             }
-            Row (
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(secondary),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Column (
+            if (loading)
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.Gray)
+                        .shimmerEffect())
+            else {
+                Row(
                     modifier = Modifier
-                        .padding(dpBoxMargin)
-                        .padding(start = 20.dp)
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(secondary),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = fitnessLvlAnnotatedString,
-                        color = textColor,
-                        style = SemiTypo,
-                        fontSize = 16.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Column(
+                        modifier = Modifier
+                            .padding(dpBoxMargin)
+                            .padding(start = 20.dp)
+                    ) {
+                        Text(
+                            text = fitnessLvlAnnotatedString,
+                            color = textColor,
+                            style = SemiTypo,
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
 
-                    Text(
-                        modifier = Modifier.padding(top = 30.dp),
-                        text = fitnessGoalAnnotatedString,
-                        color = textColor,
-                        style = SemiTypo,
-                        fontSize = 16.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                        Text(
+                            modifier = Modifier.padding(top = 30.dp),
+                            text = fitnessGoalAnnotatedString,
+                            color = textColor,
+                            style = SemiTypo,
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }
@@ -343,33 +388,44 @@ private fun BasicInfo (
 @Composable
 private fun ProfileBanner(
     modifier: Modifier = Modifier,
+    loading: Boolean,
     username: String?,
     displayName: String?,
     dateJoined: LocalDate?,
     onGoToSettings: () -> Unit,
-    ) {
+) {
     val bannerPicWeight = 0.40f
     val bannerPfpWeight = 0.5f
     val bannerBadgesWeight = 0.15f
-    
+
     Column(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(bannerPicWeight)
-        ) {
-            WkTemplatePicture(
-                modifier = Modifier
-                    .fillMaxHeight()
+        if (loading)
+            Box(
+                Modifier
                     .fillMaxWidth()
+                    .weight(bannerPfpWeight)
+                    .background(Color.Gray)
+                    .shimmerEffect()
             )
+        else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(bannerPicWeight)
+            ) {
+                WkTemplatePicture(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                )
+            }
         }
 
         val sideMargin = 25.dp
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(bannerPfpWeight),
@@ -379,78 +435,132 @@ private fun ProfileBanner(
             val pfpWeight = 0.35f
             val usernameWeight = 0.55f
             val buttonsWeight = 0.1f
-            Column (
-                modifier = Modifier
-                    .weight(pfpWeight)
-                    .padding(start = sideMargin - 10.dp)
-            ) {
-                ProfilePicture(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                    pad = 10.dp
+            if (loading)
+                Box(
+                    Modifier
+                        .fillMaxHeight()
+                        .weight(pfpWeight)
+                        .padding(start = 32.dp)
+                        .padding(vertical = 22.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray)
+                        .shimmerEffect()
                 )
+            else {
+                Column(
+                    modifier = Modifier
+                        .weight(pfpWeight)
+                        .padding(start = sideMargin - 10.dp)
+                ) {
+                    ProfilePicture(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f),
+                        pad = 10.dp
+                    )
+                }
             }
             val displayNameText = displayName ?: stringResource(R.string.display_name)
             val usernameText = "@${username ?: "username"}"
-            val dateJoinedText = "Joined ${dateJoined?.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) ?: "DD-MM-YYYY"}"
+            val dateJoinedText =
+                "Joined ${dateJoined?.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) ?: "DD-MM-YYYY"}"
 
-            Column (
+            Column(
                 modifier = Modifier
                     .weight(usernameWeight)
                     .align(Alignment.CenterVertically)
                     .padding(horizontal = 10.dp)
-            ){
-                Text(
-                    text = displayNameText,
-                    color = title,
-                    style = TitleTypo,
-                    fontSize = 20.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    modifier = Modifier.padding(top = 10.dp),
-                    text = usernameText,
-                    color = onTertiary,
-                    style = SemiTypo,
-                    fontSize = 18.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    modifier = Modifier.padding(top = 10.dp),
-                    text = dateJoinedText,
-                    color = onTertiary,
-                    style = SemiTypo,
-                    fontSize = 14.sp
-                )
+            ) {
+                if (loading) {
+                    Spacer(Modifier.weight(1f))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                            .padding(end = 32.dp)
+                            .background(Color.Gray)
+                            .shimmerEffect()
+                    )
+//                    Spacer(Modifier.size(12.dp))
+                    Spacer(Modifier.weight(0.5f))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(18.dp)
+                            .padding(end = 70.dp)
+                            .background(Color.Gray)
+                            .shimmerEffect()
+                    )
+                    Spacer(Modifier.weight(0.5f))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(16.dp)
+                            .padding(end = 38.dp)
+                            .background(Color.Gray)
+                            .shimmerEffect()
+                    )
+                    Spacer(Modifier.weight(1f))
+                } else {
+                    Text(
+                        text = displayNameText,
+                        color = title,
+                        style = TitleTypo,
+                        fontSize = 20.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 10.dp),
+                        text = usernameText,
+                        color = onTertiary,
+                        style = SemiTypo,
+                        fontSize = 18.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 10.dp),
+                        text = dateJoinedText,
+                        color = onTertiary,
+                        style = SemiTypo,
+                        fontSize = 14.sp
+                    )
+                }
             }
-            Column (
+            Column(
                 modifier = Modifier
                     .weight(buttonsWeight)
                     .align(Alignment.CenterVertically)
                     .padding(end = sideMargin - 10.dp)
-            ){
-                IconButton(
-                    onClick = { onGoToSettings() },
-                ) {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Filled.Settings,
-                        tint = onTertiary,
-                        contentDescription = "Profile Settings"
-                    )
-                }
-                IconButton(
-                    onClick = {/*TODO*/ },
-                ) {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Filled.Edit,
-                        tint = colorMessage,
-                        contentDescription = "WIP"
-                    )
+            ) {
+                if (loading) {
+                    Spacer(Modifier.weight(1f))
+                    IconShimmer()
+                    Spacer(Modifier.weight(0.8f))
+                    IconShimmer()
+                    Spacer(Modifier.weight(1f))
+                } else {
+                    IconButton(
+                        onClick = { onGoToSettings() },
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = Icons.Filled.Settings,
+                            tint = onTertiary,
+                            contentDescription = "Profile Settings"
+                        )
+                    }
+                    IconButton(
+                        onClick = {/*TODO*/ },
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = Icons.Filled.Edit,
+                            tint = colorMessage,
+                            contentDescription = "WIP"
+                        )
+                    }
                 }
             }
         }
@@ -463,15 +573,19 @@ private fun ProfileBanner(
         )
         {
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {/*TODO*/ },
-            ) {
-                Icon(
-                    modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Filled.MilitaryTech,
-                    tint = colorMessage,
-                    contentDescription = "WIP"
-                )
+            if (loading)
+                IconShimmer()
+            else {
+                IconButton(
+                    onClick = {/*TODO*/ },
+                ) {
+                    Icon(
+                        modifier = Modifier.size(30.dp),
+                        imageVector = Icons.Filled.MilitaryTech,
+                        tint = colorMessage,
+                        contentDescription = "WIP"
+                    )
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -479,13 +593,23 @@ private fun ProfileBanner(
 }
 
 
-
 @Preview()
 @Composable
 private fun ScreenPreview() {
     SalamandraTheme {
         ScreenBody(
-            state = ProfileState.initial.copy(isSignedIn = true),
+            state = ProfileState.initial.copy(isSignedIn = true, loading = false),
+            sendIntent = {}
+        )
+    }
+}
+
+@Preview()
+@Composable
+private fun LoadingScreenPreview() {
+    SalamandraTheme {
+        ScreenBody(
+            state = ProfileState.initial.copy(isSignedIn = true, loading = true),
             sendIntent = {}
         )
     }

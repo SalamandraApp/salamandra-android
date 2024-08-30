@@ -1,11 +1,9 @@
 package com.android.salamandra.authentication.verifyAccount.presentation
 
 import androidx.lifecycle.SavedStateHandle
-import com.android.salamandra.authentication.verifyAccount.domain.Repository
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.error.RootError
-import com.android.salamandra._core.presentation.UiText
+import com.android.salamandra.authentication.verifyAccount.domain.Repository
 import com.android.salamandra.navArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,7 +25,7 @@ class VerifyCodeViewModel @Inject constructor(
         when (intent) {
             is VerifyCodeIntent.Error -> _state.update { it.copy(error = intent.error) }
 
-            is VerifyCodeIntent.CloseError ->_state.update { it.copy(error = null) }
+            is VerifyCodeIntent.CloseError -> _state.update { it.copy(error = null) }
 
             is VerifyCodeIntent.ChangeCode -> _state.update { it.copy(code = intent.code) }
 
@@ -37,10 +35,17 @@ class VerifyCodeViewModel @Inject constructor(
 
     init {
         val navArgs: VerifyCodeNavArgs = savedStateHandle.navArgs()
-        _state.update { it.copy(username = navArgs.username, email = navArgs.email, password = navArgs.password) }
+        _state.update {
+            it.copy(
+                username = navArgs.username,
+                email = navArgs.email,
+                password = navArgs.password
+            )
+        }
     }
 
     private fun onVerifyCode() {
+        _state.update { it.copy(loading = true) }
         ioLaunch {
             when (val confirmation =
                 repository.confirmRegister(
@@ -49,8 +54,8 @@ class VerifyCodeViewModel @Inject constructor(
                     email = state.value.email,
                     password = state.value.password
                 )) {
-                is Result.Error -> _state.update { it.copy(error = confirmation.error) }
                 is Result.Success -> sendEvent(VerifyCodeEvent.NavigateToHome)
+                is Result.Error -> _state.update { it.copy(error = confirmation.error, loading = false) }
             }
         }
     }

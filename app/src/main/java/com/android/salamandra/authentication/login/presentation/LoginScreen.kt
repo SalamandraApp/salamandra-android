@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -130,6 +132,7 @@ private fun ScreenBody(
                 modifier = Modifier
                     .fillMaxWidth(),
                 value = state.email,
+                enabled = !state.loading,
                 onValueChange = {
                     sendIntent(LoginIntent.ChangeEmail(it))
                 },
@@ -154,6 +157,7 @@ private fun ScreenBody(
                 modifier = Modifier
                     .fillMaxWidth(),
                 value = state.password,
+                enabled = !state.loading,
                 onValueChange = { sendIntent(LoginIntent.ChangePassword(it)) },
                 label = {
                     Text(
@@ -181,7 +185,7 @@ private fun ScreenBody(
                 color = primaryVariant,
                 fontSize = 14.sp,
                 modifier = Modifier
-                    .clickable { sendIntent(LoginIntent.GoToSignup) }
+                    .clickable(enabled = !state.loading) { sendIntent(LoginIntent.GoToSignup) }
                     .align(Alignment.End)
                     .padding(vertical = textPad)
             )
@@ -195,14 +199,19 @@ private fun ScreenBody(
                         .height(buttonHeight)
                         .fillMaxWidth()
                         .border(BorderStroke(2.dp, primaryVariant), RoundedCornerShape(40))
-                        .clickable { sendIntent(LoginIntent.Login) },
+                        .clickable(enabled = !state.loading) { sendIntent(LoginIntent.Login) },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = stringResource(R.string.login),
-                        fontSize = 16.sp,
-                        color = primaryVariant,
-                    )
+                    if(state.loading){
+                        CircularProgressIndicator(Modifier.size(28.dp), color = primaryVariant)
+                    }
+                    else{
+                        Text(
+                            text = stringResource(R.string.login),
+                            fontSize = 16.sp,
+                            color = primaryVariant,
+                        )
+                    }
                 }
             }
         }
@@ -229,7 +238,17 @@ private fun ScreenBody(
 fun LoginScreenPreview() {
     SalamandraTheme {
         ScreenBody(
-            state = LoginState.initial,
+            state = LoginState.initial.copy(loading = false),
+            sendIntent = {},
+        )
+    }
+}
+@Preview
+@Composable
+fun LoadingLoginScreenPreview() {
+    SalamandraTheme {
+        ScreenBody(
+            state = LoginState.initial.copy(loading = true),
             sendIntent = {},
         )
     }

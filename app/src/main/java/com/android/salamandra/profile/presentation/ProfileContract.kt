@@ -16,7 +16,7 @@ data class ProfileState(
 ) : State {
     companion object {
         val initial: ProfileState = ProfileState(
-            loading = false,
+            loading = true,
             error = null,
             userData = null,
             isSignedIn = false
