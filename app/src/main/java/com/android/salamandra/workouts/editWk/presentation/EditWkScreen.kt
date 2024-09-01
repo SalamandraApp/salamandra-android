@@ -187,20 +187,19 @@ private fun ScreenBody(
                             {
                                 EditWkTemplateElement(
                                     element = selectedElement,
-                                    index = state.selectedElementIndex,
-                                    onEditSets = { newSets, index ->
-                                        sendIntent(EditWkIntent.ChangeSets(newSets, index))
+                                    onEditSets = { newSets ->
+                                        sendIntent(EditWkIntent.ChangeSets(newSets, state.selectedElementIndex))
                                     },
-                                    onEditReps= { newReps, index ->
-                                        sendIntent(EditWkIntent.ChangeReps(newReps, index))
+                                    onEditReps= { newReps ->
+                                        sendIntent(EditWkIntent.ChangeReps(newReps, state.selectedElementIndex))
                                     },
-                                    onEditWeight = { newWeight, index ->
-                                        sendIntent(EditWkIntent.ChangeWeight(newWeight, index))
+                                    onEditWeight = { newWeight ->
+                                        sendIntent(EditWkIntent.ChangeWeight(newWeight, state.selectedElementIndex))
                                     },
-                                    onEditRest = { newRest, index ->
-                                        sendIntent(EditWkIntent.ChangeRest(newRest, index))
+                                    onEditRest = { newRest ->
+                                        sendIntent(EditWkIntent.ChangeRest(newRest, state.selectedElementIndex))
                                     },
-                                    onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement(it)) },
+                                    onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement(state.selectedElementIndex)) },
                                 )
                             },
                             { ExerciseInfo(selectedElement.exercise) }

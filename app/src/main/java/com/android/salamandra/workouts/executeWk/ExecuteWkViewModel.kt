@@ -39,6 +39,13 @@ class ExecuteWkViewModel @Inject constructor(
             ExecuteWkIntent.EndWorkout -> endWorkout()
 
             ExecuteWkIntent.SkipSet -> skipSet()
+
+            ExecuteWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElement = null) }
+            is ExecuteWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElement = intent.set_number) }
+
+            is ExecuteWkIntent.EditReps -> updateElementReps(intent.newReps)
+            is ExecuteWkIntent.EditWeight -> updateElementWeight(intent.newWeight)
+            is ExecuteWkIntent.EditRest -> updateElementRest(intent.newRest)
         }
     }
 
@@ -141,6 +148,25 @@ class ExecuteWkViewModel @Inject constructor(
     private fun endWorkout() {
         // TODO Make POST to save execution
         sendEvent(ExecuteWkEvent.EndWorkout)
+    }
+
+    private fun updateElementReps(newReps: Int) {
+        if (state.value.selectedElement != null && state.value.currentExercise != null) {
+            val updatedElements = state.value.currentExercise!!.executionElements.toMutableList().apply { this[state.value.selectedElement!! - 1] = this[state.value.selectedElement!! - 1].copy(reps = newReps)}
+            _state.update { it.copy(currentExercise = state.value.currentExercise!!.copy(executionElements = updatedElements)) }
+        }
+    }
+    private fun updateElementWeight(newWeight: Double) {
+        if (state.value.selectedElement != null && state.value.currentExercise != null) {
+            val updatedElements = state.value.currentExercise!!.executionElements.toMutableList().apply { this[state.value.selectedElement!! - 1] = this[state.value.selectedElement!! - 1].copy(weight = newWeight)}
+            _state.update { it.copy(currentExercise = state.value.currentExercise!!.copy(executionElements = updatedElements)) }
+        }
+    }
+    private fun updateElementRest(newRest: Int) {
+        if (state.value.selectedElement != null && state.value.currentExercise != null) {
+            val updatedElements = state.value.currentExercise!!.executionElements.toMutableList().apply { this[state.value.selectedElement!! - 1] = this[state.value.selectedElement!! - 1].copy(rest = newRest)}
+            _state.update { it.copy(currentExercise = state.value.currentExercise!!.copy(executionElements = updatedElements)) }
+        }
     }
 
 }
