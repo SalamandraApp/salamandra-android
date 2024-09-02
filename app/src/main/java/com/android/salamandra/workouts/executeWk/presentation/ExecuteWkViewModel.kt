@@ -47,10 +47,13 @@ class ExecuteWkViewModel @Inject constructor(
             ExecuteWkIntent.SkipSet -> skipSet()
 
             ExecuteWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElement = null) }
-            is ExecuteWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElement = intent.set_number) }
+
+            is ExecuteWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElement = intent.setNumber) }
 
             is ExecuteWkIntent.EditReps -> updateElementReps(intent.newReps)
+
             is ExecuteWkIntent.EditWeight -> updateElementWeight(intent.newWeight)
+
             is ExecuteWkIntent.EditRest -> updateElementRest(intent.newRest)
         }
     }
@@ -154,8 +157,15 @@ class ExecuteWkViewModel @Inject constructor(
 
     private fun endWorkout() {
         ioLaunch {
-            val workoutExecution = WorkoutExecution(date = LocalDate.now(), survey = state.value.survey, elements = state.value.exerciseList)
-            when(val creation = repository.createWorkoutExecution(state.value.workoutTemplateId, workoutExecution = workoutExecution)) {
+            val workoutExecution = WorkoutExecution(
+                date = LocalDate.now(),
+                survey = state.value.survey,
+                elements = state.value.exerciseList
+            )
+            when (val creation = repository.createWorkoutExecution(
+                state.value.workoutTemplateId,
+                workoutExecution = workoutExecution
+            )) {
                 is Result.Success -> sendEvent(ExecuteWkEvent.EndWorkout)
                 is Result.Error -> _state.update { it.copy(error = creation.error) }
             }
@@ -163,21 +173,77 @@ class ExecuteWkViewModel @Inject constructor(
     }
 
     private fun updateElementReps(newReps: Int) {
-        if (state.value.selectedElement != null && state.value.currentExercise != null) {
-            val updatedElements = state.value.currentExercise!!.executionElements.toMutableList().apply { this[state.value.selectedElement!! - 1] = this[state.value.selectedElement!! - 1].copy(reps = newReps)}
-            _state.update { it.copy(currentExercise = state.value.currentExercise!!.copy(executionElements = updatedElements)) }
+        val selectedElement = state.value.selectedElement
+        val currentExercise = state.value.currentExercise
+
+        if (selectedElement != null && currentExercise != null) {
+            val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
+
+            val updatedElements = currentExercise.executionElements.toMutableList().apply {
+                this[selectedElement - 1] = this[selectedElement - 1].copy(reps = newReps)
+            }
+            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
+
+            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
+                this[indexOfExercise] = updatedCurrentExercise
+            }
+
+            _state.update {
+                it.copy(
+                    currentExercise = updatedCurrentExercise,
+                    exerciseList = updatedExerciseList
+                )
+            }
         }
     }
+
     private fun updateElementWeight(newWeight: Double) {
-        if (state.value.selectedElement != null && state.value.currentExercise != null) {
-            val updatedElements = state.value.currentExercise!!.executionElements.toMutableList().apply { this[state.value.selectedElement!! - 1] = this[state.value.selectedElement!! - 1].copy(weight = newWeight)}
-            _state.update { it.copy(currentExercise = state.value.currentExercise!!.copy(executionElements = updatedElements)) }
+        val selectedElement = state.value.selectedElement
+        val currentExercise = state.value.currentExercise
+
+        if (selectedElement != null && currentExercise != null) {
+            val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
+            val updatedElements = currentExercise.executionElements.toMutableList().apply {
+                this[selectedElement - 1] = this[selectedElement - 1].copy(weight = newWeight)
+            }
+
+            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
+
+            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
+                this[indexOfExercise] = updatedCurrentExercise
+            }
+
+            _state.update {
+                it.copy(
+                    currentExercise = updatedCurrentExercise,
+                    exerciseList = updatedExerciseList
+                )
+            }
         }
     }
+
     private fun updateElementRest(newRest: Int) {
-        if (state.value.selectedElement != null && state.value.currentExercise != null) {
-            val updatedElements = state.value.currentExercise!!.executionElements.toMutableList().apply { this[state.value.selectedElement!! - 1] = this[state.value.selectedElement!! - 1].copy(rest = newRest)}
-            _state.update { it.copy(currentExercise = state.value.currentExercise!!.copy(executionElements = updatedElements)) }
+        val selectedElement = state.value.selectedElement
+        val currentExercise = state.value.currentExercise
+
+        if (selectedElement != null && currentExercise != null) {
+            val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
+            val updatedElements = currentExercise.executionElements.toMutableList().apply {
+                this[selectedElement - 1] = this[selectedElement - 1].copy(rest = newRest)
+            }
+
+            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
+
+            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
+                this[indexOfExercise] = updatedCurrentExercise
+            }
+
+            _state.update {
+                it.copy(
+                    currentExercise = updatedCurrentExercise,
+                    exerciseList = updatedExerciseList
+                )
+            }
         }
     }
 

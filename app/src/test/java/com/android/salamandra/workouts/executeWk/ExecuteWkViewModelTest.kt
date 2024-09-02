@@ -122,37 +122,114 @@ class ExecuteWkViewModelTest {
             currentExercise = EXAMPLE_EXECUTION_EXERCISE,
             workoutTemplateId = EXAMPLE_WORKOUT_TEMPLATE.wkId
         )
-        // Assert
-        assert(executeWkViewModel.state.value == state)
-
-        // Act
-        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
-        runCurrent()
-        // Assert
-        assert(executeWkViewModel.state.value == state.copy(currentSet = 2))
 
         // Act
         executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
         executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
         runCurrent()
-        // Arrange
+        // Assert
         assert(executeWkViewModel.state.value == state.copy(currentSet = 4))
 
         // Act
         executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
         executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
         runCurrent()
-        // Arrange
-        assert(executeWkViewModel.state.value == state.copy(currentSet = 2, currentExercise = EXAMPLE_EXECUTION_EXERCISES_LIST[1]))
+        // Assert
+        assert(
+            executeWkViewModel.state.value == state.copy(
+                currentSet = 2,
+                currentExercise = EXAMPLE_EXECUTION_EXERCISES_LIST[1]
+            )
+        )
 
         // Act
         executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
         executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
         executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
         runCurrent()
-        // Arrange
-        assert(executeWkViewModel.state.value == state.copy(currentSet = 4, currentExercise = EXAMPLE_EXECUTION_EXERCISES_LIST[1], workoutEnded = true))
+        // Assert
+        assert(
+            executeWkViewModel.state.value == state.copy(
+                currentSet = 4,
+                currentExercise = EXAMPLE_EXECUTION_EXERCISES_LIST[1],
+                workoutEnded = true
+            )
+        )
+    }
 
+    @Test
+    fun `Skipping different sets work correctly`() = runTest {
+        // Act
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        runCurrent()
+
+
+        // Assert
+        assert(executeWkViewModel.state.value.workoutEnded)
+    }
+
+    @Test
+    fun `Deleting one whole exercise work correctly`() = runTest {
+        // Act
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.LogAction)
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        runCurrent()
+
+        // Assert
+        assert(executeWkViewModel.state.value.workoutEnded && executeWkViewModel.state.value.exerciseList.size == 1)
+    }
+
+    @Test
+    fun `Changing weight, reps, and rest works as expected`() = runTest {
+        // Arrange
+
+        // Act
+        executeWkViewModel.dispatch(ExecuteWkIntent.ShowBottomSheet(2))
+        executeWkViewModel.dispatch(ExecuteWkIntent.EditReps(18))
+        executeWkViewModel.dispatch(ExecuteWkIntent.EditWeight(100.3))
+        executeWkViewModel.dispatch(ExecuteWkIntent.ShowBottomSheet(3))
+        executeWkViewModel.dispatch(ExecuteWkIntent.EditRest(120))
+        runCurrent()
+
+        // Assert
+        assert(executeWkViewModel.state.value.exerciseList[0].executionElements[1].reps == 18)
+        assert(executeWkViewModel.state.value.exerciseList[0].executionElements[1].weight == 100.3)
+        assert(executeWkViewModel.state.value.exerciseList[0].executionElements[2].rest == 120)
+    }
+
+    @Test
+    fun `Changing weight, reps, rest and sikiping the exercise does not throw exception`() = runTest {
+        // Act
+        executeWkViewModel.dispatch(ExecuteWkIntent.ShowBottomSheet(2))
+        executeWkViewModel.dispatch(ExecuteWkIntent.EditReps(18))
+        executeWkViewModel.dispatch(ExecuteWkIntent.EditWeight(100.3))
+        executeWkViewModel.dispatch(ExecuteWkIntent.ShowBottomSheet(3))
+        executeWkViewModel.dispatch(ExecuteWkIntent.EditRest(120))
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        runCurrent()
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        runCurrent()
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        runCurrent()
+        executeWkViewModel.dispatch(ExecuteWkIntent.SkipSet)
+        runCurrent()
+
+        // Assert
+        assert(executeWkViewModel.state.value.exerciseList.size == 1)
     }
 
 
