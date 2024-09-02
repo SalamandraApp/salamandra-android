@@ -5,6 +5,7 @@ import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
+import com.android.salamandra._core.domain.model.workout.executions.WkExecutionElement
 import com.android.salamandra._core.domain.model.workout.executions.WkExecutionExercise
 
 
@@ -15,7 +16,8 @@ data class ExecuteWkState(
     val currentSet: Int,
     val workoutEnded: Boolean,
     val survey: Int?,
-    val startOfSetCurrentTimeMillis: Long
+    val startOfSetCurrentTimeMillis: Long,
+    val selectedElement: Int?
 ) : State {
     companion object {
         val initial: ExecuteWkState = ExecuteWkState(
@@ -25,7 +27,8 @@ data class ExecuteWkState(
             currentSet = 1,
             workoutEnded = false,
             survey = null,
-            startOfSetCurrentTimeMillis = 0
+            startOfSetCurrentTimeMillis = 0,
+            selectedElement = null
         )
     }
 }
@@ -46,6 +49,13 @@ sealed class ExecuteWkIntent: Intent {
     data object SkipSet: ExecuteWkIntent()
 
     data object EndWorkout: ExecuteWkIntent()
+
+    data object HideBottomSheet: ExecuteWkIntent()
+    data class ShowBottomSheet(val set_number: Int): ExecuteWkIntent()
+
+    data class EditReps(val newReps: Int): ExecuteWkIntent()
+    data class EditWeight(val newWeight: Double): ExecuteWkIntent()
+    data class EditRest(val newRest: Int): ExecuteWkIntent()
 }
 
 sealed class ExecuteWkEvent: Event{

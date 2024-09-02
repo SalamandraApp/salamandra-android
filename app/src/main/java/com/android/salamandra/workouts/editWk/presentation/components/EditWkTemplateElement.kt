@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
+import com.android.salamandra._core.presentation.components.EditWeight
 import com.android.salamandra._core.presentation.components.NumberField
 import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.TitleTypo
@@ -52,12 +53,11 @@ import workout.WorkoutTemplateElementEntity
 @Composable
 fun EditWkTemplateElement(
     element: WkTemplateElement,
-    index: Int,
-    onEditSets: (Int, Int) -> Unit,
-    onEditReps: (Int, Int) -> Unit,
-    onEditWeight: (Double, Int) -> Unit,
-    onEditRest: (Int, Int) -> Unit,
-    onDeleteElement: (Int) -> Unit,
+    onEditSets: (Int) -> Unit,
+    onEditReps: (Int) -> Unit,
+    onEditWeight: (Double) -> Unit,
+    onEditRest: (Int) -> Unit,
+    onDeleteElement: () -> Unit,
 ) {
     Column (
         modifier = Modifier.imePadding()
@@ -114,9 +114,9 @@ fun EditWkTemplateElement(
                     onValueChange = {
                         val newInt = it.toIntOrNull() ?: 0
                         if (element.sets == 0 && newInt >= 10) {
-                            onEditSets(newInt / 10, index)
+                            onEditSets(newInt / 10)
                         } else {
-                            onEditSets(newInt, index)
+                            onEditSets(newInt)
                         }
                     }
                 )
@@ -142,9 +142,9 @@ fun EditWkTemplateElement(
                     onValueChange = {
                         val newInt = it.toIntOrNull() ?: 0
                         if (element.reps == 0 && newInt >= 10) {
-                            onEditReps(newInt / 10, index)
+                            onEditReps(newInt / 10)
                         } else {
-                            onEditReps(newInt, index)
+                            onEditReps(newInt)
                         }
                     }
                 )
@@ -164,57 +164,12 @@ fun EditWkTemplateElement(
                 modifier = Modifier.weight(wField),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (element.weight != null) {
-                    val parts = element.weight.toString().split(".")
-                    val beforeDot = remember { mutableStateOf(element.weight % 1.0 == 0.0) }
-                    val int = remember { mutableStateOf(parts[0]) }
-                    val decimal = remember { mutableStateOf(parts[1]) }
-                    val weightString = "${int.value}.${decimal.value}"
-                    val styledWeight = buildAnnotatedString {
-                        append(int.value)
-                        withStyle(style = SpanStyle(color = if (beforeDot.value) onTertiary else title)) {
-                            append(".")
-                        }
-                        withStyle(style = SpanStyle(color = if (!beforeDot.value && decimal.value != "0") title else onTertiary)) {
-                            append(decimal.value)
-                        }
-                    }
-                    NumberField(
-                        modifier = Modifier.clip(RoundedCornerShape(10.dp)),
-                        value = styledWeight,
-                        onValueChange = {
-                            val lastChar = it.last()
-                            // Removed
-                            if (it.length < weightString.length) {
-                                if (beforeDot.value) {
-                                    int.value =
-                                        if (int.value.length > 1) int.value.dropLast(1) else "0"
-                                } else {
-                                    if (decimal.value == "0") beforeDot.value = true
-                                    decimal.value = "0"
-                                }
-                            }
-                            // Added
-                            else {
-                                // Dot
-                                if (lastChar.toString() == ".") {
-                                    beforeDot.value = false
-                                }
-                                // Other
-                                else if (lastChar.digitToIntOrNull() != null) {
-                                    if (beforeDot.value) {
-                                        if (int.value == "0") int.value = ""
-                                        int.value += lastChar
-                                    } else {
-                                        decimal.value = lastChar.toString()
-                                    }
-                                }
-                            }
-
-                            onEditWeight("${int.value}.${decimal.value}".toDouble(), index)
-                        }
-                    )
-                }
+                if (element.weight != null)
+                    EditWeight(
+                        element.weight,
+                        onEditWeight = { newWeight ->
+                            onEditWeight(newWeight)
+                        })
             }
             Box(
                 modifier = Modifier.weight(wSpacer / 2),
@@ -287,12 +242,12 @@ fun EditWkTemplateElement(
             }
             Spacer(modifier = Modifier.weight(wSpacer))
             Box (modifier = Modifier.weight(2 * wField + wSpacer)) {
-                val sliderPosition = remember { mutableFloatStateOf(0f) }
+                val sliderPosition = remember { mutableFloatStateOf(element.rest.toFloat()) }
                 Slider(
                     value = sliderPosition.value,
                     onValueChange = {
                         sliderPosition.value = it
-                        onEditRest(it.toInt(), index)
+                        onEditRest(it.toInt())
                     },
                     steps = 19,
                     valueRange = 0f..300f,
@@ -312,7 +267,7 @@ fun EditWkTemplateElement(
                     containerColor = secondary,
                     contentColor = colorError,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                    onClick = { onDeleteElement(index) }) {
+                    onClick = { onDeleteElement() }) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
                         contentDescription = "Delete exercise",

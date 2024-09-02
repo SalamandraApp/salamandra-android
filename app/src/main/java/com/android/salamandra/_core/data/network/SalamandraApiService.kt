@@ -26,14 +26,13 @@ interface SalamandraApiService {
     @GET("users/{userId}")
     suspend fun getUserData(@Path("userId") userId: String): UserResponse
 
-    @GET("/users/{user_id}/workout-templates/{workout_template_id}")
+    @GET("users/{user_id}/workout-templates/{workout_template_id}")
     suspend fun getWorkoutById(
         @Path("user_id") userId: String,
         @Path("workout_template_id") wkId: String,
         @Query("full") full: String
     ): WorkoutTemplateResponse
 
-    @POST("/users/{user_id}/workout-templates")
+    @POST("users/{user_id}/workout-templates")
     suspend fun createWkTemplate(@Path("user_id") userId: String, @Body wkTemplate: CreateWorkoutTemplateRequest): CreateWorkoutTemplateResponse
-
 }

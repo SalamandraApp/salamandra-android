@@ -57,7 +57,8 @@ class ExecuteWkViewModelTest {
             currentSet = 1,
             workoutEnded = false,
             survey = null,
-            startOfSetCurrentTimeMillis = 0
+            startOfSetCurrentTimeMillis = 0,
+            selectedElement = null
         )
         assert(ExecuteWkState.initial == expectedState)
     }
