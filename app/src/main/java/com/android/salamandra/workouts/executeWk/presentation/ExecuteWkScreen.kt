@@ -1,4 +1,4 @@
-package com.android.salamandra.workouts.executeWk
+package com.android.salamandra.workouts.executeWk.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
