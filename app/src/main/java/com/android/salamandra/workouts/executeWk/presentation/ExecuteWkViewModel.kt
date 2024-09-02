@@ -1,13 +1,17 @@
-package com.android.salamandra.workouts.executeWk
+package com.android.salamandra.workouts.executeWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.clock.Clock
 import com.android.salamandra._core.domain.error.Result
+import com.android.salamandra._core.domain.model.workout.executions.WorkoutExecution
 import com.android.salamandra.navArgs
 import com.android.salamandra.workouts.commons.domain.WorkoutsRepository
+import com.android.salamandra.workouts.executeWk.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
+import java.time.LocalDate
 import javax.inject.Inject
 
 
@@ -15,7 +19,9 @@ import javax.inject.Inject
 class ExecuteWkViewModel @Inject constructor(
     ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
-    private val workoutsRepository: WorkoutsRepository
+    private val clock: Clock,
+    private val workoutsRepository: WorkoutsRepository,
+    private val repository: Repository
 ) :
     BaseViewModel<ExecuteWkState, ExecuteWkIntent, ExecuteWkEvent>(
         ExecuteWkState.initial,
@@ -61,7 +67,8 @@ class ExecuteWkViewModel @Inject constructor(
                         it.copy(
                             exerciseList = workoutExecutionExercises,
                             currentExercise = workoutExecutionExercises.first(),
-                            startOfSetCurrentTimeMillis = System.currentTimeMillis()
+                            startOfSetCurrentTimeMillis = clock.currentTimeMillis(),
+                            workoutTemplateId = navArgs.wkTemplateId
                         )
                     }
                 }
@@ -77,8 +84,8 @@ class ExecuteWkViewModel @Inject constructor(
         val exerciseList = state.value.exerciseList.toMutableList()
 
         val timeOfSet =
-            (System.currentTimeMillis() - state.value.startOfSetCurrentTimeMillis).toInt()
-        _state.update { it.copy(startOfSetCurrentTimeMillis = System.currentTimeMillis()) }
+            (clock.currentTimeMillis() - state.value.startOfSetCurrentTimeMillis).toInt()
+        _state.update { it.copy(startOfSetCurrentTimeMillis = clock.currentTimeMillis()) }
 
         val indexOfCurrentExercise = exerciseList.indexOf(currentExercise)
         val executionElements = exerciseList[indexOfCurrentExercise].executionElements
@@ -146,8 +153,13 @@ class ExecuteWkViewModel @Inject constructor(
     }
 
     private fun endWorkout() {
-        // TODO Make POST to save execution
-        sendEvent(ExecuteWkEvent.EndWorkout)
+        ioLaunch {
+            val workoutExecution = WorkoutExecution(date = LocalDate.now(), survey = state.value.survey, elements = state.value.exerciseList)
+            when(val creation = repository.createWorkoutExecution(state.value.workoutTemplateId, workoutExecution = workoutExecution)) {
+                is Result.Success -> sendEvent(ExecuteWkEvent.EndWorkout)
+                is Result.Error -> _state.update { it.copy(error = creation.error) }
+            }
+        }
     }
 
     private fun updateElementReps(newReps: Int) {
