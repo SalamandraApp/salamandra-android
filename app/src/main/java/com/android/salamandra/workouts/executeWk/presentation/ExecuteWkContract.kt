@@ -6,6 +6,7 @@ import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.domain.model.workout.executions.WkExecutionExercise
+import com.android.salamandra.workouts.executeWk.presentation.components.ExecuteWkScreenDestinations
 
 
 data class ExecuteWkState(
@@ -17,7 +18,8 @@ data class ExecuteWkState(
     val survey: Int?,
     val startOfSetCurrentTimeMillis: Long,
     val selectedElement: Int?,
-    val workoutTemplateId: String
+    val workoutTemplateId: String,
+    val activeTab: ExecuteWkScreenDestinations
 ) : State {
     companion object {
         val initial: ExecuteWkState = ExecuteWkState(
@@ -29,7 +31,8 @@ data class ExecuteWkState(
             survey = null,
             startOfSetCurrentTimeMillis = 0,
             selectedElement = null,
-            workoutTemplateId = ""
+            workoutTemplateId = "",
+            activeTab = ExecuteWkScreenDestinations.ExecuteScreen
         )
     }
 }
@@ -60,6 +63,8 @@ sealed class ExecuteWkIntent : Intent {
     data class EditWeight(val newWeight: Double) : ExecuteWkIntent()
 
     data class EditRest(val newRest: Int) : ExecuteWkIntent()
+
+    data class ChangeActiveTab(val newTab: ExecuteWkScreenDestinations) : ExecuteWkIntent()
 
 }
 

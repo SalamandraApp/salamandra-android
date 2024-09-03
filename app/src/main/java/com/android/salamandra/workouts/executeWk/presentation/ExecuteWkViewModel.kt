@@ -55,6 +55,8 @@ class ExecuteWkViewModel @Inject constructor(
             is ExecuteWkIntent.EditWeight -> updateElementWeight(intent.newWeight)
 
             is ExecuteWkIntent.EditRest -> updateElementRest(intent.newRest)
+
+            is ExecuteWkIntent.ChangeActiveTab -> _state.update { it.copy(activeTab = intent.newTab) }
         }
     }
 
@@ -155,23 +157,6 @@ class ExecuteWkViewModel @Inject constructor(
         }
     }
 
-    private fun endWorkout() {
-        ioLaunch {
-            val workoutExecution = WorkoutExecution(
-                date = LocalDate.now(),
-                survey = state.value.survey,
-                elements = state.value.exerciseList
-            )
-            when (val creation = repository.createWorkoutExecution(
-                state.value.workoutTemplateId,
-                workoutExecution = workoutExecution
-            )) {
-                is Result.Success -> sendEvent(ExecuteWkEvent.EndWorkout)
-                is Result.Error -> _state.update { it.copy(error = creation.error) }
-            }
-        }
-    }
-
     private fun updateElementReps(newReps: Int) {
         val selectedElement = state.value.selectedElement
         val currentExercise = state.value.currentExercise
@@ -247,4 +232,20 @@ class ExecuteWkViewModel @Inject constructor(
         }
     }
 
+    private fun endWorkout() {
+        ioLaunch {
+            val workoutExecution = WorkoutExecution(
+                date = LocalDate.now(),
+                survey = state.value.survey,
+                elements = state.value.exerciseList
+            )
+            when (val creation = repository.createWorkoutExecution(
+                state.value.workoutTemplateId,
+                workoutExecution = workoutExecution
+            )) {
+                is Result.Success -> sendEvent(ExecuteWkEvent.EndWorkout)
+                is Result.Error -> _state.update { it.copy(error = creation.error) }
+            }
+        }
+    }
 }
