@@ -110,4 +110,9 @@
     <string name="cardio">Cardio</string>
     <string name="mobility">Mobility</string>
     <string name="name">Name</string>
+
+
+    <string name="not_implemented">Not Implemented</string>
+    <string name="working_on_it">We are working on it. This feature will be available soon.</string>
+    <string name="workout_preview">Workout Preview</string>
 </resources>

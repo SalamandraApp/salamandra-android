@@ -18,7 +18,7 @@ object WkTemplateScreenConstants {
         top     = 50.dp,
         picture = 150.dp,
         tags    = 30.dp,
-        buttons = 60.dp,
+        buttons = 55.dp,
         labels  = 50.dp
     )
     val bannerHeight: Dp = with(bannerRowHeights) {

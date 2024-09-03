@@ -16,6 +16,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
+import com.android.salamandra.ui.theme.colorError
+import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.ui.theme.primary
+import com.android.salamandra.ui.theme.primaryVariant
+import com.android.salamandra.ui.theme.secondary
+import com.android.salamandra.ui.theme.subtitle
 
 fun Modifier.shimmerEffect(): Modifier = composed {
     var size by remember {
@@ -26,7 +32,7 @@ fun Modifier.shimmerEffect(): Modifier = composed {
         initialValue = -2 * size.width.toFloat(),
         targetValue = 2 * size.width.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(1000)
+            animation = tween(1500)
         ),
         label = "Shimmer Effect offset definition"
     )
@@ -34,9 +40,9 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     background(
         brush = Brush.linearGradient(
             colors = listOf(
-                Color(0xFFB8B5B5),
-                Color(0xFF8F8B8B),
-                Color(0xFFB8B5B5),
+                onTertiary,
+                primaryVariant,
+                onTertiary
             ),
             start = Offset(startOffsetX, 0f),
             end = Offset(startOffsetX + size.width.toFloat(), size.height.toFloat())

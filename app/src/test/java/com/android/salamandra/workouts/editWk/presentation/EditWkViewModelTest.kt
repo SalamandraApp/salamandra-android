@@ -67,7 +67,8 @@ class EditWkViewModelTest {
             loading = false,
             error = null,
             wkTemplate = WorkoutTemplate(),
-            selectedElementIndex = null
+            selectedElementIndex = null,
+            notImplementedBanner = false
         )
         //Assert
         assert(EditWkState.initial == initialState)

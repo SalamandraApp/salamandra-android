@@ -43,7 +43,8 @@ class HomeViewModelTest {
         val expectedState = HomeState(
             error = null,
             wkPreviewList = emptyList(),
-            loading = true
+            loading = true,
+            notImplementedBanner = false
         )
         assert(HomeState.initial == expectedState)
     }

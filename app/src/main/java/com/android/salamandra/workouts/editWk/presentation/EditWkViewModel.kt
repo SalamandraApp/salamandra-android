@@ -24,12 +24,11 @@ class EditWkViewModel @Inject constructor(
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
             is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
-
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
 
-            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null) }
-
-            is EditWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElementIndex = intent.index) }
+            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null, notImplementedBanner = false) }
+            is EditWkIntent.ShowNotImplementedBanner -> _state.update { it.copy(notImplementedBanner = true) }
+            is EditWkIntent.ShowElementBanner -> _state.update { it.copy(selectedElementIndex = intent.index) }
 
             is EditWkIntent.ChangeWkName -> _state.update {
                 it.copy(wkTemplate = it.wkTemplate.copy(name = intent.newName))

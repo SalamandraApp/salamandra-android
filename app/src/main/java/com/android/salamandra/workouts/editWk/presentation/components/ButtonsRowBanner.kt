@@ -1,11 +1,13 @@
 package com.android.salamandra.workouts.editWk.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
@@ -20,13 +22,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra.R
+import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
+import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.android.salamandra.workouts.editWk.presentation.EditWkState
 
@@ -43,10 +48,11 @@ fun ButtonsRowBanner (
     )
     {
         Row (
-            modifier = modifier
+            modifier = Modifier
                 .clickable { onDeleteWk() }
                 .fillMaxHeight(),
-            verticalAlignment = Alignment.CenterVertically) {
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(
                 imageVector = Icons.Outlined.Delete,
                 contentDescription = "Delete Wk",
@@ -77,4 +83,17 @@ fun ButtonsRowBanner (
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun ButtonsRowPreview() {
+    ButtonsRowBanner(
+        modifier = Modifier
+            .background(tertiary)
+            .height(50.dp)
+            .padding(5.dp),
+        onAddExercise = {},
+        onDeleteWk = {}
+    )
 }

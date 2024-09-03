@@ -50,7 +50,9 @@ class SeeWkViewModelTest {
         val expectedState = SeeWkState(
             error = null,
             wkTemplate = WorkoutTemplate(),
-            selectedElementIndex = null
+            selectedElementIndex = null,
+            bottomSheetTab = null,
+            notImplementedBanner = false
         )
         assert(SeeWkState.initial == expectedState)
     }

@@ -12,12 +12,16 @@ data class SeeWkState(
     val error: RootError?,
     val wkTemplate: WorkoutTemplate,
     val selectedElementIndex: Int?,
+    val bottomSheetTab: Int?,
+    val notImplementedBanner: Boolean
 ) : State {
     companion object {
         val initial: SeeWkState = SeeWkState(
             error = null,
             wkTemplate = WorkoutTemplate(),
-            selectedElementIndex = null
+            selectedElementIndex = null,
+            bottomSheetTab = null,
+            notImplementedBanner = false,
         )
     }
 }
@@ -29,7 +33,9 @@ sealed class SeeWkIntent: Intent {
 
     data object NavigateUp: SeeWkIntent()
 
-    data class ShowBottomSheet(val index: Int): SeeWkIntent()
+    data class ShowExerciseInfo(val index: Int): SeeWkIntent()
+    data class ShowTemplateInfo(val tab: Int): SeeWkIntent()
+    data object ShowNotImplementedBanner: SeeWkIntent()
 
     data object HideBottomSheet: SeeWkIntent()
 

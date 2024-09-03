@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.seeWk.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra._core.presentation.components.FadeLip
@@ -24,6 +26,7 @@ import com.android.salamandra.workouts.seeWk.presentation.SeeWkState
 @Composable
 fun TagRow(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -40,9 +43,11 @@ fun TagRow(
                 items(items.size) { index ->
                     Row(
                         modifier = Modifier
-                            .fillMaxHeight()
+                            .clickable { onClick() }
                             .padding(end = if (index == items.size - 1) 0.dp else 10.dp)
-                            .background(bgColor, shape = RoundedCornerShape(50)),
+                            .background(bgColor, shape = RoundedCornerShape(50))
+                            .clip(RoundedCornerShape(50))
+                            .fillMaxHeight(),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
 

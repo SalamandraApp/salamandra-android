@@ -51,7 +51,7 @@ fun BannerTitleRow(
                 value = wkName,
                 textStyle = TitleTypo.copy(fontSize = 16.sp),
                 colors = textFieldColors(),
-                onValueChange = { if (wkName.length < MAX_NAME_LENGTH) onChangeName(it) }
+                onValueChange = { if (it.length < MAX_NAME_LENGTH) onChangeName(it) }
             )
             Spacer(modifier = Modifier.weight(1f))
 
@@ -60,17 +60,13 @@ fun BannerTitleRow(
                 modifier = Modifier.clip(RoundedCornerShape(10.dp)),
                 enabled = true,
                 value = textToShow,
-                placeholder = {
-                    if (textToShow.isEmpty()) {
-                        Text(text = "Description...", style = TitleTypo, color = onTertiary, fontSize = 12.sp)
-                    }
-                },
+                placeholder = {Text(text = "Description...", style = TitleTypo, color = onTertiary, fontSize = 12.sp)},
                 minLines = 2,
                 maxLines = 2,
                 textStyle = TitleTypo.copy(fontSize = 12.sp),
                 colors = textFieldColors(),
                 onValueChange = {
-                    if (textToShow.length < MAX_DESCRIPTION_LENGTH)
+                    if (it.length < MAX_DESCRIPTION_LENGTH)
                         onChangeDescription(it)
                 },
             )

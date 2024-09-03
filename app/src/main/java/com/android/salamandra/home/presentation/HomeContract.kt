@@ -12,21 +12,25 @@ import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 data class HomeState(
     val loading: Boolean,
     val error: RootError?,
-    val wkPreviewList: List<WorkoutPreview>
+    val wkPreviewList: List<WorkoutPreview>,
+    val notImplementedBanner: Boolean
 ) : State {
     companion object {
         val initial: HomeState = HomeState(
             loading = true,
             error = null,
-            wkPreviewList = emptyList()
+            wkPreviewList = emptyList(),
+            notImplementedBanner = false
         )
     }
 }
 
 sealed class HomeIntent : Intent {
     data class Error(val error: RootError) : HomeIntent()
-
     data object CloseError : HomeIntent()
+
+    data object ShowNotImplementedBanner: HomeIntent()
+    data object HideBottomSheet: HomeIntent()
 
     data object NewWk : HomeIntent()
 
