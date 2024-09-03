@@ -2,6 +2,7 @@ package com.android.salamandra.workouts.editWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.WEIGHT_MAX
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
@@ -129,6 +130,9 @@ class EditWkViewModel @Inject constructor(
     }
 
     private fun updateWkElementReps(newReps: Int, index: Int) {
+        if (newReps > Short.MAX_VALUE) {
+            return
+        }
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             this[index] = this[index].copy(reps = newReps)
         }
@@ -137,6 +141,10 @@ class EditWkViewModel @Inject constructor(
     }
 
     private fun updateWkElementSets(newSets: Int, index: Int) {
+        if (newSets > Short.MAX_VALUE) {
+            return
+        }
+
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             this[index] = this[index].copy(sets = newSets)
         }
@@ -144,6 +152,10 @@ class EditWkViewModel @Inject constructor(
     }
 
     private fun updateWkElementWeight(newWeight: Double, index: Int) {
+        if (newWeight > WEIGHT_MAX) {
+            return
+        }
+
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             this[index] = this[index].copy(weight = newWeight)
         }
@@ -151,6 +163,10 @@ class EditWkViewModel @Inject constructor(
     }
 
     private fun updateWkElementRest(newRest: Int, index: Int) {
+        if (newRest > Short.MAX_VALUE) {
+            return
+        }
+
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             this[index] = this[index].copy(rest = newRest)
         }

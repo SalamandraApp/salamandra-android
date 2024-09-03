@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.executeWk.presentation
 
 import androidx.lifecycle.SavedStateHandle
+import com.android.salamandra._core.domain.WEIGHT_MAX
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.clock.Clock
 import com.android.salamandra._core.domain.error.Result
@@ -13,7 +14,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 import javax.inject.Inject
-
 
 @HiltViewModel
 class ExecuteWkViewModel @Inject constructor(
@@ -173,6 +173,9 @@ class ExecuteWkViewModel @Inject constructor(
     }
 
     private fun updateElementReps(newReps: Int) {
+        if (newReps > Short.MAX_VALUE) {
+            return
+        }
         val selectedElement = state.value.selectedElement
         val currentExercise = state.value.currentExercise
 
@@ -198,6 +201,10 @@ class ExecuteWkViewModel @Inject constructor(
     }
 
     private fun updateElementWeight(newWeight: Double) {
+        if (newWeight > WEIGHT_MAX) {
+            return
+        }
+
         val selectedElement = state.value.selectedElement
         val currentExercise = state.value.currentExercise
 
@@ -223,6 +230,10 @@ class ExecuteWkViewModel @Inject constructor(
     }
 
     private fun updateElementRest(newRest: Int) {
+        if (newRest > Short.MAX_VALUE) {
+            return
+        }
+
         val selectedElement = state.value.selectedElement
         val currentExercise = state.value.currentExercise
 

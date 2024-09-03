@@ -80,6 +80,7 @@ import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.ui.theme.title
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.android.salamandra.workouts.editWk.presentation.components.EditWkTemplateElement
+import com.android.salamandra.workouts.executeWk.presentation.components.ProgressBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -124,9 +125,9 @@ private fun ScreenBody(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ProgressBar(
+                    modifier = Modifier.height(4.dp),
                     size = state.exerciseList.size,
-                    currentExercise = state.currentExercise,
-                    exerciseList = state.exerciseList
+                    current = state.exerciseList.indexOf(state.currentExercise),
                 )
 
                 Text(
@@ -219,32 +220,6 @@ private fun ScreenBody(
 
     }
 }
-
-@Composable
-private fun ProgressBar(
-    size: Int,
-    currentExercise: WkExecutionExercise,
-    exerciseList: List<WkExecutionExercise>,
-) {
-    Row(
-        modifier = Modifier
-            .padding(bottom = 8.dp)
-            .padding(vertical = 12.dp)
-    ) {
-        for (i in 0..< size) {
-            val color =
-                if (i == exerciseList.indexOf(currentExercise)) primary else title
-            Box(
-                Modifier
-                    .height(4.dp)
-                    .background(color)
-                    .weight(1f)
-            )
-            Spacer(Modifier.size(4.dp))
-        }
-    }
-}
-
 
 @Composable
 private fun BottomSection(
