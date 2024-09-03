@@ -12,12 +12,12 @@ import com.android.salamandra.workouts.executeWk.presentation.components.Execute
 data class ExecuteWkState(
     val error: RootError?,
     val exerciseList: List<WkExecutionExercise>,
-    val currentExercise: WkExecutionExercise?,
+    val indexOfCurrentExercise: Int,
     val currentSet: Int,
     val workoutEnded: Boolean,
     val survey: Int?,
     val startOfSetCurrentTimeMillis: Long,
-    val selectedElement: Int?,
+    val indexOfSelectedElement: Int?,
     val workoutTemplateId: String,
     val activeTab: ExecuteWkScreenDestinations
 ) : State {
@@ -25,12 +25,12 @@ data class ExecuteWkState(
         val initial: ExecuteWkState = ExecuteWkState(
             error = null,
             exerciseList = emptyList(),
-            currentExercise = null,
+            indexOfCurrentExercise = 0,
             currentSet = 1,
             workoutEnded = false,
             survey = null,
             startOfSetCurrentTimeMillis = 0,
-            selectedElement = null,
+            indexOfSelectedElement = null,
             workoutTemplateId = "",
             activeTab = ExecuteWkScreenDestinations.ExecuteScreen
         )
@@ -65,7 +65,6 @@ sealed class ExecuteWkIntent : Intent {
     data class EditRest(val newRest: Int) : ExecuteWkIntent()
 
     data class ChangeActiveTab(val newTab: ExecuteWkScreenDestinations) : ExecuteWkIntent()
-
 }
 
 sealed class ExecuteWkEvent : Event {

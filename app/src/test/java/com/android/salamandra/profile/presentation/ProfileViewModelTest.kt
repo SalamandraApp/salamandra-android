@@ -4,6 +4,7 @@ import com.android.salamandra._core.domain.CoreRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra.util.CoroutineRule
+import com.android.salamandra.util.EXAMPLE_USER
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -17,7 +18,7 @@ import org.junit.Test
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ProfileViewModelTest{
+class ProfileViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     @get:Rule
@@ -37,8 +38,8 @@ class ProfileViewModelTest{
     }
 
     @Test
-    fun `Assert initial state`(){
-        val expectedState =  ProfileState(
+    fun `Assert initial state`() {
+        val expectedState = ProfileState(
             loading = true,
             error = null,
             userData = null,
@@ -49,19 +50,19 @@ class ProfileViewModelTest{
     }
 
     @Test
-    fun `When user is not logged in, state is initial`() = runTest {
+    fun `When user is not logged in, state is initial except that loading is false`() = runTest {
         // Arrange
-        val expectedState =  ProfileState(
-            loading = true,
+        val expectedState = ProfileState(
+            loading = false,
             error = null,
             userData = null,
             isSignedIn = false
         )
         coEvery { coreRepository.isUserLogged() } returns false
-        runCurrent()
 
         // Act
         profileViewModel = ProfileViewModel(testDispatcher, coreRepository)
+        runCurrent()
 
         // Assert
         assert(profileViewModel.state.value == expectedState)
@@ -82,6 +83,19 @@ class ProfileViewModelTest{
 
     }
 
+    @Test
+    fun `When userData is available, loading is false and user is signed in`() = runTest {
+        // Arrange
+        coEvery { coreRepository.getUserData() } returns Result.Success(EXAMPLE_USER)
+        // Act
+        profileViewModel = ProfileViewModel(testDispatcher, coreRepository)
+        runCurrent()
+
+        // Assert
+        assert(!profileViewModel.state.value.loading)
+        assert(profileViewModel.state.value.isSignedIn)
+        assert(profileViewModel.state.value.userData == EXAMPLE_USER)
+    }
 
 }
 

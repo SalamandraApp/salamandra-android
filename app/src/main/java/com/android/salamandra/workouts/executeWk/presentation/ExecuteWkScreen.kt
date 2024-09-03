@@ -160,60 +160,58 @@ private fun ScreenBodyExecute(
             .padding(bottom = 12.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (state.currentExercise != null) {
-            Column(
-                modifier = Modifier.align(Alignment.TopCenter),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ProgressBar(
-                    exerciseListSize = state.exerciseList.size,
-                    currentExerciseIndex = state.exerciseList.indexOf(state.currentExercise)
-                )
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ProgressBar(
+                exerciseListSize = state.exerciseList.size,
+                currentExerciseIndex = state.indexOfCurrentExercise
+            )
 
-                Text(
-                    text = state.currentExercise.exercise.name,
-                    color = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 26.sp
-                )
-                Spacer(Modifier.size(8.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Spacer(Modifier.weight(0.5f))
-                    OutlinedButton(
-                        onClick = { sendIntent(ExecuteWkIntent.SkipSet) },
-                        shape = RoundedCornerShape(30)
+            Text(
+                text = state.exerciseList[state.indexOfCurrentExercise].exercise.name,
+                color = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp
+            )
+            Spacer(Modifier.size(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Spacer(Modifier.weight(0.5f))
+                OutlinedButton(
+                    onClick = { sendIntent(ExecuteWkIntent.SkipSet) },
+                    shape = RoundedCornerShape(30)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "Skip Set", color = onPrimary)
-                            Icon(
-                                imageVector = Icons.Outlined.SkipNext,
-                                contentDescription = "Skip Set",
-                                tint = onPrimary
-                            )
-                        }
-                    }
-                    Spacer(Modifier.weight(0.5f))
-                    state.currentExercise.executionElements.forEach { element ->
-                        WkElementContainer(
-                            element,
-                            state.currentSet,
-                            { sendIntent(ExecuteWkIntent.ShowBottomSheet(element.setNumber)) }
+                        Text(text = "Skip Set", color = onPrimary)
+                        Icon(
+                            imageVector = Icons.Outlined.SkipNext,
+                            contentDescription = "Skip Set",
+                            tint = onPrimary
                         )
-                        Spacer(Modifier.weight(1f))
                     }
                 }
-                BottomSection(
-                    currentSet = state.currentSet,
-                    executionElements = state.currentExercise.executionElements,
-                    onClickCheck = { sendIntent(ExecuteWkIntent.LogAction) }
-                )
+                Spacer(Modifier.weight(0.5f))
+                state.exerciseList[state.indexOfCurrentExercise].executionElements.forEach { element ->
+                    WkElementContainer(
+                        wkExecutionElement = element,
+                        currentSet = state.currentSet,
+                        onEdit = { sendIntent(ExecuteWkIntent.ShowBottomSheet(element.setNumber)) }
+                    )
+                    Spacer(Modifier.weight(1f))
+                }
             }
-
+            BottomSection(
+                currentSet = state.currentSet,
+                executionElements = state.exerciseList[state.indexOfCurrentExercise].executionElements,
+                onClickCheck = { sendIntent(ExecuteWkIntent.LogAction) }
+            )
         }
+
 
         if (state.workoutEnded) {
             EndWorkoutScreen(
@@ -226,7 +224,7 @@ private fun ScreenBodyExecute(
             )
         }
 
-        if (state.selectedElement != null && state.currentExercise != null) {
+        if (state.indexOfSelectedElement != null) {
             val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
             BottomSheet(
                 sheetState = sheetState,
@@ -236,14 +234,14 @@ private fun ScreenBodyExecute(
                         contents = listOf(
                             {
                                 EditExecutionElement(
-                                    exerciseName = state.currentExercise.exercise.name,
-                                    element = state.currentExercise.executionElements[state.selectedElement - 1],
+                                    exerciseName = state.exerciseList[state.indexOfCurrentExercise].exercise.name,
+                                    element =state.exerciseList[state.indexOfCurrentExercise].executionElements[state.indexOfSelectedElement - 1],
                                     onEditWeight = { sendIntent(ExecuteWkIntent.EditWeight(it)) },
                                     onEditReps = { sendIntent(ExecuteWkIntent.EditReps(it)) },
                                     onEditRest = { sendIntent(ExecuteWkIntent.EditRest(it)) }
                                 )
                             },
-                            { ExerciseInfo(state.currentExercise.exercise) }
+                            { ExerciseInfo(state.exerciseList[state.indexOfCurrentExercise].exercise) }
                         ),
                         icons = listOf(Icons.Outlined.Edit, Icons.Outlined.FitnessCenter),
                         titles = listOf("Edit", "Info")
@@ -684,7 +682,6 @@ private fun ScreenExecutePreview() {
                     WK_EXECUTION_EXERCISE.copy(exerciseNumber = 2),
                     WK_EXECUTION_EXERCISE.copy(exerciseNumber = 3)
                 ),
-                currentExercise = WK_EXECUTION_EXERCISE,
                 currentSet = 3,
                 workoutEnded = false,
                 survey = 1
