@@ -13,6 +13,7 @@ import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkIntent
 import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkNavArgs
 import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkState
 import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkViewModel
+import com.android.salamandra.workouts.executeWk.presentation.components.ExecuteWkScreenDestinations
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -86,7 +87,8 @@ class ExecuteWkViewModelTest {
             survey = null,
             startOfSetCurrentTimeMillis = 0,
             selectedElement = null,
-            workoutTemplateId = ""
+            workoutTemplateId = "",
+            activeTab = ExecuteWkScreenDestinations.ExecuteScreen
         )
         assert(ExecuteWkState.initial == expectedState)
     }
