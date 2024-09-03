@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.title
 
+const val MAX_WEIGHT = 999
 @Composable
 fun EditWeight(
     weight: Double,
@@ -39,7 +40,7 @@ fun EditWeight(
             val lastChar = it.last()
             // Removed
             if (it.length < weightString.length) {
-                if (beforeDot.value) {
+                if (beforeDot.value ) {
                     int.value = if (int.value.length > 1) int.value.dropLast(1) else "0"
                 } else {
                     if (decimal.value == "0") beforeDot.value = true
@@ -55,8 +56,10 @@ fun EditWeight(
                 // Other
                 else if (lastChar.digitToIntOrNull() != null) {
                     if (beforeDot.value) {
-                        if (int.value == "0") int.value = ""
-                        int.value += lastChar
+                        if ((int.value + lastChar).toInt() < MAX_WEIGHT) {
+                            if (int.value == "0") int.value = ""
+                            int.value += lastChar
+                        }
                     } else {
                         decimal.value = lastChar.toString()
                     }

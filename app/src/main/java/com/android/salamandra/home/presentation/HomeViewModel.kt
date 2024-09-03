@@ -29,9 +29,10 @@ class HomeViewModel @Inject constructor(
     ) { //This function reduces each intent with a when
         when (intent) {
             is HomeIntent.Error -> _state.update { it.copy(error = intent.error) }
-
             is HomeIntent.CloseError -> _state.update { it.copy(error = null) }
 
+            HomeIntent.ShowNotImplementedBanner -> _state.update { it.copy(notImplementedBanner = true) }
+            HomeIntent.HideBottomSheet-> _state.update { it.copy(notImplementedBanner = false) }
 
             is HomeIntent.NewWk -> sendEvent(HomeEvent.NavigateToEditWk)
 

@@ -27,7 +27,7 @@ fun SeeWkBannerTopRow(
     modifier: Modifier = Modifier,
     onGoBack: () -> Unit,
     onExecuteWk: () -> Unit,
-    middleContent: @Composable () -> Unit,
+    middleContent: @Composable () -> Unit  = {},
     executeButton: Boolean = false
 ) {
     Row(

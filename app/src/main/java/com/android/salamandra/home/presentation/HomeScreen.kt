@@ -23,9 +23,11 @@ import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SwapVert
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,9 +45,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.android.salamandra._core.presentation.asUiText
+import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.IconShimmer
+import com.android.salamandra._core.presentation.components.NotImplented
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
@@ -62,7 +66,9 @@ import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
+import com.android.salamandra.workouts.seeWk.presentation.SeeWkIntent
 import com.android.salamandra.workouts.seeWk.presentation.SeeWkNavArgs
+import com.android.salamandra.workouts.seeWk.presentation.components.TagRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -95,6 +101,7 @@ fun HomeScreen(navigator: DestinationsNavigator, viewModel: HomeViewModel = hilt
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenBody(
     state: HomeState,
@@ -114,10 +121,15 @@ private fun ScreenBody(
             HomeBanner(
                 loading = state.loading,
                 onCreateExercise = { sendIntent(HomeIntent.NewWk) },
-                onSearchWkTemplate = {/* TODO */ }
+                onSearchWkTemplate = { sendIntent(HomeIntent.ShowNotImplementedBanner) },
+                onTag = { sendIntent(HomeIntent.ShowNotImplementedBanner) },
             )
             FadeLip()
-            ListViewToggles(loading = state.loading)
+            ListViewToggles(
+                onSort = { sendIntent(HomeIntent.ShowNotImplementedBanner) },
+                onViewToggle = { sendIntent(HomeIntent.ShowNotImplementedBanner) },
+                loading = state.loading
+            )
             if (!state.loading) {
                 LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
                     items(state.wkPreviewList) { wkPreview ->
@@ -148,11 +160,25 @@ private fun ScreenBody(
 
         }
 
+        if (state.notImplementedBanner) {
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = false,
+            )
+            BottomSheet(
+                sheetState = sheetState,
+                onDismiss = { sendIntent(HomeIntent.HideBottomSheet) },
+                content = { NotImplented() }
+            )
+        }
     }
 }
 
 @Composable
-fun ListViewToggles(loading: Boolean, loadingBoxColor: Color = Color.Gray) {
+fun ListViewToggles(
+    onSort: () -> Unit,
+    onViewToggle: () -> Unit,
+    loading: Boolean,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -165,7 +191,7 @@ fun ListViewToggles(loading: Boolean, loadingBoxColor: Color = Color.Gray) {
             if (loading) IconShimmer(Modifier.padding(start = 12.dp))
             else {
                 IconButton(
-                    onClick = { }
+                    onClick = { onSort() }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.SwapVert,
@@ -179,7 +205,6 @@ fun ListViewToggles(loading: Boolean, loadingBoxColor: Color = Color.Gray) {
                     .padding(start = 12.dp)
                     .height(16.dp)
                     .width(40.dp)
-                    .background(loadingBoxColor)
                     .shimmerEffect()
             )
             else {
@@ -202,7 +227,7 @@ fun ListViewToggles(loading: Boolean, loadingBoxColor: Color = Color.Gray) {
             if (loading) IconShimmer()
             else {
                 IconButton(
-                    onClick = { }
+                    onClick = { onViewToggle() }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.GridView,
@@ -222,6 +247,7 @@ fun HomeBanner(
     loadingBoxColor: Color = Color.Gray,
     onCreateExercise: () -> Unit,
     onSearchWkTemplate: () -> Unit,
+    onTag: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -323,18 +349,9 @@ fun HomeBanner(
                         .shimmerEffect()
                 )
             else {
-                Icon(
-                    imageVector = Icons.Outlined.Construction,
-                    contentDescription = "Construction icon",
-                    modifier = Modifier.size(20.dp),
-                    tint = primaryVariant,
-                )
-                Text(
-                    text = "WIP",
-                    color = primaryVariant,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(start = 8.dp),
-                    style = TitleTypo,
+                TagRow(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                    onClick = onTag
                 )
             }
         }

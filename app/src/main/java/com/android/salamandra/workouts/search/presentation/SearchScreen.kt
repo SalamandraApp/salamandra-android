@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Add
@@ -50,6 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.presentation.asUiText
+import com.android.salamandra._core.presentation.components.AnimatedIconButton
 import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.ExerciseInfo
@@ -245,14 +247,13 @@ private fun SearchExerciseComponent(
                 tint = onTertiary
             )
         }
-        IconButton(onClick = { onAddExercise(exercise) }) {
-            Icon(
-                Icons.Outlined.AddCircleOutline,
-                contentDescription = "Add exercise",
-                tint = primaryVariant
-            )
-        }
-
+        AnimatedIconButton(
+            onPress = { onAddExercise(exercise) },
+            delayTime = 400,
+            initialIcon = Icons.Outlined.AddCircleOutline,
+            pressedIcon = Icons.Filled.CheckCircle,
+            tint = primaryVariant
+        )
     }
     if (!last) {
         HorizontalDivider(

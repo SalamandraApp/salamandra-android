@@ -29,13 +29,14 @@ import com.android.salamandra.ui.theme.tertiary
 fun TabRowBuilder(
     contents: List<@Composable () -> Unit>,
     icons: List<ImageVector>,
-    titles: List<String>
+    titles: List<String>,
+    selectedTab: Int = 0
 ) {
     require(contents.size == icons.size && icons.size == titles.size) {
         "All lists must have the same length"
     }
 
-    val selectedTabIndex = remember { mutableStateOf(0) }
+    val selectedTabIndex = remember { mutableStateOf(selectedTab) }
     val selectedColor = primaryVariant.copy(0.7f)
     val unselectedColor = onTertiary.copy(0.7f)
 

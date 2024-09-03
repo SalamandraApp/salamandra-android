@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.commons.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,9 +48,11 @@ fun WkElementComponent(
     )
     Row(
         modifier = modifier
+            .clickable { onOption(wkElement.exercise) }
             .padding(horizontal = 10.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(15.dp))
             .background(fgColor)
+            .clickable { onOption(wkElement.exercise) }
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {

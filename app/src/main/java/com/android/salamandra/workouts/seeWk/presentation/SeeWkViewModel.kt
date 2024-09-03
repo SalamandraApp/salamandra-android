@@ -27,9 +27,11 @@ class SeeWkViewModel @Inject constructor(
 
             is SeeWkIntent.NavigateUp -> sendEvent(SeeWkEvent.NavigateUp)
 
-            is SeeWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElementIndex = intent.index) }
+            is SeeWkIntent.ShowExerciseInfo -> _state.update { it.copy(selectedElementIndex = intent.index) }
+            is SeeWkIntent.ShowTemplateInfo-> _state.update { it.copy(bottomSheetTab = intent.tab) }
+            SeeWkIntent.ShowNotImplementedBanner-> _state.update { it.copy(notImplementedBanner = true) }
 
-            SeeWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null) }
+            SeeWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null, bottomSheetTab = null, notImplementedBanner = false) }
 
             SeeWkIntent.StartWk -> sendEvent(SeeWkEvent.StartWk)
         }

@@ -1,6 +1,5 @@
 package com.android.salamandra.workouts.editWk.presentation
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,8 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -28,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +39,7 @@ import com.android.salamandra.R
 import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.NotImplented
 import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.destinations.HomeScreenDestination
@@ -62,7 +59,6 @@ import com.android.salamandra.workouts.editWk.presentation.components.EditTagRow
 import com.android.salamandra.workouts.editWk.presentation.components.EditWkBannerTopRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.launch
 
 @Destination(navArgsDelegate = EditWkNavArgs::class)
 @Composable
@@ -145,6 +141,7 @@ private fun ScreenBody(
         ) {
 
             val startPad = 15.dp
+            val notImplemented = { sendIntent(EditWkIntent.ShowNotImplementedBanner) }
             item {
                 EditWkBigBanner(
                     modifier = Modifier.height(bannerHeight),
@@ -153,10 +150,10 @@ private fun ScreenBody(
                     bgColor = mainColor,
                     onClose = { sendIntent(EditWkIntent.NavigateToHome) },
                     onSave =  { sendIntent(EditWkIntent.CreateWorkout) },
-                    onDeleteWk = {  },
-                    onAddTag = {  },
-                    onDeleteTag = {  },
-                    onEditTag = {  },
+                    onDeleteWk = notImplemented,
+                    onAddTag = notImplemented,
+                    onDeleteTag = notImplemented,
+                    onEditTag = notImplemented,
                     onAddExercise = { sendIntent(EditWkIntent.NavigateToSearch) },
                     onChangeName = { sendIntent(EditWkIntent.ChangeWkName(it)) },
                     onChangeDescription = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
@@ -166,7 +163,7 @@ private fun ScreenBody(
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    onOption = { sendIntent(EditWkIntent.ShowBottomSheet(index)) },
+                    onOption = { sendIntent(EditWkIntent.ShowElementBanner(index)) },
                     wkElement = element,
                     startPad = startPad,
                     verticalPad = 18.dp,
@@ -208,6 +205,15 @@ private fun ScreenBody(
                         titles = listOf("Edit", "Info")
                     )
                 }
+            )
+        } else if (state.notImplementedBanner) {
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = false,
+            )
+            BottomSheet(
+                sheetState = sheetState,
+                onDismiss = { sendIntent(EditWkIntent.HideBottomSheet) },
+                content = { NotImplented() }
             )
         }
     }

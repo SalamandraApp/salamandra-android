@@ -11,9 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.QueryStats
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -25,8 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +52,12 @@ import com.android.salamandra.workouts.seeWk.presentation.components.BannerTitle
 import com.android.salamandra.workouts.seeWk.presentation.components.ButtonsRow
 import com.android.salamandra.workouts.seeWk.presentation.components.SeeWkBannerTopRow
 import com.android.salamandra.workouts.seeWk.presentation.components.TagRow
+import com.android.salamandra.R
+import com.android.salamandra._core.presentation.components.NotImplented
+import com.android.salamandra._core.presentation.components.TabRowBuilder
+import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
+import com.android.salamandra.workouts.editWk.presentation.components.EditWkTemplateElement
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -140,13 +150,18 @@ private fun ScreenBody(
                     wkDescription = state.wkTemplate.description,
                     onGoBack = { sendIntent(SeeWkIntent.NavigateUp) },
                     onExecuteWk = { sendIntent(SeeWkIntent.StartWk) },
+                    onTitlePress = { sendIntent(SeeWkIntent.ShowTemplateInfo(0)) },
+                    onStats = { sendIntent(SeeWkIntent.ShowTemplateInfo(1)) },
+                    onEdit = { sendIntent(SeeWkIntent.ShowNotImplementedBanner) },
+                    onShare = { sendIntent(SeeWkIntent.ShowNotImplementedBanner) },
+                    onTag = { sendIntent(SeeWkIntent.ShowNotImplementedBanner) },
                 )
                 FadeLip()
                 Spacer(modifier = Modifier.size(5.dp))
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
                 WkElementComponent(
-                    onOption = { sendIntent(SeeWkIntent.ShowBottomSheet(index)) },
+                    onOption = { sendIntent(SeeWkIntent.ShowExerciseInfo(index)) },
                     wkElement = element,
                     startPad = 10.dp,
                     fgColor = tertiary
@@ -163,6 +178,36 @@ private fun ScreenBody(
                 content = { ExerciseInfo(state.wkTemplate.elements[state.selectedElementIndex].exercise) }
             )
         }
+        else if (state.bottomSheetTab != null) {
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = false,
+            )
+            BottomSheet(
+                sheetState = sheetState,
+                onDismiss = { sendIntent(SeeWkIntent.HideBottomSheet) },
+                content = {
+                    TabRowBuilder(
+                        contents = listOf({ NotImplented() }, { NotImplented() }),
+                        icons = listOf(Icons.Outlined.Info, Icons.Outlined.QueryStats),
+                        titles = listOf("Workout Information", "Stats and History"),
+                        selectedTab = state.bottomSheetTab
+                    )
+
+                }
+            )
+        }
+        else if (state.notImplementedBanner) {
+            val sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = false,
+            )
+            BottomSheet(
+                sheetState = sheetState,
+                onDismiss = { sendIntent(SeeWkIntent.HideBottomSheet) },
+                content = { NotImplented() }
+            )
+        }
+
+
     }
 }
 
@@ -206,6 +251,11 @@ fun SeeWkBigBanner(
     wkDescription: String?,
     onGoBack: () -> Unit,
     onExecuteWk: () -> Unit,
+    onTitlePress: () -> Unit,
+    onShare: () -> Unit,
+    onEdit: () -> Unit,
+    onStats: () -> Unit,
+    onTag: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -229,9 +279,9 @@ fun SeeWkBigBanner(
             onExecuteWk = onExecuteWk,
             middleContent = {
                 Text(
-                    text = wkName,
-                    color = title,
-                    fontSize = 18.sp,
+                    text = stringResource(R.string.workout_preview),
+                    color = onTertiary,
+                    fontSize = 16.sp,
                     style = TitleTypo,
                 )
             }
@@ -241,20 +291,23 @@ fun SeeWkBigBanner(
             modifier = Modifier
                 .height(dpTitle)
                 .padding(bottom = dpInBetweenMargin),
-            wkDescription = wkDescription
+            wkDescription = wkDescription,
+            wkName = wkName,
+            onTitlePress = onTitlePress,
         )
         TagRow(
             modifier = Modifier
                 .padding(bottom = dpInBetweenMargin)
-                .height(dpTags)
+                .height(dpTags),
+            onClick = onTag
         )
         ButtonsRow(
             modifier = Modifier
                 .height(dpButtons)
                 .padding(bottom = dpInBetweenMargin / 2),
-            onEdit = {},
-            onShare = {},
-            onStats = {},
+            onEdit = onEdit,
+            onShare = onShare,
+            onStats = onStats,
             onExecuteWk = onExecuteWk,
         )
         WkTemplateViewLabels(
