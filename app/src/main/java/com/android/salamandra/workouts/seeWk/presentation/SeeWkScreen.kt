@@ -47,7 +47,7 @@ import com.android.salamandra.destinations.ExecuteWkScreenDestination
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
-import com.android.salamandra.workouts.executeWk.ExecuteWkNavArgs
+import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkNavArgs
 import com.android.salamandra.workouts.seeWk.presentation.components.BannerTitleRow
 import com.android.salamandra.workouts.seeWk.presentation.components.ButtonsRow
 import com.android.salamandra.workouts.seeWk.presentation.components.SeeWkBannerTopRow
