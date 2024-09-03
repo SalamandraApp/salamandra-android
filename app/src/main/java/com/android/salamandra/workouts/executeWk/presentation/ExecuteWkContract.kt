@@ -11,6 +11,7 @@ import com.android.salamandra.workouts.executeWk.presentation.components.Execute
 
 data class ExecuteWkState(
     val error: RootError?,
+    val loading: Boolean,
     val exerciseList: List<WkExecutionExercise>,
     val indexOfCurrentExercise: Int,
     val currentSet: Int,
@@ -24,6 +25,7 @@ data class ExecuteWkState(
     companion object {
         val initial: ExecuteWkState = ExecuteWkState(
             error = null,
+            loading = true,
             exerciseList = emptyList(),
             indexOfCurrentExercise = 0,
             currentSet = 1,

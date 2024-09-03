@@ -72,12 +72,18 @@ class ExecuteWkViewModel @Inject constructor(
                         it.copy(
                             exerciseList = workoutExecutionExercises,
                             startOfSetCurrentTimeMillis = clock.currentTimeMillis(),
-                            workoutTemplateId = navArgs.wkTemplateId
+                            workoutTemplateId = navArgs.wkTemplateId,
+                            loading = false
                         )
                     }
                 }
 
-                is Result.Error -> _state.update { it.copy(error = workoutTemplate.error) }
+                is Result.Error -> _state.update {
+                    it.copy(
+                        error = workoutTemplate.error,
+                        loading = false
+                    )
+                }
             }
         }
     }
@@ -130,14 +136,18 @@ class ExecuteWkViewModel @Inject constructor(
         val workoutEnded =
             state.value.currentSet - 1 == updatedExecutionElement.size && state.value.indexOfCurrentExercise == updatedList.size - 1
 
-        if (updatedList[state.value.indexOfCurrentExercise].executionElements.isEmpty())
+        var deletedExercise = false
+        if (updatedList[state.value.indexOfCurrentExercise].executionElements.isEmpty()) {
             updatedList.removeAt(state.value.indexOfCurrentExercise)
+            deletedExercise = true
+        }
 
         _state.update {
             it.copy(
                 exerciseList = updatedList,
                 indexOfCurrentExercise =
-                if (nextExercise) state.value.indexOfCurrentExercise + 1
+                if (deletedExercise) state.value.indexOfCurrentExercise
+                else if (nextExercise) state.value.indexOfCurrentExercise + 1
                 else state.value.indexOfCurrentExercise,
                 workoutEnded = workoutEnded,
                 currentSet = if (nextExercise) 1 else state.value.currentSet

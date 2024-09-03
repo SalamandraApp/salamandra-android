@@ -109,10 +109,12 @@ fun ExecuteWkScreen(
         }
     }
 
-    ScreenBody(
-        state = state,
-        sendIntent = viewModel::dispatch
-    )
+    if(!state.loading){
+        ScreenBody(
+            state = state,
+            sendIntent = viewModel::dispatch
+        )
+    }
 }
 
 @Composable
