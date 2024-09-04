@@ -13,18 +13,16 @@ import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkIntent
 import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkNavArgs
 import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkState
 import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkViewModel
+import com.android.salamandra.workouts.executeWk.presentation.components.ExecuteWkScreenDestinations
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -80,13 +78,14 @@ class ExecuteWkViewModelTest {
         val expectedState = ExecuteWkState(
             error = null,
             exerciseList = emptyList(),
-            currentExercise = null,
+            indexOfCurrentExercise = 0,
             currentSet = 1,
             workoutEnded = false,
             survey = null,
             startOfSetCurrentTimeMillis = 0,
-            selectedElement = null,
-            workoutTemplateId = ""
+            indexOfSelectedElement = null,
+            workoutTemplateId = "",
+            activeTab = ExecuteWkScreenDestinations.ExecuteScreen
         )
         assert(ExecuteWkState.initial == expectedState)
     }
@@ -95,7 +94,7 @@ class ExecuteWkViewModelTest {
     fun `Initial flow of creating a workout execution works`() = runTest {
         // Arrange
         val expectedExecutionExerciseList = EXAMPLE_EXECUTION_EXERCISES_LIST
-        val expectedInitialExercise = EXAMPLE_EXECUTION_EXERCISE
+//        val expectedInitialExercise = EXAMPLE_EXECUTION_EXERCISE
         coEvery { workoutsRepository.getWkTemplate(any()) } returns Result.Success(
             EXAMPLE_WORKOUT_TEMPLATE
         )
@@ -111,7 +110,7 @@ class ExecuteWkViewModelTest {
         runCurrent()
 
         // Assert
-        assert(executeWkViewModel.state.value.exerciseList == expectedExecutionExerciseList && executeWkViewModel.state.value.currentExercise == expectedInitialExercise && executeWkViewModel.state.value.workoutTemplateId == EXAMPLE_WORKOUT_TEMPLATE.wkId)
+        assert(executeWkViewModel.state.value.exerciseList == expectedExecutionExerciseList && executeWkViewModel.state.value.workoutTemplateId == EXAMPLE_WORKOUT_TEMPLATE.wkId)
     }
 
     @Test
@@ -119,7 +118,6 @@ class ExecuteWkViewModelTest {
         // Arrange
         val state = ExecuteWkState.initial.copy(
             exerciseList = EXAMPLE_EXECUTION_EXERCISES_LIST,
-            currentExercise = EXAMPLE_EXECUTION_EXERCISE,
             workoutTemplateId = EXAMPLE_WORKOUT_TEMPLATE.wkId
         )
 
@@ -139,7 +137,7 @@ class ExecuteWkViewModelTest {
         assert(
             executeWkViewModel.state.value == state.copy(
                 currentSet = 2,
-                currentExercise = EXAMPLE_EXECUTION_EXERCISES_LIST[1]
+                indexOfCurrentExercise = 1
             )
         )
 
@@ -152,7 +150,7 @@ class ExecuteWkViewModelTest {
         assert(
             executeWkViewModel.state.value == state.copy(
                 currentSet = 4,
-                currentExercise = EXAMPLE_EXECUTION_EXERCISES_LIST[1],
+                indexOfCurrentExercise = 1,
                 workoutEnded = true
             )
         )
