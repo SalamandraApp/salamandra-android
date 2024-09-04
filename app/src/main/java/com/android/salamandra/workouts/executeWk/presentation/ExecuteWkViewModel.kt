@@ -3,6 +3,7 @@ package com.android.salamandra.workouts.executeWk.presentation
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.domain.WEIGHT_MAX
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.TimeFormatter
 import com.android.salamandra._core.domain.clock.Clock
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.workout.executions.WorkoutExecution
@@ -20,6 +21,7 @@ class ExecuteWkViewModel @Inject constructor(
     ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
     private val clock: Clock,
+    private val TimeFormatter: TimeFormatter,
     private val workoutsRepository: WorkoutsRepository,
     private val repository: Repository
 ) :

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
 
@@ -29,6 +31,7 @@ fun ProgressBanner(
     current: Int,
     exerciseName: String,
 ) {
+
     Column (
         modifier = modifier
             .padding(horizontal = 20.dp)
@@ -40,7 +43,7 @@ fun ProgressBanner(
         ) { }
         ProgressBar(
             modifier = Modifier
-                .height(10.dp),
+                .height(15.dp),
             size = size,
             current = current
         )
@@ -57,6 +60,7 @@ fun ProgressBanner(
             )
             Spacer(Modifier.weight(1f))
         }
+
     }
 }
 

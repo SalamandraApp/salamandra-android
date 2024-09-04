@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -61,6 +64,7 @@ import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.EditWeight
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.ExerciseInfo
+import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.NumberField
 import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.util.WK_EXECUTION_EXERCISE
@@ -80,9 +84,13 @@ import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.ui.theme.title
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.android.salamandra.workouts.editWk.presentation.components.EditWkTemplateElement
+import com.android.salamandra.workouts.executeWk.presentation.components.BottomPanel
+import com.android.salamandra.workouts.executeWk.presentation.components.ProgressBanner
 import com.android.salamandra.workouts.executeWk.presentation.components.ProgressBar
+import com.android.salamandra.workouts.executeWk.presentation.components.WkExecutionElement
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlin.jvm.internal.FunctionAdapter
 
 @Destination(navArgsDelegate = ExecuteWkNavArgs::class)
 @Composable
@@ -114,8 +122,7 @@ private fun ScreenBody(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(tertiary)
-            .padding(12.dp),
+            .background(tertiary),
         contentAlignment = Alignment.Center
     ) {
         if (state.currentExercise != null) {
@@ -124,51 +131,33 @@ private fun ScreenBody(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProgressBar(
-                    modifier = Modifier.height(4.dp),
+                ProgressBanner(
+                    modifier = Modifier
+                        .height(130.dp)
+                        .background(tertiary),
                     size = state.exerciseList.size,
                     current = state.exerciseList.indexOf(state.currentExercise),
+                    exerciseName = state.currentExercise.exercise.name
                 )
-
-                Text(
-                    text = state.currentExercise.exercise.name,
-                    color = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 26.sp
-                )
-                Spacer(Modifier.size(8.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Spacer(Modifier.weight(0.5f))
-                    OutlinedButton(
-                        onClick = { sendIntent(ExecuteWkIntent.SkipSet) },
-                        shape = RoundedCornerShape(30)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "Skip Set", color = onPrimary)
-                            Icon(
-                                imageVector = Icons.Outlined.SkipNext,
-                                contentDescription = "Skip Set",
-                                tint = onPrimary
-                            )
-                        }
-                    }
-                    Spacer(Modifier.weight(0.5f))
-                    state.currentExercise.executionElements.forEach { element ->
-                        WkElementContainer(
-                            element,
-                            state.currentSet,
-                            {sendIntent(ExecuteWkIntent.ShowBottomSheet(element.setNumber))}
+                FadeLip()
+                LazyColumn(Modifier.weight(1f)){
+                    itemsIndexed(state.currentExercise.executionElements) { index, element ->
+                        WkExecutionElement(
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                            activeIndex = state.exerciseList.indexOf(state.currentExercise),
+                            currentIndex = index,
+                            element = element
                         )
-                        Spacer(Modifier.weight(1f))
                     }
                 }
-                BottomSection(
-                    currentSet = state.currentSet,
-                    executionElements = state.currentExercise.executionElements,
-                    onClickCheck = {sendIntent(ExecuteWkIntent.LogAction)}
+                FadeLip(reverse = true)
+                BottomPanel (
+                    modifier = Modifier.height(130.dp),
+                    onNote = {},
+                    onEdit = {},
+                    onFinish = { sendIntent(ExecuteWkIntent.LogAction) },
+                    onSkipSet = {},
+                    onSkipExercise = {}
                 )
             }
 

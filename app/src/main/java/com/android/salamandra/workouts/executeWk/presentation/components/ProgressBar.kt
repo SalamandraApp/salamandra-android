@@ -12,9 +12,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.android.salamandra._core.domain.model.workout.executions.WkExecutionExercise
+import com.android.salamandra._core.presentation.components.striped
 import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.secondaryVariant
@@ -39,10 +41,18 @@ fun ProgressBar(
             val color =
                 if (i <= current) primaryVariant else secondaryVariant
             Box(
-                Modifier
-                    .fillMaxHeight()
-                    .background(color)
-                    .weight(1f)
+                if (i != current) {
+                    Modifier
+                        .fillMaxHeight()
+                        .background(color)
+                        .weight(1f)
+                } else {
+                    Modifier
+                        .fillMaxHeight()
+                        .clip(RectangleShape)
+                        .striped(color)
+                        .weight(1f)
+                }
             )
             if (i < size - 1) {
                 Spacer(Modifier.size(spacer))
