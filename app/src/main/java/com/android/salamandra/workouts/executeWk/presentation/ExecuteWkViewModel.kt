@@ -43,6 +43,7 @@ class ExecuteWkViewModel @Inject constructor(
             ExecuteWkIntent.ChangeSurveyToHappy -> _state.update { it.copy(survey = 2) }
 
             ExecuteWkIntent.EndWorkout -> endWorkout()
+            ExecuteWkIntent.EndWorkoutEarly -> endWorkoutEarly()
             ExecuteWkIntent.SkipSet -> skipSet()
             ExecuteWkIntent.DiscardWorkout -> sendEvent(ExecuteWkEvent.EndWorkout)
 
@@ -182,10 +183,8 @@ class ExecuteWkViewModel @Inject constructor(
 
     private fun updateElementWeight(newWeight: Double) {
         if (newWeight > WEIGHT_MAX) {
-            Log.e("DUMB", "1")
             return
         }
-        Log.e("DUMB", "2")
         val selectedElement = state.value.selectedElement
         if (selectedElement != null) {
             val currentExercise = state.value.exerciseList[state.value.currExercise]
@@ -260,6 +259,23 @@ class ExecuteWkViewModel @Inject constructor(
                 is Result.Error -> _state.update { it.copy(error = creation.error) }
             }
         }
+    }
+    private fun endWorkoutEarly() {
+        val setNumber0 = state.value.currSet == 0
+        // Empty execution
+        if (setNumber0 && state.value.currExercise == 0) {
+            sendEvent(ExecuteWkEvent.EndWorkout)
+        }
+        val cutOff = state.value.currExercise + (if (setNumber0) 0 else 1)
+        var updatedExercises = state.value.exerciseList.take(cutOff).toMutableList()
+        if (!setNumber0) {
+            val updateSet =
+                state.value.exerciseList[state.value.currExercise].executionElements.take(state.value.currSet)
+            val updatedExercise = updatedExercises[state.value.currExercise].copy(executionElements = updateSet)
+
+            updatedExercises[state.value.currExercise] = updatedExercise
+        }
+        _state.update { it.copy(exerciseList = updatedExercises, finishedExecution = true, pausedExecution = false) }
     }
 
 }

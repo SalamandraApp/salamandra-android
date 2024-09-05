@@ -4,7 +4,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 object WkTemplateScreenConstants {
-    val fixedBannerHeight = 85.dp
     val columnLabelWeights = ColumnLabelWeights(
         0.5f,
         0.1f,
@@ -12,17 +11,20 @@ object WkTemplateScreenConstants {
         0.15f,
         0.1f
     )
-    val sideMargin = 20.dp
-    val bannerInBetweenMargin = 22.dp
+    val outsideMargin = 20.dp
     val bannerRowHeights = BannerRowHeights(
-        top     = 50.dp,
-        picture = 150.dp,
+        top     = 20.dp,
+        picture = 130.dp,
         tags    = 30.dp,
         buttons = 55.dp,
-        labels  = 50.dp
+        labels  = 30.dp,
+        margins = listOf(15.dp, 20.dp, 18.dp, 15.dp),
     )
     val bannerHeight: Dp = with(bannerRowHeights) {
-        top + picture + tags + buttons + labels
+        top + picture + tags + buttons + labels + margins[0] + margins[1] + margins[2] + margins[3] + outsideMargin
+    }
+    val fixedBannerHeight: Dp = with(bannerRowHeights) {
+        buttons + labels + outsideMargin + margins[3]
     }
 }
 data class BannerRowHeights (
@@ -31,6 +33,7 @@ data class BannerRowHeights (
     val tags: Dp,
     val buttons: Dp,
     val labels: Dp,
+    val margins: List<Dp>,
 )
 
 data class ColumnLabelWeights (

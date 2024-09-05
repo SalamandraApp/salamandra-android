@@ -54,6 +54,7 @@ import com.android.salamandra.ui.theme.tertiary
 @Composable
 fun PausedExecutionDialog(
     modifier: Modifier = Modifier,
+    ableToRecord: Boolean = true,
     onRecord: () -> Unit,
     onDiscard: () -> Unit,
     onExit: () -> Unit
@@ -61,9 +62,10 @@ fun PausedExecutionDialog(
     Dialog(
         onDismissRequest = { onExit() },
     ) {
+        val cardWidth = if (ableToRecord) 310.dp else 250.dp
         Card(
             modifier = Modifier
-                .width(300.dp)
+                .width(cardWidth)
                 .height(150.dp),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors().copy(
@@ -105,6 +107,8 @@ fun PausedExecutionDialog(
                         .weight(1f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    if (!ableToRecord)
+                        Spacer(Modifier.weight(1f))
 
                     ExtendedFloatingActionButton(
                         containerColor = tertiary.copy(0.8f),
@@ -123,21 +127,23 @@ fun PausedExecutionDialog(
                         )
                     }
                     Spacer(Modifier.weight(1f))
-                    ExtendedFloatingActionButton(
-                        containerColor = primaryVariant.copy(0.3f),
-                        contentColor = primaryVariant,
-                        elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                        onClick = { onRecord() }) {
-                        Icon(
-                            imageVector = Icons.Filled.CheckCircle,
-                            contentDescription = null,
-                        )
-                        Text(
-                            text = stringResource(R.string.record),
-                            modifier = Modifier.padding(start = 8.dp),
-                            style = TitleTypo,
-                            fontSize = 18.sp
-                        )
+                    if (ableToRecord) {
+                        ExtendedFloatingActionButton(
+                            containerColor = primaryVariant.copy(0.3f),
+                            contentColor = primaryVariant,
+                            elevation = FloatingActionButtonDefaults.elevation(0.dp),
+                            onClick = { onRecord() }) {
+                            Icon(
+                                imageVector = Icons.Filled.CheckCircle,
+                                contentDescription = null,
+                            )
+                            Text(
+                                text = stringResource(R.string.record),
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = TitleTypo,
+                                fontSize = 18.sp
+                            )
+                        }
                     }
 
                 }

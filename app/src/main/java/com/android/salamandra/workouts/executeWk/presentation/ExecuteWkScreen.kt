@@ -242,7 +242,8 @@ private fun ExecuteSetView(
     if (state.pausedExecution) {
         PausedExecutionDialog(
             modifier = Modifier,
-            onRecord = { /*TODO*/ },
+            ableToRecord = !(state.currSet == 0 && state.currExercise == 0),
+            onRecord = { sendIntent(ExecuteWkIntent.EndWorkoutEarly) },
             onDiscard = { sendIntent(ExecuteWkIntent.DiscardWorkout) },
             onExit = { sendIntent(ExecuteWkIntent.ContinueWorkout) }
         )

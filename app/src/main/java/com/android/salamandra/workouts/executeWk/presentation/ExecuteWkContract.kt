@@ -56,6 +56,7 @@ sealed class ExecuteWkIntent : Intent {
     data object SkipSet : ExecuteWkIntent()
     data object EndWorkout : ExecuteWkIntent()
     data object DiscardWorkout: ExecuteWkIntent()
+    data object EndWorkoutEarly: ExecuteWkIntent()
 
     data object HideBottomSheet : ExecuteWkIntent()
     data class ShowBottomSheet(val setNumber: Int) : ExecuteWkIntent()

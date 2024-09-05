@@ -65,7 +65,7 @@ fun WkElementComponent(
                 .weight(WkTemplateScreenConstants.columnLabelWeights.exercise),
             text = wkElement.exercise.name,
             style = SemiTypo,
-            fontSize = 16.sp,
+            fontSize = 15.sp,
             color = nameColor,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -94,7 +94,7 @@ fun WkElementComponent(
                     overflow = TextOverflow.Ellipsis,
                     style = valueStyle,
                     maxLines = 1,
-                    fontSize = 16.sp
+                    fontSize = 15.sp
                 )
             }
         }

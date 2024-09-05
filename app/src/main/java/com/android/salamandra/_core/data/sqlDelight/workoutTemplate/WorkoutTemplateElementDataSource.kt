@@ -35,7 +35,6 @@ class WorkoutTemplateElementDataSource @Inject constructor(
         wkTemplateElement: WkTemplateElement
     ): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {
-            Log.e("DUMB", "INSERTING POS: ${wkTemplateElement.position}")
             queries.insertWkTemplateElement(
                 id = wkTemplateElement.templateElementId,
                 wkTemplateId = wkTemplateId,
