@@ -83,22 +83,23 @@ class EditWkViewModel @Inject constructor(
         }
     }
 
+
     private fun createWorkout() {
         ioLaunch {
-            when (val creation = repository.createWorkout(state.value.wkTemplate)) {
-                is Result.Success -> {
-                    Log.e("DUMB", "CREATED")
-                    sendEvent(EditWkEvent.NavigateToHome)
-                }
-                is Result.Error -> {
-                    Log.e("DUMB", "ERROR")
-                    _state.update { it.copy(error = creation.error) }
+            val updatedElements = state.value.wkTemplate.elements.mapIndexed { index, element ->
+                element.copy(position = index)
+            }
 
-                }
+            _state.update { it.copy(wkTemplate = it.wkTemplate.copy(elements = updatedElements)) }
+
+            when (val creation = repository.createWorkout(state.value.wkTemplate)) {
+                is Result.Success -> sendEvent(EditWkEvent.NavigateToHome)
+                is Result.Error -> _state.update { it.copy(error = creation.error) }
             }
         }
 
     }
+
 
     private fun navigateToHome() {
         ioLaunch {
