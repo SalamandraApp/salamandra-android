@@ -10,59 +10,63 @@ import com.android.salamandra.workouts.executeWk.presentation.components.Execute
 
 
 data class ExecuteWkState(
+    val scaffoldTab: ExecuteWkScreenDestinations,
     val error: RootError?,
+    val loading: Boolean,
+
+    val workoutTemplateId: String,
     val exerciseList: List<WkExecutionExercise>,
-    val indexOfCurrentExercise: Int,
-    val currentSet: Int,
-    val workoutEnded: Boolean,
+    val currExercise: Int,
+    val currSet: Int,
+
+    val finishedExecution: Boolean = false,
+    val pausedExecution: Boolean = false,
     val survey: Int?,
     val startOfSetCurrentTimeMillis: Long,
-    val indexOfSelectedElement: Int?,
-    val workoutTemplateId: String,
-    val activeTab: ExecuteWkScreenDestinations
+
+    val selectedElement: Int?,
 ) : State {
     companion object {
         val initial: ExecuteWkState = ExecuteWkState(
             error = null,
             exerciseList = emptyList(),
-            indexOfCurrentExercise = 0,
-            currentSet = 1,
-            workoutEnded = false,
+            currExercise = 0,
+            loading = true,
+            currSet = 0,
+            finishedExecution = false,
             survey = null,
             startOfSetCurrentTimeMillis = 0,
-            indexOfSelectedElement = null,
+            selectedElement = null,
             workoutTemplateId = "",
-            activeTab = ExecuteWkScreenDestinations.ExecuteScreen
+            scaffoldTab = ExecuteWkScreenDestinations.ExecuteScreen
         )
     }
 }
 
 sealed class ExecuteWkIntent : Intent {
     data class Error(val error: RootError) : ExecuteWkIntent()
-
     data object CloseError : ExecuteWkIntent()
 
     data object LogAction : ExecuteWkIntent()
 
     data object ChangeSurveyToSad : ExecuteWkIntent()
-
     data object ChangeSurveyToNeutral : ExecuteWkIntent()
-
     data object ChangeSurveyToHappy : ExecuteWkIntent()
 
     data object SkipSet : ExecuteWkIntent()
-
     data object EndWorkout : ExecuteWkIntent()
+    data object DiscardWorkout: ExecuteWkIntent()
 
     data object HideBottomSheet : ExecuteWkIntent()
-
     data class ShowBottomSheet(val setNumber: Int) : ExecuteWkIntent()
 
+    data object StopWorkout: ExecuteWkIntent()
+    data object ContinueWorkout: ExecuteWkIntent()
+
     data class EditReps(val newReps: Int) : ExecuteWkIntent()
-
     data class EditWeight(val newWeight: Double) : ExecuteWkIntent()
-
     data class EditRest(val newRest: Int) : ExecuteWkIntent()
+    data object AddRest : ExecuteWkIntent()
 
     data class ChangeActiveTab(val newTab: ExecuteWkScreenDestinations) : ExecuteWkIntent()
 }

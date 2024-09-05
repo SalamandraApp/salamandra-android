@@ -37,12 +37,9 @@ fun ProgressBanner(
             .padding(horizontal = 20.dp)
     ) {
 
-        // Navigator
-        Row (
-            modifier = Modifier.weight(.8f)
-        ) { }
         ProgressBar(
             modifier = Modifier
+                .padding(top = 20.dp)
                 .height(15.dp),
             size = size,
             current = current

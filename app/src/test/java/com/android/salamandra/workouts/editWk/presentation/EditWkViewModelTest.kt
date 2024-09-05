@@ -156,8 +156,8 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 12, index = 0))
-        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 1, index = 2))
+        editWkViewModel.dispatch(EditWkIntent.ChangeReps(index = 0))
+        editWkViewModel.dispatch(EditWkIntent.ChangeReps(index = 2))
         runCurrent()
 
         // Assert
@@ -174,7 +174,7 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeSets(newSets = 6, index = 1))
+        editWkViewModel.dispatch(EditWkIntent.ChangeSets(newSets = 6))
         runCurrent()
 
         // Assert
@@ -191,7 +191,7 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeWeight(newWeight = 134.6, index = 2))
+        editWkViewModel.dispatch(EditWkIntent.ChangeWeight(newWeight = 134.6))
         runCurrent()
 
         // Assert

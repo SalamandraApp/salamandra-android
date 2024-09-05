@@ -184,19 +184,11 @@ private fun ScreenBody(
                             {
                                 EditWkTemplateElement(
                                     element = selectedElement,
-                                    onEditSets = { newSets ->
-                                        sendIntent(EditWkIntent.ChangeSets(newSets, state.selectedElementIndex))
-                                    },
-                                    onEditReps= { newReps ->
-                                        sendIntent(EditWkIntent.ChangeReps(newReps, state.selectedElementIndex))
-                                    },
-                                    onEditWeight = { newWeight ->
-                                        sendIntent(EditWkIntent.ChangeWeight(newWeight, state.selectedElementIndex))
-                                    },
-                                    onEditRest = { newRest ->
-                                        sendIntent(EditWkIntent.ChangeRest(newRest, state.selectedElementIndex))
-                                    },
-                                    onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement(state.selectedElementIndex)) },
+                                    onEditSets = { newSets -> sendIntent(EditWkIntent.ChangeSets(newSets)) },
+                                    onEditReps= { newReps -> sendIntent(EditWkIntent.ChangeReps(state.selectedElementIndex)) },
+                                    onEditWeight = { newWeight -> sendIntent(EditWkIntent.ChangeWeight(newWeight)) },
+                                    onEditRest = { newRest -> sendIntent(EditWkIntent.ChangeRest(newRest)) },
+                                    onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement) },
                                 )
                             },
                             { ExerciseInfo(selectedElement.exercise) }

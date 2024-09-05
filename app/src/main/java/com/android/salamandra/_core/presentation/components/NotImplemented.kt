@@ -24,10 +24,10 @@ import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.secondary
 
 @Composable
-fun NotImplented() {
+fun NotImplented(modifier: Modifier = Modifier) {
     Column (
         horizontalAlignment = Alignment.Start,
-        modifier = Modifier.padding(horizontal = 15.dp)
+        modifier = modifier.padding(horizontal = 15.dp)
     ) {
         Text(
             modifier = Modifier.padding(top = 10.dp),

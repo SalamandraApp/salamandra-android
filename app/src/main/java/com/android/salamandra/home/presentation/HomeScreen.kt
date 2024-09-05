@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Construction
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SwapVert
@@ -63,10 +62,8 @@ import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.WkTemplateElementTypo
 import com.android.salamandra.ui.theme.onTertiary
-import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.title
-import com.android.salamandra.workouts.seeWk.presentation.SeeWkIntent
 import com.android.salamandra.workouts.seeWk.presentation.SeeWkNavArgs
 import com.android.salamandra.workouts.seeWk.presentation.components.TagRow
 import com.ramcosta.composedestinations.annotation.Destination
@@ -126,13 +123,16 @@ private fun ScreenBody(
             )
             FadeLip()
             ListViewToggles(
-                onSort = { sendIntent(HomeIntent.ShowNotImplementedBanner) },
+                onToggleSort = { sendIntent(HomeIntent.ChangeSort) },
+                onChangeAttribute = { sendIntent(HomeIntent.ShowNotImplementedBanner) },
                 onViewToggle = { sendIntent(HomeIntent.ShowNotImplementedBanner) },
-                loading = state.loading
+                loading = state.loading,
             )
             if (!state.loading) {
+                val sortedList =
+                    if (state.sortDescending) state.wkPreviewList.sortedByDescending { it.name }else state.wkPreviewList.sortedBy { it.name}
                 LazyColumn(modifier = Modifier.padding(start = 18.dp)) {
-                    items(state.wkPreviewList) { wkPreview ->
+                    items(sortedList) { wkPreview ->
                         WkPreview(
                             wkPreview = wkPreview,
                             onClick = { sendIntent(HomeIntent.SeeWk(wkTemplateId = wkPreview.wkId)) }
@@ -175,8 +175,9 @@ private fun ScreenBody(
 
 @Composable
 fun ListViewToggles(
-    onSort: () -> Unit,
+    onToggleSort: () -> Unit,
     onViewToggle: () -> Unit,
+    onChangeAttribute: () -> Unit,
     loading: Boolean,
 ) {
     Box(
@@ -186,12 +187,20 @@ fun ListViewToggles(
     ) {
         val iconColor = onTertiary
         Row(
+            Modifier.padding(start = 5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (loading) IconShimmer(Modifier.padding(start = 12.dp))
+            if (loading) {
+                IconShimmer(Modifier.padding(start = 12.dp))
+                Modifier
+                    .padding(start = 12.dp)
+                    .height(16.dp)
+                    .width(40.dp)
+                    .shimmerEffect()
+            }
             else {
                 IconButton(
-                    onClick = { onSort() }
+                    onClick = { onToggleSort() }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.SwapVert,
@@ -199,21 +208,13 @@ fun ListViewToggles(
                         contentDescription = "Add workout"
                     )
                 }
-            }
-            if (loading) Box(
-                Modifier
-                    .padding(start = 12.dp)
-                    .height(16.dp)
-                    .width(40.dp)
-                    .shimmerEffect()
-            )
-            else {
                 Text(
+                    modifier = Modifier
+                        .clickable { onChangeAttribute() },
                     text = stringResource(R.string.name),
                     style = WkTemplateElementTypo,
                     color = iconColor,
                     fontSize = 14.sp,
-                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }

@@ -28,13 +28,13 @@ val EXERCISE = Exercise(
 val WORKOUT_TEMPLATE_ELEMENT = WkTemplateElement(
     templateElementId = "",
     exercise = EXERCISE,
-    position = 1,
+    position = 0,
 )
 
 val WORKOUT_TEMPLATE = WorkoutTemplate(wkId = "", elements = List(20) { WORKOUT_TEMPLATE_ELEMENT })
 
 val WORKOUT_EXECUTION_ELEMENT = WkExecutionElement(
-    setNumber = 1,
+    setNumber = 0,
     reps = 12,
     weight = 75.0,
 )
@@ -44,10 +44,10 @@ val WK_EXECUTION_EXERCISE = WkExecutionExercise(
     exercise = EXERCISE,
     executionElements = listOf(
         WORKOUT_EXECUTION_ELEMENT,
+        WORKOUT_EXECUTION_ELEMENT.copy(setNumber = 1),
         WORKOUT_EXECUTION_ELEMENT.copy(setNumber = 2),
-        WORKOUT_EXECUTION_ELEMENT.copy(setNumber = 3, weight = null),
-        WORKOUT_EXECUTION_ELEMENT.copy(setNumber = 4),
+        WORKOUT_EXECUTION_ELEMENT.copy(setNumber = 3),
     ),
-    exerciseNumber = 1,
+    exerciseNumber = 0,
 
 )

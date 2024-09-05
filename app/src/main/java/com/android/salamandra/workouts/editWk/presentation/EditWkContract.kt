@@ -40,12 +40,12 @@ sealed class EditWkIntent: Intent {
 
     data class ChangeWkName(val newName: String): EditWkIntent()
     data class ChangeWkDescription(val newDescription: String): EditWkIntent()
-    data class ChangeSets(val newSets: Int, val index: Int): EditWkIntent()
-    data class ChangeReps(val newReps: Int, val index: Int): EditWkIntent()
-    data class ChangeWeight(val newWeight: Double, val index: Int): EditWkIntent()
-    data class ChangeRest(val newRest: Int, val index: Int): EditWkIntent()
+    data class ChangeSets(val newSets: Int): EditWkIntent()
+    data class ChangeReps(val newReps: Int): EditWkIntent()
+    data class ChangeWeight(val newWeight: Double): EditWkIntent()
+    data class ChangeRest(val newRest: Int): EditWkIntent()
 
-    data class DeleteWkElement(val index: Int): EditWkIntent()
+    data object DeleteWkElement: EditWkIntent()
     data object CreateWorkout: EditWkIntent()
 }
 

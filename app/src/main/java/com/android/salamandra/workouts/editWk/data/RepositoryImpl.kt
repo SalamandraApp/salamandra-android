@@ -56,10 +56,14 @@ class RepositoryImpl(
                     Result.Success(Unit)
                 }
 
-                is Result.Error -> Result.Error(uid.error)
+                is Result.Error -> {
+                    Log.e("DUMB", "HddRE 1")
+                    Result.Error(uid.error)
+                }
             }
 
         } catch (e: Exception) {
+            Log.e("DUMB", e.toString())
             Result.Error(retrofitExceptionHandler.handleException(e))
         }
     }

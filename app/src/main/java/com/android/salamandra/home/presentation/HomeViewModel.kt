@@ -30,6 +30,7 @@ class HomeViewModel @Inject constructor(
         when (intent) {
             is HomeIntent.Error -> _state.update { it.copy(error = intent.error) }
             is HomeIntent.CloseError -> _state.update { it.copy(error = null) }
+            is HomeIntent.BottomBarClicked -> sendEvent(HomeEvent.BottomBarClicked(intent.destination))
 
             HomeIntent.ShowNotImplementedBanner -> _state.update { it.copy(notImplementedBanner = true) }
             HomeIntent.HideBottomSheet-> _state.update { it.copy(notImplementedBanner = false) }
@@ -38,7 +39,8 @@ class HomeViewModel @Inject constructor(
 
             is HomeIntent.SeeWk -> sendEvent(HomeEvent.NavigateToSeeWk(intent.wkTemplateId))
 
-            is HomeIntent.BottomBarClicked -> sendEvent(HomeEvent.BottomBarClicked(intent.destination))
+            HomeIntent.ChangeSort -> _state.update { it.copy(sortDescending = !state.value.sortDescending) }
+
         }
     }
 

@@ -1,5 +1,6 @@
 package com.android.salamandra._core.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.android.salamandra._core.domain.WEIGHT_MAX
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.title
 
@@ -39,7 +41,7 @@ fun EditWeight(
             val lastChar = it.last()
             // Removed
             if (it.length < weightString.length) {
-                if (beforeDot.value ) {
+                if (beforeDot.value) {
                     int.value = if (int.value.length > 1) int.value.dropLast(1) else "0"
                 } else {
                     if (decimal.value == "0") beforeDot.value = true
@@ -54,10 +56,10 @@ fun EditWeight(
                 }
                 // Other
                 else if (lastChar.digitToIntOrNull() != null) {
-                    if (beforeDot.value) {
+                    if (beforeDot.value  && (int.value + lastChar).toInt() < WEIGHT_MAX) {
                         if (int.value == "0") int.value = ""
                         int.value += lastChar
-                    } else {
+                    } else if (!beforeDot.value) {
                         decimal.value = lastChar.toString()
                     }
                 }

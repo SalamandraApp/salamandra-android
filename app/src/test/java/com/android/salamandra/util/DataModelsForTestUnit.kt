@@ -88,14 +88,14 @@ val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP = WkTemplateElement(
     sets = 4,
     weight = null,
     rest = 120,
-    position = 1
+    position = 0
 )
 
 val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_PUSH_UP = WorkoutTemplateElementEntity(
     id = "12345",
     wkTemplateId = "TEMPORAL",
     exerciseId = EXAMPLE_EXERCISE_PUSH_UP.exId,
-    position = 1,
+    position = 0,
     reps = 4,
     sets = 4,
     weight = null,
