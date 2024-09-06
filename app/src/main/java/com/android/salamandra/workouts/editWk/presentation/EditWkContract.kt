@@ -14,7 +14,7 @@ data class EditWkState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val loading: Boolean,
     val error: RootError?,
     val wkTemplate: WorkoutTemplate,
-    val selectedElementIndex: Int?,
+    val selectedElementIndex: Int? = null,
     val textFieldSelected: Int? = null,
     val notImplementedBanner: Boolean,
 ) : State {
@@ -36,7 +36,7 @@ sealed class EditWkIntent: Intent {
     data object NavigateToHome: EditWkIntent()
     data object NavigateToSearch: EditWkIntent()
 
-    data class ShowElementBanner(val index: Int, val field: Int): EditWkIntent()
+    data class ShowElementBanner(val index: Int, val field: Int = 0): EditWkIntent()
     data object ShowNotImplementedBanner: EditWkIntent()
     data object HideBottomSheet: EditWkIntent()
 
