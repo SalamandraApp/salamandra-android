@@ -1,4 +1,4 @@
-package com.android.salamandra.workouts.seeWk.presentation.components
+package com.android.salamandra._core.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,20 +15,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
-import com.android.salamandra.workouts.seeWk.presentation.SeeWkIntent
-import com.android.salamandra.workouts.seeWk.presentation.SeeWkState
 
 @Composable
-fun SeeWkBannerTopRow(
+fun WkTemplateTopRow(
     modifier: Modifier = Modifier,
     onGoBack: () -> Unit,
-    onExecuteWk: () -> Unit,
-    middleContent: @Composable () -> Unit  = {},
-    executeButton: Boolean = false
+    onActionButton: () -> Unit,
+    middleContent: @Composable () -> Unit = {},
+    showActionButton: Boolean = false,
+    actionIcon: ImageVector?
 ) {
     Row(
         modifier = modifier
@@ -47,30 +47,20 @@ fun SeeWkBannerTopRow(
         }
         Spacer(modifier = Modifier.weight(1f))
         middleContent()
-        Spacer(modifier = Modifier.weight(1f))
-        if (executeButton)
-            FloatingActionButton(
-                modifier = Modifier
-                    .padding(vertical = 8.dp),
-                containerColor = primaryVariant.copy(0.3f),
-                contentColor = primaryVariant,
-                elevation = FloatingActionButtonDefaults.elevation(8.dp),
-                onClick = { onExecuteWk() }) {
-                Icon(
-                    imageVector = Icons.Filled.PlayCircle,
-                    contentDescription = "Execute Workout",
-                )
+        Row (modifier = Modifier.weight(1f)) {
+            Spacer(modifier = Modifier.weight(1f))
+            if (showActionButton && actionIcon != null) {
+                FloatingActionButton(
+                    containerColor = primaryVariant.copy(0.3f),
+                    contentColor = primaryVariant,
+                    elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                    onClick = { onActionButton() }) {
+                    Icon(
+                        imageVector = actionIcon,
+                        contentDescription = null,
+                    )
+                }
             }
+        }
     }
-}
-
-@Composable
-@Preview
-private fun BannerPreview(){
-    SeeWkBannerTopRow(
-        onGoBack = {},
-        onExecuteWk = {},
-        middleContent = {},
-        executeButton = true
-    )
 }

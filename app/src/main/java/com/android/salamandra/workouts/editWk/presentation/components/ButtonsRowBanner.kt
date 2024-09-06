@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +34,7 @@ import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
+import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
 import com.android.salamandra.workouts.editWk.presentation.EditWkState
@@ -40,6 +44,7 @@ fun ButtonsRowBanner (
     modifier: Modifier = Modifier,
     onAddExercise: () -> Unit,
     onDeleteWk: () -> Unit,
+    onSave: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -69,9 +74,9 @@ fun ButtonsRowBanner (
         Spacer(modifier = Modifier.weight(1f))
 
         ExtendedFloatingActionButton(
-            containerColor = primaryVariant.copy(0.3f),
-            contentColor = primaryVariant,
-            elevation = FloatingActionButtonDefaults.elevation(8.dp),
+            containerColor = secondary,
+            contentColor = primaryVariant.copy(0.8f),
+            elevation = FloatingActionButtonDefaults.elevation(0.dp),
             onClick = { onAddExercise() }) {
             Icon(
                 imageVector = Icons.Outlined.Add,
@@ -82,6 +87,19 @@ fun ButtonsRowBanner (
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
+        Spacer(Modifier.width(20.dp))
+        FloatingActionButton (
+            containerColor = primaryVariant.copy(0.3f),
+            contentColor = primaryVariant,
+            elevation = FloatingActionButtonDefaults.elevation(0.dp),
+            onClick = { onSave() }) {
+            Icon(
+                imageVector = Icons.Filled.CheckCircle,
+                contentDescription = "Add Exercise",
+            )
+
+        }
+
     }
 }
 
@@ -91,9 +109,10 @@ private fun ButtonsRowPreview() {
     ButtonsRowBanner(
         modifier = Modifier
             .background(tertiary)
-            .height(50.dp)
-            .padding(5.dp),
+            .height(55.dp)
+            .padding(horizontal = 5.dp),
         onAddExercise = {},
-        onDeleteWk = {}
+        onDeleteWk = {},
+        onSave = {}
     )
 }

@@ -98,8 +98,9 @@ val title = Color(0xFFFFFFFF)
 val subtitle = Color(0xFFe6e6e6)
 
 val colorError = Color(0xffd84848)
-
 val colorMessage = Color(0xfffdf56a).copy(alpha = 0.7f)
+val colorConfirm = Color(0xff27a917).copy(alpha = 0.7f)
+
 val selectedScreenBottomBar =Color(0xffd3d3d3).copy(alpha = 0.3f)
 
 @Composable

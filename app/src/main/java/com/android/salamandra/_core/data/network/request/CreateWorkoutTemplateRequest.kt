@@ -1,5 +1,6 @@
 package com.android.salamandra._core.data.network.request
 
+import android.util.Log
 import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
 import com.google.gson.annotations.SerializedName
@@ -26,7 +27,10 @@ fun WorkoutTemplate.toCreateWorkoutTemplateRequest() =
         name = name,
         description = description,
         dateCreated = dateCreated?.toString() ?: throw IllegalArgumentException("DateCreated is mandatory for creating a workout"),
-        elements = elements.map { it.toCreateWorkoutTemplateElementRequest() }
+        elements = elements.map {
+            Log.e("DUMB", "CREATING WITH POS ${it.position}")
+            it.toCreateWorkoutTemplateElementRequest()
+        }
     )
 
 fun WkTemplateElement.toCreateWorkoutTemplateElementRequest() = CreateWorkoutTemplateElementRequest(

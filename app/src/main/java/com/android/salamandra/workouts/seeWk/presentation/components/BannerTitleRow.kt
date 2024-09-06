@@ -71,6 +71,7 @@ fun BannerTitleRow(
             Spacer(modifier = Modifier.weight(1f))
             val iconColor = onTertiary.copy(0.7f)
             Row(
+                Modifier.padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(

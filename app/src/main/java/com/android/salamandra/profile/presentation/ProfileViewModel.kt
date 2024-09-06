@@ -38,7 +38,7 @@ class ProfileViewModel @Inject constructor(
                         it.copy(
                             isSignedIn = true,
                             userData = userData.data,
-                            loading = true
+                            loading = false
                         )
                     }
 

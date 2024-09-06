@@ -22,7 +22,7 @@ fun WkTemplateViewLabels(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 6.dp),
+            .padding(bottom = 8.dp),
         verticalAlignment = Alignment.Bottom
     ) {
         val columnLabelColor = onTertiary.copy(alpha = 0.6f)

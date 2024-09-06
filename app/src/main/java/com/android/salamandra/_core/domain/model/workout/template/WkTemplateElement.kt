@@ -19,7 +19,7 @@ data class WkTemplateElement(
         for (i in 0..< sets)
             executionElements.add(
                 WkExecutionElement(
-                    setNumber = i + 1,
+                    setNumber = i,
                     reps = reps,
                     weight = weight,
                     rest = rest,

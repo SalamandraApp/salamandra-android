@@ -110,6 +110,9 @@
     <string name="cardio">Cardio</string>
     <string name="mobility">Mobility</string>
     <string name="name">Name</string>
+    <string name="discard">Discard</string>
+    <string name="record">Record</string>
+    <string name="workout_paused">Workout Paused</string>
 
 
     <string name="not_implemented">Not Implemented</string>

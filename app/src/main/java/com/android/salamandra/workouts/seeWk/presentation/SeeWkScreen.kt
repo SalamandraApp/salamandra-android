@@ -14,8 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.QueryStats
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,14 +50,13 @@ import com.android.salamandra.ui.theme.title
 import com.android.salamandra.workouts.executeWk.presentation.ExecuteWkNavArgs
 import com.android.salamandra.workouts.seeWk.presentation.components.BannerTitleRow
 import com.android.salamandra.workouts.seeWk.presentation.components.ButtonsRow
-import com.android.salamandra.workouts.seeWk.presentation.components.SeeWkBannerTopRow
+import com.android.salamandra._core.presentation.components.WkTemplateTopRow
 import com.android.salamandra.workouts.seeWk.presentation.components.TagRow
 import com.android.salamandra.R
 import com.android.salamandra._core.presentation.components.NotImplented
 import com.android.salamandra._core.presentation.components.TabRowBuilder
+import com.android.salamandra._core.presentation.components.WkTemplateFixBanner
 import com.android.salamandra.ui.theme.onTertiary
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
-import com.android.salamandra.workouts.editWk.presentation.components.EditWkTemplateElement
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -123,13 +122,24 @@ private fun ScreenBody(
                     .align(Alignment.TopCenter)
                     .zIndex(1f),
             ) {
-                SeeWkFixedBanner(
-                    wkName = state.wkTemplate.name,
+                WkTemplateFixBanner(
+                    middleContent = {
+                        Text(
+                            text = state.wkTemplate.name,
+                            style = TitleTypo,
+                            fontSize = 18.sp,
+                            color = title,
+                            minLines = 1,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
                     onGoBack = { sendIntent(SeeWkIntent.NavigateUp) },
-                    onExecuteWk = { sendIntent(SeeWkIntent.StartWk) },
+                    onActionButton = { sendIntent(SeeWkIntent.StartWk) },
                     modifier = Modifier
                         .height(fixedBannerHeight)
-                        .background(mainColor)
+                        .background(mainColor),
+                    actionIcon = Icons.Filled.PlayCircle
                 )
                 FadeLip()
             }
@@ -213,39 +223,6 @@ private fun ScreenBody(
 
 
 @Composable
-fun SeeWkFixedBanner(
-    modifier: Modifier = Modifier,
-    wkName: String,
-    onGoBack: () -> Unit,
-    onExecuteWk: () -> Unit,
-) {
-
-    val dpSideMargin = WkTemplateScreenConstants.sideMargin
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dpSideMargin),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        SeeWkBannerTopRow(
-            modifier = Modifier.weight(1f),
-            middleContent = {
-                Text(
-                    text = wkName,
-                    color = title,
-                    fontSize = 16.sp,
-                    style = TitleTypo,
-                )
-            },
-            onGoBack = onGoBack,
-            onExecuteWk = onExecuteWk,
-            executeButton = true,
-        )
-        WkTemplateViewLabels()
-    }
-}
-
-@Composable
 fun SeeWkBigBanner(
     wkName: String,
     wkDescription: String?,
@@ -258,25 +235,25 @@ fun SeeWkBigBanner(
     onTag: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     val dpTopRow = WkTemplateScreenConstants.bannerRowHeights.top
     val dpTitle = WkTemplateScreenConstants.bannerRowHeights.picture
     val dpTags = WkTemplateScreenConstants.bannerRowHeights.tags
     val dpButtons = WkTemplateScreenConstants.bannerRowHeights.buttons
     val dpLabels = WkTemplateScreenConstants.bannerRowHeights.labels
+    val dpMargins = WkTemplateScreenConstants.bannerRowHeights.margins
 
-    val dpSideMargin = WkTemplateScreenConstants.sideMargin
-    val dpInBetweenMargin = WkTemplateScreenConstants.bannerInBetweenMargin
+    val dpOutsideMargin = WkTemplateScreenConstants.outsideMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = dpSideMargin)
+            .padding(horizontal = dpOutsideMargin)
+            .padding(top = dpOutsideMargin)
     ) {
-        SeeWkBannerTopRow(
+        WkTemplateTopRow(
             modifier = Modifier
                 .height(dpTopRow),
             onGoBack = onGoBack,
-            onExecuteWk = onExecuteWk,
+            onActionButton = onExecuteWk,
             middleContent = {
                 Text(
                     text = stringResource(R.string.workout_preview),
@@ -284,32 +261,34 @@ fun SeeWkBigBanner(
                     fontSize = 16.sp,
                     style = TitleTypo,
                 )
-            }
+            },
+            actionIcon = null
 
         )
+        Spacer(Modifier.height(dpMargins[0]))
         BannerTitleRow(
             modifier = Modifier
-                .height(dpTitle)
-                .padding(bottom = dpInBetweenMargin),
+                .height(dpTitle),
             wkDescription = wkDescription,
             wkName = wkName,
             onTitlePress = onTitlePress,
         )
+        Spacer(Modifier.height(dpMargins[1]))
         TagRow(
             modifier = Modifier
-                .padding(bottom = dpInBetweenMargin)
                 .height(dpTags),
             onClick = onTag
         )
+        Spacer(Modifier.height(dpMargins[2]))
         ButtonsRow(
             modifier = Modifier
-                .height(dpButtons)
-                .padding(bottom = dpInBetweenMargin / 2),
+                .height(dpButtons),
             onEdit = onEdit,
             onShare = onShare,
             onStats = onStats,
             onExecuteWk = onExecuteWk,
         )
+        Spacer(Modifier.height(dpMargins[3]))
         WkTemplateViewLabels(
             modifier = Modifier
                 .height(dpLabels),

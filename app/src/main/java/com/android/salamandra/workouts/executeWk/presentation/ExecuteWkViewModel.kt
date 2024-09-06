@@ -1,7 +1,10 @@
 package com.android.salamandra.workouts.executeWk.presentation
 
+import android.util.Log
+import androidx.compose.material3.Icon
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
+import com.android.salamandra._core.domain.WEIGHT_MAX
 import com.android.salamandra._core.domain.clock.Clock
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.workout.executions.WorkoutExecution
@@ -13,6 +16,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.math.min
 
 
 @HiltViewModel
@@ -31,30 +35,31 @@ class ExecuteWkViewModel @Inject constructor(
     override fun reduce(intent: ExecuteWkIntent) {
         when (intent) {
             is ExecuteWkIntent.Error -> _state.update { it.copy(error = intent.error) }
-
             is ExecuteWkIntent.CloseError -> _state.update { it.copy(error = null) }
 
             ExecuteWkIntent.LogAction -> logAction()
 
             ExecuteWkIntent.ChangeSurveyToSad -> _state.update { it.copy(survey = 0) }
-
             ExecuteWkIntent.ChangeSurveyToNeutral -> _state.update { it.copy(survey = 1) }
-
             ExecuteWkIntent.ChangeSurveyToHappy -> _state.update { it.copy(survey = 2) }
 
             ExecuteWkIntent.EndWorkout -> endWorkout()
-
+            ExecuteWkIntent.EndWorkoutEarly -> endWorkoutEarly()
             ExecuteWkIntent.SkipSet -> skipSet()
+            ExecuteWkIntent.DiscardWorkout -> sendEvent(ExecuteWkEvent.EndWorkout)
 
             ExecuteWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElement = null) }
-
             is ExecuteWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElement = intent.setNumber) }
+            ExecuteWkIntent.StopWorkout -> _state.update { it.copy(pausedExecution = true) }
+            ExecuteWkIntent.ContinueWorkout -> _state.update { it.copy(pausedExecution = false) }
+
 
             is ExecuteWkIntent.EditReps -> updateElementReps(intent.newReps)
-
             is ExecuteWkIntent.EditWeight -> updateElementWeight(intent.newWeight)
-
             is ExecuteWkIntent.EditRest -> updateElementRest(intent.newRest)
+            is ExecuteWkIntent.AddRest -> incrementRest()
+
+            is ExecuteWkIntent.ChangeActiveTab -> _state.update { it.copy(scaffoldTab = intent.newTab) }
         }
     }
 
@@ -69,91 +74,175 @@ class ExecuteWkViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             exerciseList = workoutExecutionExercises,
-                            currentExercise = workoutExecutionExercises.first(),
                             startOfSetCurrentTimeMillis = clock.currentTimeMillis(),
-                            workoutTemplateId = navArgs.wkTemplateId
+                            workoutTemplateId = navArgs.wkTemplateId,
+                            loading = false
                         )
                     }
                 }
 
-                is Result.Error -> _state.update { it.copy(error = workoutTemplate.error) }
+                is Result.Error -> _state.update {
+                    it.copy(
+                        error = workoutTemplate.error,
+                        loading = false
+                    )
+                }
             }
         }
     }
 
     private fun logAction() {
-        val currentExercise = state.value.currentExercise
-        val currentSet = state.value.currentSet
+        val currentSet = state.value.currSet
         val exerciseList = state.value.exerciseList.toMutableList()
 
         val timeOfSet =
             (clock.currentTimeMillis() - state.value.startOfSetCurrentTimeMillis).toInt()
         _state.update { it.copy(startOfSetCurrentTimeMillis = clock.currentTimeMillis()) }
 
-        val indexOfCurrentExercise = exerciseList.indexOf(currentExercise)
-        val executionElements = exerciseList[indexOfCurrentExercise].executionElements
-        val updatedSet = executionElements[currentSet - 1].copy(time = timeOfSet)
-        val updatedExecutionElements = executionElements.toMutableList()
-        updatedExecutionElements[currentSet - 1] = updatedSet
-        exerciseList[exerciseList.indexOf(currentExercise)] =
-            exerciseList[exerciseList.indexOf(currentExercise)].copy(executionElements = updatedExecutionElements)
-        _state.update { it.copy(exerciseList = exerciseList) } // record the time of current set
+        // Update time
+        val executionElements = exerciseList[state.value.currExercise].executionElements
+        val updatedSet = executionElements[currentSet].copy(time = timeOfSet)
+        val updatedExecutionElements =
+            executionElements.toMutableList().apply { this[currentSet] = updatedSet }
+        exerciseList[state.value.currExercise] =
+            exerciseList[state.value.currExercise].copy(executionElements = updatedExecutionElements)
+        _state.update { it.copy(exerciseList = exerciseList) }
 
-        _state.update { it.copy(currentExercise = exerciseList[indexOfCurrentExercise]) } // Update Current exercise
-
-        if (currentSet == state.value.currentExercise?.executionElements?.size) {
-            if (state.value.currentExercise == exerciseList.last()) _state.update {
-                it.copy(
-                    workoutEnded = true
-                )
+        if (currentSet == _state.value.exerciseList[state.value.currExercise].executionElements.size - 1) {
+            if (state.value.currExercise == exerciseList.size - 1) _state.update {
+                it.copy(finishedExecution = true)
             } // End Execution
             else _state.update { // Next Exercise
                 it.copy(
-                    currentExercise = exerciseList[indexOfCurrentExercise + 1],
-                    currentSet = 1
+                    currExercise = state.value.currExercise + 1,
+                    currSet = 0
                 )
             }
-        } else _state.update { it.copy(currentSet = currentSet + 1) } // Next rep
+        } else _state.update { it.copy(currSet = currentSet + 1) } // Next rep
     }
 
     private fun skipSet() {
-        val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
         val updatedExecutionElement =
-            state.value.exerciseList[indexOfExercise].executionElements.toMutableList()
-        updatedExecutionElement.removeAt(state.value.currentSet - 1)
-        for (i in (state.value.currentSet - 1..<updatedExecutionElement.size)) {
+            state.value.exerciseList[state.value.currExercise].executionElements.toMutableList()
+                .apply { this.removeAt(state.value.currSet) }
+        for (i in (state.value.currSet..<updatedExecutionElement.size)) {
             updatedExecutionElement[i] = updatedExecutionElement[i].copy(setNumber = i + 1)
         }
 
-        val updatedList = state.value.exerciseList.toMutableList()
-        updatedList[indexOfExercise] =
-            state.value.exerciseList[indexOfExercise].copy(executionElements = updatedExecutionElement)
+        val updatedList = state.value.exerciseList.toMutableList().apply {
+            this[state.value.currExercise] =
+                state.value.exerciseList[state.value.currExercise].copy(executionElements = updatedExecutionElement)
+        }
 
         val nextExercise =
-            state.value.currentSet - 1 == updatedExecutionElement.size && indexOfExercise < updatedList.size - 1
+            state.value.currSet == updatedExecutionElement.size && state.value.currExercise < updatedList.size - 1
 
         val workoutEnded =
-            state.value.currentSet - 1 == updatedExecutionElement.size && indexOfExercise == updatedList.size - 1
+            state.value.currSet == updatedExecutionElement.size && state.value.currExercise == updatedList.size - 1
 
-        var exerciseDeleted = false
-        if (updatedList[indexOfExercise].executionElements.isEmpty()) {
-            updatedList.removeAt(indexOfExercise)
-            exerciseDeleted = true
+        var deletedExercise = false
+        if (updatedList[state.value.currExercise].executionElements.isEmpty()) {
+            updatedList.removeAt(state.value.currExercise)
+            deletedExercise = true
         }
 
         _state.update {
             it.copy(
                 exerciseList = updatedList,
-                currentExercise =
-                if (exerciseDeleted && !workoutEnded) updatedList[indexOfExercise]
-                else if (nextExercise) updatedList[indexOfExercise + 1]
-                else if (!workoutEnded) updatedList[indexOfExercise]
-                else state.value.currentExercise,
-                workoutEnded = workoutEnded,
-                currentSet = if (nextExercise) 1 else state.value.currentSet
+                currExercise =
+                if (deletedExercise) state.value.currExercise
+                else if (nextExercise) state.value.currExercise + 1
+                else state.value.currExercise,
+                finishedExecution = workoutEnded,
+                currSet = if (nextExercise) 0 else state.value.currSet
             )
         }
     }
+
+
+    private fun updateElementReps(newReps: Int) {
+        if (newReps > Short.MAX_VALUE) {
+            return
+        }
+        val selectedElement = state.value.selectedElement
+        val currentExercise = state.value.exerciseList[state.value.currExercise]
+
+        if (selectedElement != null) {
+            val updatedElements = currentExercise.executionElements.toMutableList().apply {
+                this[selectedElement] = this[selectedElement].copy(reps = newReps)
+            }
+            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
+
+            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
+                this[state.value.currExercise] = updatedCurrentExercise
+            }
+
+            _state.update { it.copy(exerciseList = updatedExerciseList) }
+        }
+    }
+
+    private fun updateElementWeight(newWeight: Double) {
+        if (newWeight > WEIGHT_MAX) {
+            return
+        }
+        val selectedElement = state.value.selectedElement
+        if (selectedElement != null) {
+            val currentExercise = state.value.exerciseList[state.value.currExercise]
+            val updatedElements = currentExercise.executionElements.toMutableList().apply {
+                this[selectedElement] = this[selectedElement].copy(weight = newWeight)
+            }
+            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
+
+            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
+                this[state.value.currExercise] = updatedCurrentExercise
+            }
+
+            _state.update { it.copy(exerciseList = updatedExerciseList) }
+        }
+    }
+
+    private fun updateElementRest(newRest: Int) {
+        if (newRest > Short.MAX_VALUE) {
+            return
+        }
+        val selectedElement = state.value.selectedElement
+        val currentExercise = state.value.exerciseList[state.value.currExercise]
+
+        if (selectedElement != null) {
+            val updatedElements = currentExercise.executionElements.toMutableList().apply {
+                this[selectedElement] = this[selectedElement].copy(rest = newRest)
+            }
+            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
+
+            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
+                this[state.value.currExercise] = updatedCurrentExercise
+            }
+
+            _state.update { it.copy(exerciseList = updatedExerciseList) }
+        }
+    }
+
+    private fun incrementRest() {
+        val currentExercise = state.value.exerciseList[state.value.currExercise]
+        val currentSet = state.value.currSet
+        if (currentSet !in 0..<currentExercise.executionElements.size)
+            return
+        val rest = currentExercise.executionElements[currentSet].rest
+        val newRest = min(rest + 15, Short.MAX_VALUE.toInt())
+
+        val updatedElements = currentExercise.executionElements.toMutableList().apply {
+            this[currentSet] = this[currentSet].copy(rest = newRest)
+        }
+        val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
+
+        val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
+            this[state.value.currExercise] = updatedCurrentExercise
+        }
+
+        _state.update { it.copy(exerciseList = updatedExerciseList) }
+    }
+
+
 
     private fun endWorkout() {
         ioLaunch {
@@ -171,80 +260,22 @@ class ExecuteWkViewModel @Inject constructor(
             }
         }
     }
-
-    private fun updateElementReps(newReps: Int) {
-        val selectedElement = state.value.selectedElement
-        val currentExercise = state.value.currentExercise
-
-        if (selectedElement != null && currentExercise != null) {
-            val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
-
-            val updatedElements = currentExercise.executionElements.toMutableList().apply {
-                this[selectedElement - 1] = this[selectedElement - 1].copy(reps = newReps)
-            }
-            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
-
-            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
-                this[indexOfExercise] = updatedCurrentExercise
-            }
-
-            _state.update {
-                it.copy(
-                    currentExercise = updatedCurrentExercise,
-                    exerciseList = updatedExerciseList
-                )
-            }
+    private fun endWorkoutEarly() {
+        val setNumber0 = state.value.currSet == 0
+        // Empty execution
+        if (setNumber0 && state.value.currExercise == 0) {
+            sendEvent(ExecuteWkEvent.EndWorkout)
         }
-    }
+        val cutOff = state.value.currExercise + (if (setNumber0) 0 else 1)
+        var updatedExercises = state.value.exerciseList.take(cutOff).toMutableList()
+        if (!setNumber0) {
+            val updateSet =
+                state.value.exerciseList[state.value.currExercise].executionElements.take(state.value.currSet)
+            val updatedExercise = updatedExercises[state.value.currExercise].copy(executionElements = updateSet)
 
-    private fun updateElementWeight(newWeight: Double) {
-        val selectedElement = state.value.selectedElement
-        val currentExercise = state.value.currentExercise
-
-        if (selectedElement != null && currentExercise != null) {
-            val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
-            val updatedElements = currentExercise.executionElements.toMutableList().apply {
-                this[selectedElement - 1] = this[selectedElement - 1].copy(weight = newWeight)
-            }
-
-            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
-
-            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
-                this[indexOfExercise] = updatedCurrentExercise
-            }
-
-            _state.update {
-                it.copy(
-                    currentExercise = updatedCurrentExercise,
-                    exerciseList = updatedExerciseList
-                )
-            }
+            updatedExercises[state.value.currExercise] = updatedExercise
         }
-    }
-
-    private fun updateElementRest(newRest: Int) {
-        val selectedElement = state.value.selectedElement
-        val currentExercise = state.value.currentExercise
-
-        if (selectedElement != null && currentExercise != null) {
-            val indexOfExercise = state.value.exerciseList.indexOf(state.value.currentExercise)
-            val updatedElements = currentExercise.executionElements.toMutableList().apply {
-                this[selectedElement - 1] = this[selectedElement - 1].copy(rest = newRest)
-            }
-
-            val updatedCurrentExercise = currentExercise.copy(executionElements = updatedElements)
-
-            val updatedExerciseList = state.value.exerciseList.toMutableList().apply {
-                this[indexOfExercise] = updatedCurrentExercise
-            }
-
-            _state.update {
-                it.copy(
-                    currentExercise = updatedCurrentExercise,
-                    exerciseList = updatedExerciseList
-                )
-            }
-        }
+        _state.update { it.copy(exerciseList = updatedExercises, finishedExecution = true, pausedExecution = false) }
     }
 
 }

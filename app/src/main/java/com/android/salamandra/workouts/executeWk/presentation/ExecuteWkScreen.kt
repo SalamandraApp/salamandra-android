@@ -1,35 +1,42 @@
 package com.android.salamandra.workouts.executeWk.presentation
 
+
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material.icons.filled.SentimentNeutral
+import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
+import androidx.compose.material.icons.filled.SentimentVeryDissatisfied
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
-import androidx.compose.material.icons.outlined.PlayArrow
-import androidx.compose.material.icons.outlined.Remove
-import androidx.compose.material.icons.outlined.SkipNext
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -43,43 +50,53 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.workout.executions.WkExecutionElement
-import com.android.salamandra._core.domain.model.workout.executions.WkExecutionExercise
-import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import com.android.salamandra._core.presentation.asUiText
 import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.EditWeight
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.ExerciseInfo
+import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.GradientSlider
+import com.android.salamandra._core.presentation.components.NotImplented
 import com.android.salamandra._core.presentation.components.NumberField
 import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.util.WK_EXECUTION_EXERCISE
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.colorMessage
+import com.android.salamandra.ui.theme.colorConfirm
+import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onPrimary
 import com.android.salamandra.ui.theme.onSecondary
-import com.android.salamandra.ui.theme.onSecondaryVariant
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.primaryVariant
-import com.android.salamandra.ui.theme.secondaryVariant
+import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.ui.theme.title
-import com.android.salamandra.workouts.editWk.presentation.EditWkIntent
-import com.android.salamandra.workouts.editWk.presentation.components.EditWkTemplateElement
+import com.android.salamandra.workouts.executeWk.presentation.components.BottomPanel
+import com.android.salamandra.workouts.executeWk.presentation.components.ExecuteWkScreenDestinations
+import com.android.salamandra.workouts.executeWk.presentation.components.PausedExecutionDialog
+import com.android.salamandra.workouts.executeWk.presentation.components.ProgressBanner
+import com.android.salamandra.workouts.executeWk.presentation.components.WkExecutionElement
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -97,11 +114,12 @@ fun ExecuteWkScreen(
             null -> {}
         }
     }
-
-    ScreenBody(
-        state = state,
-        sendIntent = viewModel::dispatch
-    )
+    if (!state.loading) {
+        ScreenBody(
+            state = state,
+            sendIntent = viewModel::dispatch
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,181 +128,139 @@ private fun ScreenBody(
     state: ExecuteWkState,
     sendIntent: (ExecuteWkIntent) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(tertiary)
-            .padding(12.dp),
-        contentAlignment = Alignment.Center
+    Scaffold(
+        topBar = {
+            ExecuteWkTabBar(
+                activeTab = state.scaffoldTab,
+                setNumber = state.currSet,
+                onTabSelected = { sendIntent(ExecuteWkIntent.ChangeActiveTab(it)) }
+            )
+        }
     ) {
-        if (state.currentExercise != null) {
+        if (state.scaffoldTab == ExecuteWkScreenDestinations.ExecuteScreen) {
+            ExecuteSetView(
+                modifier = Modifier.padding(it),
+                state = state,
+                sendIntent = sendIntent
+            )
+        } else {
+            NotImplented(
+                Modifier
+                    .fillMaxSize()
+                    .background(tertiary)
+                    .padding(it)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ExecuteSetView(
+    modifier: Modifier = Modifier,
+    state: ExecuteWkState,
+    sendIntent: (ExecuteWkIntent) -> Unit
+) {
+
+    if (state.finishedExecution) {
+        EndWorkoutScreen(
+            surveyState = state.survey,
+            totalExercises = state.exerciseList.size,
+            onChangeSurveyToSad = { sendIntent(ExecuteWkIntent.ChangeSurveyToSad) },
+            onChangeSurveyToNeutral = { sendIntent(ExecuteWkIntent.ChangeSurveyToNeutral) },
+            onChangeSurveyToHappy = { sendIntent(ExecuteWkIntent.ChangeSurveyToHappy) },
+            onEndWorkout = { sendIntent(ExecuteWkIntent.EndWorkout) }
+        )
+    }
+    else {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(tertiary),
+            contentAlignment = Alignment.Center
+        ) {
             Column(
                 modifier = Modifier.align(Alignment.TopCenter),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProgressBar(
-                    size = state.exerciseList.size,
-                    currentExercise = state.currentExercise,
-                    exerciseList = state.exerciseList
+                ProgressBanner(
+                    modifier = Modifier.height(100.dp),
+                    size = state.exerciseList[state.currExercise].executionElements.size,
+                    current = state.currSet,
+                    exerciseName = state.exerciseList[state.currExercise].exercise.name
                 )
-
-                Text(
-                    text = state.currentExercise.exercise.name,
-                    color = title,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 26.sp
-                )
-                Spacer(Modifier.size(8.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Spacer(Modifier.weight(0.5f))
-                    OutlinedButton(
-                        onClick = { sendIntent(ExecuteWkIntent.SkipSet) },
-                        shape = RoundedCornerShape(30)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = "Skip Set", color = onPrimary)
-                            Icon(
-                                imageVector = Icons.Outlined.SkipNext,
-                                contentDescription = "Skip Set",
-                                tint = onPrimary
-                            )
-                        }
-                    }
-                    Spacer(Modifier.weight(0.5f))
-                    state.currentExercise.executionElements.forEach { element ->
-                        WkElementContainer(
-                            element,
-                            state.currentSet,
-                            {sendIntent(ExecuteWkIntent.ShowBottomSheet(element.setNumber))}
+                FadeLip()
+                LazyColumn(Modifier.weight(1f).padding(top = 20.dp)) {
+                    itemsIndexed(state.exerciseList[state.currExercise].executionElements) { index, exercise ->
+                        WkExecutionElement(
+                            modifier = Modifier.padding(horizontal = 25.dp),
+                            activeIndex = state.currSet,
+                            currentIndex = index,
+                            element = exercise,
+                            onClick = { sendIntent(ExecuteWkIntent.ShowBottomSheet(index)) }
                         )
-                        Spacer(Modifier.weight(1f))
                     }
                 }
-                BottomSection(
-                    currentSet = state.currentSet,
-                    executionElements = state.currentExercise.executionElements,
-                    onClickCheck = {sendIntent(ExecuteWkIntent.LogAction)}
+                FadeLip(reverse = true)
+
+                BottomPanel(
+                    modifier = Modifier.height(130.dp),
+                    onFinishSet = { sendIntent(ExecuteWkIntent.LogAction) },
+                    onSkipSet = { sendIntent(ExecuteWkIntent.SkipSet) },
+                    onAddRest = { sendIntent(ExecuteWkIntent.AddRest) },
+                    onStop = { sendIntent(ExecuteWkIntent.StopWorkout) },
+                    paused = state.pausedExecution
                 )
             }
-
-        }
-
-        if (state.workoutEnded) {
-            EndWorkoutScreen(
-                surveyState = state.survey,
-                totalExercises = state.exerciseList.size,
-                onChangeSurveyToSad = { sendIntent(ExecuteWkIntent.ChangeSurveyToSad) },
-                onChangeSurveyToNeutral = { sendIntent(ExecuteWkIntent.ChangeSurveyToNeutral) },
-                onChangeSurveyToHappy = { sendIntent(ExecuteWkIntent.ChangeSurveyToHappy) },
-                onEndWorkout = { sendIntent(ExecuteWkIntent.EndWorkout) }
-            )
-        }
-
-        if (state.selectedElement != null && state.currentExercise != null) {
-            val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-            BottomSheet(
-                sheetState = sheetState,
-                onDismiss = { sendIntent(ExecuteWkIntent.HideBottomSheet) },
-                content = {
-                    TabRowBuilder(
-                        contents = listOf(
-                            {
-                                EditExecutionElement(
-                                    exerciseName = state.currentExercise.exercise.name,
-                                    element = state.currentExercise.executionElements[state.selectedElement - 1],
-                                    onEditWeight = {sendIntent(ExecuteWkIntent.EditWeight(it))},
-                                    onEditReps = {sendIntent(ExecuteWkIntent.EditReps(it))},
-                                    onEditRest = {sendIntent(ExecuteWkIntent.EditRest(it))}
-                                )
-                            },
-                            { ExerciseInfo(state.currentExercise.exercise) }
-                        ),
-                        icons = listOf(Icons.Outlined.Edit, Icons.Outlined.FitnessCenter),
-                        titles = listOf("Edit", "Info")
-                    )
-                }
-            )
-
-        }
-
-        if (state.error != null)
-            ErrorDialog(
-                error = state.error.asUiText(),
-                onDismiss = { sendIntent(ExecuteWkIntent.CloseError) }
-            )
-
-    }
-}
-
-@Composable
-private fun ProgressBar(
-    size: Int,
-    currentExercise: WkExecutionExercise,
-    exerciseList: List<WkExecutionExercise>,
-) {
-    Row(
-        modifier = Modifier
-            .padding(bottom = 8.dp)
-            .padding(vertical = 12.dp)
-    ) {
-        for (i in 0..< size) {
-            val color =
-                if (i == exerciseList.indexOf(currentExercise)) primary else title
-            Box(
-                Modifier
-                    .height(4.dp)
-                    .background(color)
-                    .weight(1f)
-            )
-            Spacer(Modifier.size(4.dp))
         }
     }
-}
 
-
-@Composable
-private fun BottomSection(
-    executionElements: List<WkExecutionElement>,
-    onClickCheck: () -> Unit,
-    currentSet: Int
-) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val rest = executionElements[currentSet - 1].rest
-        Spacer(Modifier.weight(1.5f))
-        IconButton(modifier = Modifier
-            .clip(RoundedCornerShape(30))
-            .background(primary)
-            .padding(12.dp),
-            onClick = { onClickCheck() }
-        ) {
-            Icon(
-                modifier = Modifier.size(36.dp),
-                imageVector = Icons.Outlined.Done,
-                contentDescription = "Set done",
-                tint = onPrimary
-            )
-        }
-        Spacer(Modifier.weight(0.1f))
-        Text(
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(secondaryVariant)
-                .padding(8.dp),
-            text = "Rest: ${rest}s",
-            color = onSecondaryVariant,
-            fontSize = 22.sp
+    if (state.selectedElement != null) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+        BottomSheet(
+            sheetState = sheetState,
+            onDismiss = { sendIntent(ExecuteWkIntent.HideBottomSheet) },
+            content = {
+                TabRowBuilder(
+                    contents = listOf(
+                        {
+                            EditExecutionElement(
+                                exerciseName = state.exerciseList[state.currExercise].exercise.name,
+                                element =state.exerciseList[state.currExercise].executionElements[state.selectedElement],
+                                onEditWeight = { sendIntent(ExecuteWkIntent.EditWeight(it)) },
+                                onEditReps = { sendIntent(ExecuteWkIntent.EditReps(it)) },
+                                onEditRest = { sendIntent(ExecuteWkIntent.EditRest(it)) }
+                            )
+                        },
+                        { ExerciseInfo(state.exerciseList[state.currExercise].exercise) }
+                    ),
+                    icons = listOf(Icons.Outlined.Edit, Icons.Outlined.FitnessCenter),
+                    titles = listOf("Edit", "Info")
+                )
+            }
         )
-        Spacer(Modifier.weight(0.05f))
 
     }
+
+    if (state.error != null) {
+        ErrorDialog(
+            error = state.error.asUiText(),
+            onDismiss = { sendIntent(ExecuteWkIntent.CloseError) }
+        )
+    }
+
+    if (state.pausedExecution) {
+        PausedExecutionDialog(
+            modifier = Modifier,
+            ableToRecord = !(state.currSet == 0 && state.currExercise == 0),
+            onRecord = { sendIntent(ExecuteWkIntent.EndWorkoutEarly) },
+            onDiscard = { sendIntent(ExecuteWkIntent.DiscardWorkout) },
+            onExit = { sendIntent(ExecuteWkIntent.ContinueWorkout) }
+        )
+    }
 }
+
 
 @Composable
 private fun EndWorkoutScreen(
@@ -310,23 +286,27 @@ private fun EndWorkoutScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val modifier = Modifier.size(40.dp)
             IconButton(onClick = onChangeSurveyToSad) {
                 Icon(
-                    painter = painterResource(R.drawable.sad_face),
+                    modifier = modifier,
+                    imageVector = Icons.Default.SentimentVeryDissatisfied,
                     contentDescription = "bad",
                     tint = surveyIconColor(typeOfIcon = 0, surveyState = surveyState)
                 )
             }
             IconButton(onClick = onChangeSurveyToNeutral) {
                 Icon(
-                    painter = painterResource(R.drawable.neutral_face),
+                    modifier = modifier,
+                    imageVector = Icons.Default.SentimentNeutral,
                     contentDescription = "neutral",
                     tint = surveyIconColor(typeOfIcon = 1, surveyState = surveyState)
                 )
             }
             IconButton(onClick = onChangeSurveyToHappy) {
                 Icon(
-                    painter = painterResource(R.drawable.happy_face),
+                    modifier = modifier,
+                    imageVector = Icons.Default.SentimentSatisfiedAlt,
                     contentDescription = "good",
                     tint = surveyIconColor(typeOfIcon = 2, surveyState = surveyState)
                 )
@@ -334,6 +314,12 @@ private fun EndWorkoutScreen(
         }
         Spacer(Modifier.size(12.dp))
         Text(text = "$totalExercises exercises", color = title, fontSize = 19.sp)
+
+        Row (
+            Modifier.padding(horizontal = 20.dp)) {
+            GradientSlider()
+        }
+
         Spacer(Modifier.weight(1f))
         Button(onClick = onEndWorkout) {
             Text("End Workout", color = onPrimary)
@@ -342,62 +328,95 @@ private fun EndWorkoutScreen(
     }
 }
 
+
+
+
+
 private fun surveyIconColor(typeOfIcon: Int, surveyState: Int?) =
     if (typeOfIcon == surveyState) primary else onPrimary
 
 @Composable
-private fun WkElementContainer(
-    wkExecutionElement: WkExecutionElement,
-    currentSet: Int,
-    onEdit: () -> Unit
-) {
-    val iconToShow: ImageVector
-    val containerColor: Color
-    if (wkExecutionElement.setNumber < currentSet) {
-        iconToShow = Icons.Outlined.CheckCircle
-        containerColor = colorMessage
-    } else if (wkExecutionElement.setNumber == currentSet) {
-        iconToShow = Icons.Outlined.PlayArrow
-        containerColor = primary
-    } else {
-        iconToShow = Icons.Outlined.Remove
-        containerColor = onSecondary
-    }
-    val stringToShow =
-        "${wkExecutionElement.reps} reps" + if (wkExecutionElement.weight != null) " X ${wkExecutionElement.weight} Kg" else ""
+private fun ExecuteWkTabBar(
+    activeTab: ExecuteWkScreenDestinations,
+    setNumber: Int,
+    onTabSelected: (ExecuteWkScreenDestinations) -> Unit
 
+) {
     Row(
         modifier = Modifier
+            .background(tertiary)
             .fillMaxWidth()
-            .border(width = 1.dp, color = containerColor, shape = RoundedCornerShape(40))
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            modifier = Modifier.size(32.dp),
-            imageVector = iconToShow,
-            contentDescription = null,
-            tint = containerColor
-        )
-        Spacer(Modifier.weight(1f))
-        Text(
-            text = stringToShow,
-            color = onPrimary,
-            fontSize = 22.sp
-        )
-        Spacer(Modifier.weight(1f))
-        Icon(
-            modifier = Modifier
-                .padding(end = 5.dp)
-                .clickable { onEdit() },
-            imageVector = Icons.Outlined.Edit,
-            contentDescription = null,
-            tint = containerColor.copy(0.4f),
-        )
-
+        ExecuteWkScreenDestinations.entries.forEach { tab ->
+            IndividualExecuteWkTab(
+                text = tab.label,
+                icon = tab.icon,
+                onSelected = { onTabSelected(tab) },
+                selected = tab == activeTab,
+                extraText = if (tab == ExecuteWkScreenDestinations.ExecuteScreen) " #$setNumber" else ""
+            )
+        }
     }
+}
 
+@Composable
+private fun IndividualExecuteWkTab(
+    text: String,
+    icon: ImageVector,
+    onSelected: () -> Unit,
+    selected: Boolean,
+    extraText: String
+) {
+    val activeColor = title
+    val inactiveColor = onTertiary
+    val tabHeight = 24.dp
+
+    val tabFadeInAnimationDuration = 150
+    val tabFadeInAnimationDelay = 100
+    val tabFadeOutAnimationDuration = 100
+
+    val durationMillis = if (selected) tabFadeInAnimationDuration else tabFadeOutAnimationDuration
+    val animSpec = remember {
+        tween<Color>(
+            durationMillis = durationMillis,
+            easing = LinearEasing,
+            delayMillis = tabFadeInAnimationDelay
+        )
+    }
+    val tabTintColor by animateColorAsState(
+        targetValue = if (selected) activeColor else inactiveColor,
+        animationSpec = animSpec, label = "tab tint"
+    )
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .padding(top = 16.dp)
+            .animateContentSize()
+            .height(tabHeight)
+            .selectable(
+                selected = selected,
+                onClick = onSelected,
+                role = Role.Tab,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(
+                    bounded = false,
+                    radius = Dp.Unspecified,
+                    color = Color.Unspecified
+                )
+            )
+            .clearAndSetSemantics { contentDescription = text }
+    ) {
+        Icon(imageVector = icon, contentDescription = text, tint = tabTintColor)
+        if (selected) {
+            Spacer(Modifier.width(10.dp))
+            Text(
+                text + extraText,
+                color = tabTintColor,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
 }
 
 @Composable
@@ -410,7 +429,7 @@ fun EditExecutionElement(
 ) {
     Column (
         modifier = Modifier.imePadding()
-    ){
+    ) {
         Row {
             Text(
                 text = exerciseName,
@@ -475,19 +494,20 @@ fun EditExecutionElement(
                     modifier = Modifier.weight(wField),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (element.weight != null)
-                        EditWeight(
-                            element.weight,
-                            onEditWeight = { newWeight ->
-                                onEditWeight(newWeight)
-                            })
+                    EditWeight(
+                        element.weight,
+                        onEditWeight = { newWeight ->
+                            onEditWeight(newWeight)
+                        })
                 }
             }
             Spacer(modifier = Modifier.weight(wSpacer))
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row (
@@ -529,7 +549,7 @@ fun EditExecutionElement(
 
 @Preview()
 @Composable
-private fun ScreenPreview() {
+private fun ScreenExecutePreview() {
     SalamandraTheme {
         ScreenBody(
             state = ExecuteWkState.initial.copy(
@@ -538,9 +558,8 @@ private fun ScreenPreview() {
                     WK_EXECUTION_EXERCISE.copy(exerciseNumber = 2),
                     WK_EXECUTION_EXERCISE.copy(exerciseNumber = 3)
                 ),
-                currentExercise = WK_EXECUTION_EXERCISE,
-                currentSet = 3,
-                workoutEnded = false,
+                currSet = 1,
+                finishedExecution = true,
                 survey = 1
             ),
             sendIntent = {}

@@ -26,7 +26,7 @@ data class CreateWorkoutExecutionElementRequest(
 
 fun WorkoutExecution.toCreateWorkoutExecutionRequest(workoutTemplateId: String): CreateWorkoutExecutionRequest {
     val elementsRequest: MutableList<CreateWorkoutExecutionElementRequest> = mutableListOf()
-    var position: Short = 0
+    var position: Short = -1
     elements.map { wkExecutionExercise ->
         elementsRequest.addAll(wkExecutionExercise.executionElements.map { wkExecutionElement ->
             position = (position + 1).toShort()

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra.ui.theme.SemiTypo
+import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.secondary
@@ -98,7 +99,7 @@ fun EditTagRow(
         FloatingActionButton(
             modifier = Modifier.weight(wButton),
             containerColor = secondary,
-            contentColor = primaryVariant,
+            contentColor = onSecondary,
             elevation = FloatingActionButtonDefaults.elevation(8.dp),
             onClick = { onAddTag() }) {
             Icon(

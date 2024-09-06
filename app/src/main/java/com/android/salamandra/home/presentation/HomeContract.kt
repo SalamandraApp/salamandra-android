@@ -13,7 +13,8 @@ data class HomeState(
     val loading: Boolean,
     val error: RootError?,
     val wkPreviewList: List<WorkoutPreview>,
-    val notImplementedBanner: Boolean
+    val notImplementedBanner: Boolean,
+    val sortDescending: Boolean = false
 ) : State {
     companion object {
         val initial: HomeState = HomeState(
@@ -28,15 +29,15 @@ data class HomeState(
 sealed class HomeIntent : Intent {
     data class Error(val error: RootError) : HomeIntent()
     data object CloseError : HomeIntent()
+    data class BottomBarClicked(val destination: DirectionDestinationSpec) : HomeIntent()
 
     data object ShowNotImplementedBanner: HomeIntent()
     data object HideBottomSheet: HomeIntent()
 
     data object NewWk : HomeIntent()
-
     data class SeeWk(val wkTemplateId: String) : HomeIntent()
 
-    data class BottomBarClicked(val destination: DirectionDestinationSpec) : HomeIntent()
+    data object ChangeSort: HomeIntent()
 }
 
 sealed class HomeEvent : Event {

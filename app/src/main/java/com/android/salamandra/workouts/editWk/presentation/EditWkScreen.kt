@@ -14,9 +14,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -41,6 +44,8 @@ import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.NotImplented
 import com.android.salamandra._core.presentation.components.TabRowBuilder
+import com.android.salamandra._core.presentation.components.WkTemplateFixBanner
+import com.android.salamandra._core.presentation.components.WkTemplateTopRow
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.destinations.SearchScreenDestination
@@ -48,7 +53,6 @@ import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
-import com.android.salamandra.ui.theme.title
 import com.android.salamandra.workouts.commons.presentation.components.WkElementComponent
 import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
 import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
@@ -56,7 +60,6 @@ import com.android.salamandra.workouts.editWk.presentation.components.BannerTitl
 import com.android.salamandra.workouts.editWk.presentation.components.ButtonsRowBanner
 import com.android.salamandra.workouts.editWk.presentation.components.EditWkTemplateElement
 import com.android.salamandra.workouts.editWk.presentation.components.EditTagRow
-import com.android.salamandra.workouts.editWk.presentation.components.EditWkBannerTopRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -119,13 +122,21 @@ private fun ScreenBody(
                     .align(Alignment.TopCenter)
                     .zIndex(1f),
             ){
-                EditWkFixedBanner(
+                WkTemplateFixBanner (
+                    middleContent = {
+                        Text(
+                            text = stringResource(R.string.edit_workout),
+                            color = onTertiary,
+                            fontSize = 18.sp,
+                            style = TitleTypo,
+                        )
+                    },
                     modifier = Modifier
                         .height(fixedBannerHeight)
                         .background(mainColor),
-                    wkName = state.wkTemplate.name,
-                    onSave = { sendIntent(EditWkIntent.CreateWorkout) },
-                    onClose = { sendIntent(EditWkIntent.NavigateToHome) }
+                    onActionButton = { sendIntent(EditWkIntent.CreateWorkout) },
+                    onGoBack = { sendIntent(EditWkIntent.NavigateToHome) },
+                    actionIcon = Icons.Filled.CheckCircle,
                 )
                 FadeLip()
             }
@@ -184,19 +195,11 @@ private fun ScreenBody(
                             {
                                 EditWkTemplateElement(
                                     element = selectedElement,
-                                    onEditSets = { newSets ->
-                                        sendIntent(EditWkIntent.ChangeSets(newSets, state.selectedElementIndex))
-                                    },
-                                    onEditReps= { newReps ->
-                                        sendIntent(EditWkIntent.ChangeReps(newReps, state.selectedElementIndex))
-                                    },
-                                    onEditWeight = { newWeight ->
-                                        sendIntent(EditWkIntent.ChangeWeight(newWeight, state.selectedElementIndex))
-                                    },
-                                    onEditRest = { newRest ->
-                                        sendIntent(EditWkIntent.ChangeRest(newRest, state.selectedElementIndex))
-                                    },
-                                    onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement(state.selectedElementIndex)) },
+                                    onEditSets = { newSets -> sendIntent(EditWkIntent.ChangeSets(newSets)) },
+                                    onEditReps= { newReps -> sendIntent(EditWkIntent.ChangeReps(state.selectedElementIndex)) },
+                                    onEditWeight = { newWeight -> sendIntent(EditWkIntent.ChangeWeight(newWeight)) },
+                                    onEditRest = { newRest -> sendIntent(EditWkIntent.ChangeRest(newRest)) },
+                                    onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement) },
                                 )
                             },
                             { ExerciseInfo(selectedElement.exercise) }
@@ -219,37 +222,6 @@ private fun ScreenBody(
     }
 }
 
-@Composable
-fun EditWkFixedBanner(
-    modifier: Modifier = Modifier,
-    wkName: String,
-    onSave: () -> Unit,
-    onClose: () -> Unit,
-) {
-
-    val dpSideMargin = WkTemplateScreenConstants.sideMargin
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dpSideMargin),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        EditWkBannerTopRow(
-            modifier = Modifier.weight(1f),
-            onClose = onClose,
-            onSave = onSave,
-            middleContent = {
-                Text(
-                    text = wkName,
-                    color = title,
-                    fontSize = 16.sp,
-                    style = TitleTypo,
-                )
-            }
-        )
-        WkTemplateViewLabels()
-    }
-}
 
 @Composable
 fun EditWkBigBanner(
@@ -273,20 +245,21 @@ fun EditWkBigBanner(
     val dpTags       = WkTemplateScreenConstants.bannerRowHeights.tags
     val dpButtons    = WkTemplateScreenConstants.bannerRowHeights.buttons
     val dpLabels     = WkTemplateScreenConstants.bannerRowHeights.labels
+    val dpMargins    = WkTemplateScreenConstants.bannerRowHeights.margins
 
-    val dpSideMargin = WkTemplateScreenConstants.sideMargin
-    val dpInBetweenMargin = WkTemplateScreenConstants.bannerInBetweenMargin
+    val dpOutsideMargin = WkTemplateScreenConstants.outsideMargin
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(bgColor)
-            .padding(horizontal = dpSideMargin)
+            .padding(horizontal = dpOutsideMargin)
+            .padding(top = dpOutsideMargin)
     ) {
-        EditWkBannerTopRow(
+        WkTemplateTopRow(
             modifier = Modifier
                 .height(dpTopRow),
-            onSave = onSave,
-            onClose = onClose,
+            onGoBack = onClose,
+            onActionButton = {},
             middleContent = {
                 Text(
                     text = stringResource(R.string.edit_workout),
@@ -294,35 +267,34 @@ fun EditWkBigBanner(
                     fontSize = 16.sp,
                     style = TitleTypo,
                 )
-            }
+            },
+            actionIcon = null
         )
+        Spacer(Modifier.height(dpMargins[0]))
         BannerTitleRow(
-            modifier = Modifier
-                .height(dpTitle)
-                .padding(bottom = dpInBetweenMargin),
+            modifier = Modifier.height(dpTitle),
             wkName = wkName,
             wkDescription = wkDescription,
             onChangeName = onChangeName,
             onChangeDescription = onChangeDescription,
         )
+        Spacer(Modifier.height(dpMargins[1]))
         EditTagRow(
-            modifier = Modifier
-                .padding(bottom = dpInBetweenMargin)
-                .height(dpTags),
+            modifier = Modifier.height(dpTags),
             onAddTag = onAddTag,
             onDeleteTag = onDeleteTag,
             onEditTag = onEditTag,
         )
+        Spacer(Modifier.height(dpMargins[2]))
         ButtonsRowBanner(
-            modifier = Modifier
-                .height(dpButtons)
-                .padding(bottom = dpInBetweenMargin / 2),
+            modifier = Modifier.height(dpButtons),
             onAddExercise = onAddExercise,
-            onDeleteWk = onDeleteWk
+            onDeleteWk = onDeleteWk,
+            onSave = onSave
         )
+        Spacer(Modifier.height(dpMargins[3]))
         WkTemplateViewLabels(
-            modifier = Modifier
-                .height(dpLabels),
+            modifier = Modifier.height(dpLabels),
         )
     }
 }

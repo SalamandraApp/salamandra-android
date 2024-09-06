@@ -17,9 +17,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FadeLip(
     vertical: Boolean = false,
+    reverse: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-
+    val topColor =      if (reverse) Color.Transparent else Color.Black.copy(alpha = 0.6f)
+    val bottomColor =   if (reverse) Color.Black.copy(alpha = 0.6f) else Color.Transparent
     if (vertical) {
         Row(
             modifier = modifier
@@ -29,7 +31,7 @@ fun FadeLip(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Color.Black.copy(alpha = 0.6f),
+                            Color.Black.copy(0.6f),
                         )
                     )
                 )
@@ -43,8 +45,8 @@ fun FadeLip(
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.Black.copy(alpha = 0.6f),
-                            Color.Transparent
+                            topColor,
+                            bottomColor,
                         )
                     )
                 )

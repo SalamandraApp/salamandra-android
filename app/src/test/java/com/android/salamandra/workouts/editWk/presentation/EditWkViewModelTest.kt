@@ -133,9 +133,9 @@ class EditWkViewModelTest {
     fun `Creating a workout gets the positions correctly`() = runTest {
         // Arrange
         val expectedWkTemplateElements = listOf(
-            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP.copy(position = 1),
-            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT.copy(position = 2),
-            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP, position = 3)
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP.copy(position = 0),
+            EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT.copy(position = 1),
+            WkTemplateElement(exercise = EXAMPLE_EXERCISE_PUSH_UP, position = 2)
         )
 
         // Act
@@ -143,7 +143,7 @@ class EditWkViewModelTest {
         runCurrent()
 
         // Assert
-        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements )
+        assert(editWkViewModel.state.value.wkTemplate.elements == expectedWkTemplateElements)
     }
 
     @Test
@@ -156,8 +156,10 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 12, index = 0))
-        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 1, index = 2))
+        editWkViewModel.dispatch(EditWkIntent.ShowElementBanner(0))
+        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 12))
+        editWkViewModel.dispatch(EditWkIntent.ShowElementBanner(2))
+        editWkViewModel.dispatch(EditWkIntent.ChangeReps(newReps = 1))
         runCurrent()
 
         // Assert
@@ -174,7 +176,8 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeSets(newSets = 6, index = 1))
+        editWkViewModel.dispatch(EditWkIntent.ShowElementBanner(1))
+        editWkViewModel.dispatch(EditWkIntent.ChangeSets(newSets = 6))
         runCurrent()
 
         // Assert
@@ -191,7 +194,8 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeWeight(newWeight = 134.6, index = 2))
+        editWkViewModel.dispatch(EditWkIntent.ShowElementBanner(2))
+        editWkViewModel.dispatch(EditWkIntent.ChangeWeight(newWeight = 134.6))
         runCurrent()
 
         // Assert
@@ -208,7 +212,8 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.ChangeRest(newRest = 15, index = 2))
+        editWkViewModel.dispatch(EditWkIntent.ShowElementBanner(2))
+        editWkViewModel.dispatch(EditWkIntent.ChangeRest(newRest = 15))
         runCurrent()
 
         // Assert
@@ -224,7 +229,8 @@ class EditWkViewModelTest {
         )
 
         // Act
-        editWkViewModel.dispatch(EditWkIntent.DeleteWkElement(1))
+        editWkViewModel.dispatch(EditWkIntent.ShowElementBanner(1))
+        editWkViewModel.dispatch(EditWkIntent.DeleteWkElement)
         runCurrent()
 
         // Assert
