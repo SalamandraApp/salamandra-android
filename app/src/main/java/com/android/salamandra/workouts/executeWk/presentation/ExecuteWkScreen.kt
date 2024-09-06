@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +26,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SentimentNeutral
+import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
+import androidx.compose.material.icons.filled.SentimentVeryDissatisfied
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.ripple.rememberRipple
@@ -45,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -67,6 +73,7 @@ import com.android.salamandra._core.presentation.components.EditWeight
 import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
+import com.android.salamandra._core.presentation.components.GradientSlider
 import com.android.salamandra._core.presentation.components.NotImplented
 import com.android.salamandra._core.presentation.components.NumberField
 import com.android.salamandra._core.presentation.components.TabRowBuilder
@@ -74,10 +81,14 @@ import com.android.salamandra._core.util.WK_EXECUTION_EXERCISE
 import com.android.salamandra.destinations.HomeScreenDestination
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
+import com.android.salamandra.ui.theme.colorConfirm
+import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onPrimary
+import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.primary
 import com.android.salamandra.ui.theme.primaryVariant
+import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.ui.theme.title
@@ -275,23 +286,27 @@ private fun EndWorkoutScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val modifier = Modifier.size(40.dp)
             IconButton(onClick = onChangeSurveyToSad) {
                 Icon(
-                    painter = painterResource(R.drawable.sad_face),
+                    modifier = modifier,
+                    imageVector = Icons.Default.SentimentVeryDissatisfied,
                     contentDescription = "bad",
                     tint = surveyIconColor(typeOfIcon = 0, surveyState = surveyState)
                 )
             }
             IconButton(onClick = onChangeSurveyToNeutral) {
                 Icon(
-                    painter = painterResource(R.drawable.neutral_face),
+                    modifier = modifier,
+                    imageVector = Icons.Default.SentimentNeutral,
                     contentDescription = "neutral",
                     tint = surveyIconColor(typeOfIcon = 1, surveyState = surveyState)
                 )
             }
             IconButton(onClick = onChangeSurveyToHappy) {
                 Icon(
-                    painter = painterResource(R.drawable.happy_face),
+                    modifier = modifier,
+                    imageVector = Icons.Default.SentimentSatisfiedAlt,
                     contentDescription = "good",
                     tint = surveyIconColor(typeOfIcon = 2, surveyState = surveyState)
                 )
@@ -299,6 +314,12 @@ private fun EndWorkoutScreen(
         }
         Spacer(Modifier.size(12.dp))
         Text(text = "$totalExercises exercises", color = title, fontSize = 19.sp)
+
+        Row (
+            Modifier.padding(horizontal = 20.dp)) {
+            GradientSlider()
+        }
+
         Spacer(Modifier.weight(1f))
         Button(onClick = onEndWorkout) {
             Text("End Workout", color = onPrimary)
@@ -307,9 +328,12 @@ private fun EndWorkoutScreen(
     }
 }
 
+
+
+
+
 private fun surveyIconColor(typeOfIcon: Int, surveyState: Int?) =
     if (typeOfIcon == surveyState) primary else onPrimary
-
 
 @Composable
 private fun ExecuteWkTabBar(
@@ -535,7 +559,7 @@ private fun ScreenExecutePreview() {
                     WK_EXECUTION_EXERCISE.copy(exerciseNumber = 3)
                 ),
                 currSet = 1,
-                finishedExecution = false,
+                finishedExecution = true,
                 survey = 1
             ),
             sendIntent = {}
