@@ -42,6 +42,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,6 +90,7 @@ fun SearchScreen(navigator: DestinationsNavigator, viewModel: SearchViewModel = 
         state = state,
         sendIntent = viewModel::dispatch
     )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,6 +99,12 @@ private fun ScreenBody(
     state: SearchState,
     sendIntent: (SearchIntent) -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    LaunchedEffect(Unit) {
+        sendIntent(SearchIntent.SearchExercise)
+    }
+
     val active = remember { mutableStateOf(false) }
     Column (
         modifier = Modifier
@@ -131,15 +141,14 @@ private fun ScreenBody(
 
             Spacer(modifier = Modifier.weight(1f))
         }
-        Row (
-            modifier = Modifier.weight(1f)
-        )
+        Row (Modifier.weight(1f))
         {
             SearchBar(
                 modifier = Modifier
                     .padding()
                     .clip(RoundedCornerShape(30.dp))
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 colors = SearchBarDefaults.colors(
                     containerColor = secondary,
                     inputFieldColors = textFieldColors(),
@@ -210,6 +219,10 @@ private fun ScreenBody(
             )
 
     }
+    LaunchedEffect(true) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
 }
 
 @Composable

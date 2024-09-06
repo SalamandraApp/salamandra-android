@@ -5,10 +5,10 @@ import androidx.compose.ui.unit.dp
 
 object WkTemplateScreenConstants {
     val columnLabelWeights = ColumnLabelWeights(
-        0.5f,
-        0.1f,
-        0.1f,
-        0.15f,
+        0.56f,
+        0.13f,
+        0.13f,
+        0.16f,
         0.1f
     )
     val outsideMargin = 20.dp

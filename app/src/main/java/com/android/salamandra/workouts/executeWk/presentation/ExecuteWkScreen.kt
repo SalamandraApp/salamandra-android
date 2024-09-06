@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.executeWk.presentation
 
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
@@ -41,6 +42,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,9 +52,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -198,7 +203,7 @@ private fun ExecuteSetView(
                             activeIndex = state.currSet,
                             currentIndex = index,
                             element = exercise,
-                            onClick = { sendIntent(ExecuteWkIntent.ShowBottomSheet(index)) }
+                            onClick = { sendIntent(ExecuteWkIntent.ShowBottomSheet(index, it)) }
                         )
                     }
                 }
@@ -216,7 +221,7 @@ private fun ExecuteSetView(
         }
     }
 
-    if (state.selectedElement != null) {
+    if (state.selectedElement != null && state.textFieldSelected != null) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
         BottomSheet(
             sheetState = sheetState,
@@ -227,6 +232,7 @@ private fun ExecuteSetView(
                         {
                             EditExecutionElement(
                                 exerciseName = state.exerciseList[state.currExercise].exercise.name,
+                                fieldSelected = state.textFieldSelected,
                                 element =state.exerciseList[state.currExercise].executionElements[state.selectedElement],
                                 onEditWeight = { sendIntent(ExecuteWkIntent.EditWeight(it)) },
                                 onEditReps = { sendIntent(ExecuteWkIntent.EditReps(it)) },
@@ -314,12 +320,6 @@ private fun EndWorkoutScreen(
         }
         Spacer(Modifier.size(12.dp))
         Text(text = "$totalExercises exercises", color = title, fontSize = 19.sp)
-
-        Row (
-            Modifier.padding(horizontal = 20.dp)) {
-            GradientSlider()
-        }
-
         Spacer(Modifier.weight(1f))
         Button(onClick = onEndWorkout) {
             Text("End Workout", color = onPrimary)
@@ -419,14 +419,19 @@ private fun IndividualExecuteWkTab(
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun EditExecutionElement(
     exerciseName: String,
+    fieldSelected: Int,
     element: WkExecutionElement,
     onEditReps: (Int) -> Unit,
     onEditWeight: (Double) -> Unit,
     onEditRest: (Int) -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column (
         modifier = Modifier.imePadding()
     ) {
@@ -468,7 +473,9 @@ fun EditExecutionElement(
             Spacer(modifier = Modifier.weight(wSpacer))
             Box(modifier = Modifier.weight(wField)) {
                 NumberField(
-                    modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .then(if (fieldSelected == 1) Modifier.focusRequester(focusRequester) else Modifier),
                     value = element.reps.toString(),
                     colors = if (element.reps != 0) {
                         textFieldColors(false)
@@ -495,7 +502,9 @@ fun EditExecutionElement(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     EditWeight(
-                        element.weight,
+                        Modifier
+                            .then(if (fieldSelected == 2) Modifier.focusRequester(focusRequester) else Modifier),
+                        weight = element.weight,
                         onEditWeight = { newWeight ->
                             onEditWeight(newWeight)
                         })
@@ -544,6 +553,13 @@ fun EditExecutionElement(
             }
         }
     }
+
+    LaunchedEffect(fieldSelected) {
+        if (fieldSelected != 0) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
+    }
 }
 
 
@@ -559,7 +575,7 @@ private fun ScreenExecutePreview() {
                     WK_EXECUTION_EXERCISE.copy(exerciseNumber = 3)
                 ),
                 currSet = 1,
-                finishedExecution = true,
+                finishedExecution = false,
                 survey = 1
             ),
             sendIntent = {}

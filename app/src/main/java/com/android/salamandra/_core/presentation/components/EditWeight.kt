@@ -17,6 +17,7 @@ import com.android.salamandra.ui.theme.title
 
 @Composable
 fun EditWeight(
+    modifier: Modifier = Modifier,
     weight: Double,
     onEditWeight: (Double) -> Unit
 ) {
@@ -35,7 +36,7 @@ fun EditWeight(
         }
     }
     NumberField(
-        modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+        modifier = modifier.clip(RoundedCornerShape(10.dp)),
         value = styledWeight,
         onValueChange = {
             val lastChar = it.last()

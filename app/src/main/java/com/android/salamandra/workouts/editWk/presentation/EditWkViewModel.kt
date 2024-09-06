@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.editWk.presentation
 
 import android.util.Log
+import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.WEIGHT_MAX
@@ -30,7 +31,9 @@ class EditWkViewModel @Inject constructor(
 
             is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null, notImplementedBanner = false) }
             is EditWkIntent.ShowNotImplementedBanner -> _state.update { it.copy(notImplementedBanner = true) }
-            is EditWkIntent.ShowElementBanner -> _state.update { it.copy(selectedElementIndex = intent.index) }
+            is EditWkIntent.ShowElementBanner -> _state.update {
+                it.copy(selectedElementIndex = intent.index, textFieldSelected = intent.field)
+            }
 
             is EditWkIntent.ChangeWkName -> _state.update {
                 it.copy(wkTemplate = it.wkTemplate.copy(name = intent.newName))
@@ -41,7 +44,7 @@ class EditWkViewModel @Inject constructor(
             is EditWkIntent.ChangeWkDescription -> changeWkDescription(intent.newDescription)
             is EditWkIntent.ChangeSets -> updateWkElementSets(newSets = intent.newSets)
             is EditWkIntent.ChangeReps -> updateWkElementReps(newReps = intent.newReps)
-            is EditWkIntent.ChangeWeight -> updateWkElementWeight(newWeight = intent.newWeight,)
+            is EditWkIntent.ChangeWeight -> updateWkElementWeight(newWeight = intent.newWeight)
             is EditWkIntent.ChangeRest -> updateWkElementRest(newRest = intent.newRest,)
             EditWkIntent.CreateWorkout -> createWorkout()
             is EditWkIntent.DeleteWkElement -> deleteWkElement()
@@ -125,7 +128,6 @@ class EditWkViewModel @Inject constructor(
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             this[index] = this[index].copy(reps = newReps)
         }
-        state.value.wkTemplate.elements.map { it.copy(reps = newReps) }
         _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
 

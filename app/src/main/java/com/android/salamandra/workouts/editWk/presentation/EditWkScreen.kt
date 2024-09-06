@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +51,7 @@ import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.onTertiary
 import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
-import com.android.salamandra.workouts.commons.presentation.components.WkElementComponent
+import com.android.salamandra.workouts.commons.presentation.components.WkTemplateElement
 import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
 import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
 import com.android.salamandra.workouts.editWk.presentation.components.BannerTitleRow
@@ -150,7 +149,6 @@ private fun ScreenBody(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            val startPad = 15.dp
             val notImplemented = { sendIntent(EditWkIntent.ShowNotImplementedBanner) }
             item {
                 EditWkBigBanner(
@@ -169,19 +167,18 @@ private fun ScreenBody(
                     onChangeDescription = { sendIntent(EditWkIntent.ChangeWkDescription(it)) },
                 )
                 FadeLip()
-                Spacer(modifier = Modifier.size(5.dp))
+                Spacer(modifier = Modifier.size(8.dp))
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
-                WkElementComponent(
-                    onOption = { sendIntent(EditWkIntent.ShowElementBanner(index)) },
+                WkTemplateElement(
+                    onOption = { sendIntent(EditWkIntent.ShowElementBanner(index, it)) },
                     wkElement = element,
-                    startPad = startPad,
-                    verticalPad = 18.dp,
                     fgColor = secondary,
                 )
+                Spacer(Modifier.height(15.dp))
             }
         }
-        if (state.selectedElementIndex != null) {
+        if (state.selectedElementIndex != null && state.textFieldSelected != null) {
             val selectedElement = state.wkTemplate.elements[state.selectedElementIndex]
             val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
 
@@ -194,8 +191,9 @@ private fun ScreenBody(
                             {
                                 EditWkTemplateElement(
                                     element = selectedElement,
+                                    fieldSelected = state.textFieldSelected,
                                     onEditSets = { newSets -> sendIntent(EditWkIntent.ChangeSets(newSets)) },
-                                    onEditReps= { newReps -> sendIntent(EditWkIntent.ChangeReps(state.selectedElementIndex)) },
+                                    onEditReps= { newReps -> sendIntent(EditWkIntent.ChangeReps(newReps)) },
                                     onEditWeight = { newWeight -> sendIntent(EditWkIntent.ChangeWeight(newWeight)) },
                                     onEditRest = { newRest -> sendIntent(EditWkIntent.ChangeRest(newRest)) },
                                     onDeleteElement = { sendIntent(EditWkIntent.DeleteWkElement) },

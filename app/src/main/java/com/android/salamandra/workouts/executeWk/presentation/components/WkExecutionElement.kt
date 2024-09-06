@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -78,7 +79,7 @@ fun WkExecutionElement(
     activeIndex: Int,
     currentIndex: Int,
     element: WkExecutionElement,
-    onClick: () -> Unit
+    onClick: (Int) -> Unit
 ) {
     val noWeight = element.weight == null
     val uiState = when {
@@ -133,7 +134,7 @@ fun WkExecutionElement(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(2.dp, uiState.borderColor, RoundedCornerShape(20.dp))
-                .clickable { onClick() }
+                .clickable { onClick(0) }
                 .height(uiState.height),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -148,7 +149,7 @@ fun WkExecutionElement(
                 )
             }
             Box (
-                Modifier.weight(1f),
+                Modifier.weight(1f).fillMaxHeight().clickable { onClick(1) },
                 contentAlignment = if (noWeight) Alignment.Center else Alignment.CenterEnd
             ) {
 
@@ -207,7 +208,7 @@ fun WkExecutionElement(
                     }
                 }
                 Box(
-                    Modifier.weight(1f),
+                    Modifier.weight(1f).fillMaxHeight().clickable { onClick(2) },
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
