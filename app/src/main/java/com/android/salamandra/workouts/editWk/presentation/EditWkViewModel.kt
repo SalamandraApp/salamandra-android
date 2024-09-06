@@ -26,10 +26,13 @@ class EditWkViewModel @Inject constructor(
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
             is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
 
             is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null, notImplementedBanner = false) }
+
             is EditWkIntent.ShowNotImplementedBanner -> _state.update { it.copy(notImplementedBanner = true) }
+
             is EditWkIntent.ShowElementBanner -> _state.update { it.copy(selectedElementIndex = intent.index) }
 
             is EditWkIntent.ChangeWkName -> _state.update {
@@ -39,11 +42,17 @@ class EditWkViewModel @Inject constructor(
             is EditWkIntent.NavigateToHome -> navigateToHome()
 
             is EditWkIntent.ChangeWkDescription -> changeWkDescription(intent.newDescription)
+
             is EditWkIntent.ChangeSets -> updateWkElementSets(newSets = intent.newSets)
+
             is EditWkIntent.ChangeReps -> updateWkElementReps(newReps = intent.newReps)
+
             is EditWkIntent.ChangeWeight -> updateWkElementWeight(newWeight = intent.newWeight,)
+
             is EditWkIntent.ChangeRest -> updateWkElementRest(newRest = intent.newRest,)
+
             EditWkIntent.CreateWorkout -> createWorkout()
+
             is EditWkIntent.DeleteWkElement -> deleteWkElement()
 
             is EditWkIntent.NavigateToSearch -> navigateToSearch()
@@ -116,65 +125,48 @@ class EditWkViewModel @Inject constructor(
     }
 
     private fun updateWkElementReps(newReps: Int) {
-        if (newReps > Short.MAX_VALUE) {
-            return
+        if (newReps <= Short.MAX_VALUE) {
+            val index = state.value.selectedElementIndex ?: return
+            val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+                this[index] = this[index].copy(reps = newReps)
+            }
+            state.value.wkTemplate.elements.map { it.copy(reps = newReps) }
+            _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
         }
-        val index = state.value.selectedElementIndex
-        if (index == null)
-            return
-        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
-            this[index] = this[index].copy(reps = newReps)
-        }
-        state.value.wkTemplate.elements.map { it.copy(reps = newReps) }
-        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
 
     private fun updateWkElementSets(newSets: Int) {
-        if (newSets > Short.MAX_VALUE) {
-            return
+        if (newSets <= Short.MAX_VALUE) {
+            val index = state.value.selectedElementIndex ?: return
+            val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+                this[index] = this[index].copy(sets = newSets)
+            }
+            _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
         }
-
-        val index = state.value.selectedElementIndex
-        if (index == null)
-            return
-        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
-            this[index] = this[index].copy(sets = newSets)
-        }
-        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
 
     private fun updateWkElementWeight(newWeight: Double) {
-        if (newWeight > WEIGHT_MAX) {
-            return
+        if (newWeight <= WEIGHT_MAX) {
+            val index = state.value.selectedElementIndex ?: return
+            val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+                this[index] = this[index].copy(weight = newWeight)
+            }
+            _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
         }
-
-        val index = state.value.selectedElementIndex
-        if (index == null)
-            return
-        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
-            this[index] = this[index].copy(weight = newWeight)
-        }
-        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
 
     private fun updateWkElementRest(newRest: Int) {
-        if (newRest > Short.MAX_VALUE) {
-            return
+        if (newRest <= Short.MAX_VALUE) {
+            val index = state.value.selectedElementIndex ?: return
+            val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
+                this[index] = this[index].copy(rest = newRest)
+            }
+            _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
         }
-
-        val index = state.value.selectedElementIndex
-        if (index == null)
-            return
-        val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
-            this[index] = this[index].copy(rest = newRest)
-        }
-        _state.update { it.copy(wkTemplate = state.value.wkTemplate.copy(elements = updatedElements)) }
     }
 
     private fun deleteWkElement() {
-        val index = state.value.selectedElementIndex
-        if (index == null)
-            return
+        val index = state.value.selectedElementIndex ?: return
         val updatedElements = state.value.wkTemplate.elements.toMutableList().apply {
             if (index in indices) {
                 removeAt(index)

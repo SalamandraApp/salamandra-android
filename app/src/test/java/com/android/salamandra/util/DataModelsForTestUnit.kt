@@ -109,14 +109,14 @@ val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_SQUAT = WkTemplateElement(
     sets = 4,
     weight = null,
     rest = 120,
-    position = 2
+    position = 1
 )
 
 val EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_ENTITY_SQUAT = WorkoutTemplateElementEntity(
     id = "12",
     wkTemplateId = "TEMPORAL",
     exerciseId = EXAMPLE_EXERCISE_SQUAT.exId,
-    position = 2,
+    position = 1,
     reps = 4,
     sets = 4,
     weight = null,
@@ -155,6 +155,12 @@ val EXAMPLE_EXECUTION_EXERCISE = WkExecutionExercise(
             reps = 4,
             weight = null,
             rest = 120,
+            setNumber = 0
+        ),
+        WkExecutionElement(
+            reps = 4,
+            weight = null,
+            rest = 120,
             setNumber = 1
         ),
         WkExecutionElement(
@@ -168,15 +174,9 @@ val EXAMPLE_EXECUTION_EXERCISE = WkExecutionExercise(
             weight = null,
             rest = 120,
             setNumber = 3
-        ),
-        WkExecutionElement(
-            reps = 4,
-            weight = null,
-            rest = 120,
-            setNumber = 4
         )
     ),
-    exerciseNumber = 1
+    exerciseNumber = 0
 )
 
 val EXAMPLE_EXECUTION_EXERCISES_LIST = listOf(
@@ -184,6 +184,12 @@ val EXAMPLE_EXECUTION_EXERCISES_LIST = listOf(
     WkExecutionExercise(
         exercise = EXAMPLE_EXERCISE_SQUAT,
         executionElements = listOf(
+            WkExecutionElement(
+                reps = 4,
+                weight = null,
+                rest = 120,
+                setNumber = 0
+            ),
             WkExecutionElement(
                 reps = 4,
                 weight = null,
@@ -201,15 +207,9 @@ val EXAMPLE_EXECUTION_EXERCISES_LIST = listOf(
                 weight = null,
                 rest = 120,
                 setNumber = 3
-            ),
-            WkExecutionElement(
-                reps = 4,
-                weight = null,
-                rest = 120,
-                setNumber = 4
             )
         ),
-        exerciseNumber = 2
+        exerciseNumber = 1
     ),
 
 )
