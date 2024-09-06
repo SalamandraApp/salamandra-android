@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.executeWk.presentation
 
 import android.util.Log
+import androidx.compose.material3.Icon
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.WEIGHT_MAX
@@ -80,7 +81,6 @@ class ExecuteWkViewModel @Inject constructor(
                     }
                 }
 
-                is Result.Error -> _state.update { it.copy(error = workoutTemplate.error) }
                 is Result.Error -> _state.update {
                     it.copy(
                         error = workoutTemplate.error,
