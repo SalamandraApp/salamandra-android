@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.editWk.presentation
 
 import android.util.Log
+import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.WEIGHT_MAX
@@ -26,14 +27,13 @@ class EditWkViewModel @Inject constructor(
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
             is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
-
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
 
             is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null, notImplementedBanner = false) }
-
             is EditWkIntent.ShowNotImplementedBanner -> _state.update { it.copy(notImplementedBanner = true) }
-
-            is EditWkIntent.ShowElementBanner -> _state.update { it.copy(selectedElementIndex = intent.index) }
+            is EditWkIntent.ShowElementBanner -> _state.update {
+                it.copy(selectedElementIndex = intent.index, textFieldSelected = intent.field)
+            }
 
             is EditWkIntent.ChangeWkName -> _state.update {
                 it.copy(wkTemplate = it.wkTemplate.copy(name = intent.newName))
@@ -42,17 +42,11 @@ class EditWkViewModel @Inject constructor(
             is EditWkIntent.NavigateToHome -> navigateToHome()
 
             is EditWkIntent.ChangeWkDescription -> changeWkDescription(intent.newDescription)
-
             is EditWkIntent.ChangeSets -> updateWkElementSets(newSets = intent.newSets)
-
             is EditWkIntent.ChangeReps -> updateWkElementReps(newReps = intent.newReps)
-
-            is EditWkIntent.ChangeWeight -> updateWkElementWeight(newWeight = intent.newWeight,)
-
+            is EditWkIntent.ChangeWeight -> updateWkElementWeight(newWeight = intent.newWeight)
             is EditWkIntent.ChangeRest -> updateWkElementRest(newRest = intent.newRest,)
-
             EditWkIntent.CreateWorkout -> createWorkout()
-
             is EditWkIntent.DeleteWkElement -> deleteWkElement()
 
             is EditWkIntent.NavigateToSearch -> navigateToSearch()

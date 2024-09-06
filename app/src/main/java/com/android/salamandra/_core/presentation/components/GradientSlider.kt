@@ -1,5 +1,6 @@
 package com.android.salamandra._core.presentation.components
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,46 +24,51 @@ import com.android.salamandra.ui.theme.primaryVariant
 import com.android.salamandra.ui.theme.title
 
 @Composable
-fun GradientSlider() {
-    val sliderPosition = remember { mutableFloatStateOf(0f) }
+fun GradientSlider(
+    modifier: Modifier = Modifier,
+    maxValue: Int,
+    minValue: Int = 0,
+    steps: Int = maxValue - minValue,
+    sliderPosition : Float,
+    onChangeValue: (Double) -> Unit,
+    gradientColors: List<Color> = listOf(colorConfirm, colorConfirm, primaryVariant, colorError, colorError),
+    thumbColor: Color = Color.White
+) {
+    val minPosition = minValue.toFloat()
+    val maxPosition = maxValue.toFloat()
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(32.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(32.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            // Draw the gradient for the active track
-            Canvas (modifier = Modifier.fillMaxWidth().height(8.dp)) {
-                drawRoundRect(
-                    brush = Brush.horizontalGradient(
-                        listOf(colorConfirm, colorConfirm, primaryVariant, colorError, colorError)
-                    ),
-                    size = size,
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(16.dp.toPx())
-                )
-            }
-
-            // Slider on top of the gradient
-            Slider(
-                value = sliderPosition.value,
-                onValueChange = { sliderPosition.value = it },
-                steps = 19,
-                valueRange = 0f..300f,
-                colors = SliderDefaults.colors(
-                    thumbColor = title, // You can adjust the thumb color
-                    activeTrackColor = Color.Transparent, // Make active track transparent to show the gradient
-                    inactiveTrackColor = Color.Transparent// Customize inactive track color
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp)
+        // Draw the gradient for the active track
+        Canvas (modifier = Modifier.fillMaxWidth().height(8.dp)) {
+            drawRoundRect(
+                brush = Brush.horizontalGradient(gradientColors),
+                size = size,
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(16.dp.toPx())
             )
         }
+
+        // Slider on top of the gradient
+        Slider(
+            value = sliderPosition,
+            onValueChange = {
+                Log.i("Gradient Slider", "Changing to $it from $sliderPosition")
+                onChangeValue(it.toDouble())
+                            },
+            steps = steps,
+            valueRange = minPosition..maxPosition,
+            colors = SliderDefaults.colors(
+                thumbColor = thumbColor,
+                activeTrackColor = Color.Transparent,
+                inactiveTrackColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp)
+        )
     }
 }

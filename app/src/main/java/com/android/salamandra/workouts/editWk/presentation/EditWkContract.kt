@@ -1,6 +1,7 @@
 package com.android.salamandra.workouts.editWk.presentation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.focus.FocusRequester
 import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
@@ -13,8 +14,9 @@ data class EditWkState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val loading: Boolean,
     val error: RootError?,
     val wkTemplate: WorkoutTemplate,
-    val selectedElementIndex: Int?,
-    val notImplementedBanner: Boolean
+    val selectedElementIndex: Int? = null,
+    val textFieldSelected: Int? = null,
+    val notImplementedBanner: Boolean,
 ) : State {
     companion object {
         val initial: EditWkState = EditWkState(
@@ -34,7 +36,7 @@ sealed class EditWkIntent: Intent {
     data object NavigateToHome: EditWkIntent()
     data object NavigateToSearch: EditWkIntent()
 
-    data class ShowElementBanner(val index: Int): EditWkIntent()
+    data class ShowElementBanner(val index: Int, val field: Int = 0): EditWkIntent()
     data object ShowNotImplementedBanner: EditWkIntent()
     data object HideBottomSheet: EditWkIntent()
 

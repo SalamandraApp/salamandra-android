@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.QueryStats
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -39,7 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra._core.presentation.components.BottomSheet
 import com.android.salamandra._core.presentation.components.ExerciseInfo
 import com.android.salamandra._core.presentation.components.FadeLip
-import com.android.salamandra.workouts.commons.presentation.components.WkElementComponent
+import com.android.salamandra.workouts.commons.presentation.components.WkTemplateElement
 import com.android.salamandra.workouts.commons.presentation.constants.WkTemplateScreenConstants
 import com.android.salamandra.workouts.commons.presentation.components.WkTemplateViewLabels
 import com.android.salamandra._core.util.WORKOUT_TEMPLATE
@@ -57,6 +58,7 @@ import com.android.salamandra._core.presentation.components.NotImplented
 import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.presentation.components.WkTemplateFixBanner
 import com.android.salamandra.ui.theme.onTertiary
+import com.android.salamandra.ui.theme.secondary
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -167,15 +169,16 @@ private fun ScreenBody(
                     onTag = { sendIntent(SeeWkIntent.ShowNotImplementedBanner) },
                 )
                 FadeLip()
-                Spacer(modifier = Modifier.size(5.dp))
+                Spacer(modifier = Modifier.size(8.dp))
             }
             itemsIndexed(state.wkTemplate.elements) { index, element ->
-                WkElementComponent(
+                WkTemplateElement(
                     onOption = { sendIntent(SeeWkIntent.ShowExerciseInfo(index)) },
                     wkElement = element,
-                    startPad = 10.dp,
-                    fgColor = tertiary
+                    fgColor = tertiary,
+                    editable = false,
                 )
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = secondary, thickness = 2.dp)
             }
         }
         if (state.selectedElementIndex != null) {

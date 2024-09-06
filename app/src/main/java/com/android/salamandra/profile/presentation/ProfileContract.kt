@@ -12,7 +12,9 @@ data class ProfileState(
     val loading: Boolean,
     val error: RootError?,
     val userData: User?,
-    val isSignedIn: Boolean
+    val isSignedIn: Boolean,
+    val newWeight: Double? = null,
+    val editWeight: Boolean = false
 ) : State {
     companion object {
         val initial: ProfileState = ProfileState(
@@ -27,6 +29,11 @@ data class ProfileState(
 sealed class ProfileIntent: Intent {
     data class Error(val error: RootError): ProfileIntent()
     data object CloseError: ProfileIntent()
+
+    data class EditWeight(val newWeight: Double): ProfileIntent()
+    data object SaveNewWeight: ProfileIntent()
+    data object OpenEditWeight: ProfileIntent()
+
     data class BottomBarClicked(val destination: DirectionDestinationSpec): ProfileIntent()
     data object GoToLogin: ProfileIntent()
     data object GoToSettings: ProfileIntent()

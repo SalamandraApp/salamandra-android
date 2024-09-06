@@ -25,6 +25,7 @@ data class ExecuteWkState(
     val startOfSetCurrentTimeMillis: Long,
 
     val selectedElement: Int?,
+    val textFieldSelected: Int? = null,
 ) : State {
     companion object {
         val initial: ExecuteWkState = ExecuteWkState(
@@ -59,7 +60,7 @@ sealed class ExecuteWkIntent : Intent {
     data object EndWorkoutEarly: ExecuteWkIntent()
 
     data object HideBottomSheet : ExecuteWkIntent()
-    data class ShowBottomSheet(val setNumber: Int) : ExecuteWkIntent()
+    data class ShowBottomSheet(val setNumber: Int, val fieldSelected: Int = 0) : ExecuteWkIntent()
 
     data object StopWorkout: ExecuteWkIntent()
     data object ContinueWorkout: ExecuteWkIntent()

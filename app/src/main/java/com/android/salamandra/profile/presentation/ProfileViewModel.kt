@@ -1,7 +1,9 @@
 package com.android.salamandra.profile.presentation
 
+import android.util.Log
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.CoreRepository
+import com.android.salamandra._core.domain.USER_WEIGHT_MIN
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.error.RootError
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,13 +21,20 @@ class ProfileViewModel @Inject constructor(
     override fun reduce(intent: ProfileIntent) {
         when (intent) {
             is ProfileIntent.Error -> _state.update { it.copy(error = intent.error) }
-
             is ProfileIntent.CloseError -> _state.update { it.copy(error = null) }
 
+            is ProfileIntent.EditWeight -> _state.update {
+                it.copy(newWeight = intent.newWeight)
+            }
+            ProfileIntent.SaveNewWeight -> updateWeight()
+            ProfileIntent.OpenEditWeight -> {
+                Log.i("Profile Screen", "Changed to edit")
+                val editableWeight = state.value.userData?.weight ?: USER_WEIGHT_MIN
+                _state.update { it.copy(editWeight = true, newWeight = editableWeight) }
+            }
+
             is ProfileIntent.BottomBarClicked -> sendEvent(ProfileEvent.BottomBarClicked(intent.destination))
-
             ProfileIntent.GoToLogin -> sendEvent(ProfileEvent.NavigateToLogin)
-
             ProfileIntent.GoToSettings -> sendEvent(ProfileEvent.NavigateToSettings)
         }
     }
@@ -47,6 +56,15 @@ class ProfileViewModel @Inject constructor(
             } else _state.update { it.copy(loading = false) }
         }
 
+    }
+
+    private fun updateWeight() {
+
+        // TODO
+        // - Send to server
+        if (state.value.userData == null)
+            return
+        _state.update { it.copy(editWeight = false, newWeight = null, userData = state.value.userData!!.copy(weight = state.value.newWeight)) }
     }
 
 }

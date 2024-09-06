@@ -49,7 +49,7 @@ class ExecuteWkViewModel @Inject constructor(
             ExecuteWkIntent.DiscardWorkout -> sendEvent(ExecuteWkEvent.EndWorkout)
 
             ExecuteWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElement = null) }
-            is ExecuteWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElement = intent.setNumber) }
+            is ExecuteWkIntent.ShowBottomSheet -> _state.update { it.copy(selectedElement = intent.setNumber, textFieldSelected = intent.fieldSelected) }
             ExecuteWkIntent.StopWorkout -> _state.update { it.copy(pausedExecution = true) }
             ExecuteWkIntent.ContinueWorkout -> _state.update { it.copy(pausedExecution = false) }
 

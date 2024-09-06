@@ -21,12 +21,16 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -48,17 +52,19 @@ import com.android.salamandra.ui.theme.secondary
 import com.android.salamandra.ui.theme.tertiary
 import com.android.salamandra.ui.theme.textFieldColors
 import com.android.salamandra.ui.theme.title
-import workout.WorkoutTemplateElementEntity
 
 @Composable
 fun EditWkTemplateElement(
     element: WkTemplateElement,
+    fieldSelected: Int,
     onEditSets: (Int) -> Unit,
     onEditReps: (Int) -> Unit,
     onEditWeight: (Double) -> Unit,
     onEditRest: (Int) -> Unit,
     onDeleteElement: () -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column (
         modifier = Modifier.imePadding()
     ){
@@ -101,7 +107,9 @@ fun EditWkTemplateElement(
                 modifier = Modifier.weight(wField)
             ) {
                 NumberField(
-                    modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .then(if (fieldSelected == 1) Modifier.focusRequester(focusRequester) else Modifier),
                     value = element.sets.toString(),
                     colors = if (element.sets != 0) {
                         textFieldColors(false)
@@ -129,7 +137,9 @@ fun EditWkTemplateElement(
             )
             Box(modifier = Modifier.weight(wField)) {
                 NumberField(
-                    modifier = Modifier.clip(RoundedCornerShape(10.dp)),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .then(if (fieldSelected == 2) Modifier.focusRequester(focusRequester) else Modifier),
                     value = element.reps.toString(),
                     colors = if (element.reps != 0) {
                         textFieldColors(false)
@@ -166,7 +176,9 @@ fun EditWkTemplateElement(
             ) {
                 if (element.weight != null)
                     EditWeight(
-                        element.weight,
+                        modifier = Modifier
+                            .then(if (fieldSelected == 3) Modifier.focusRequester(focusRequester) else Modifier),
+                        weight = element.weight,
                         onEditWeight = { newWeight ->
                             onEditWeight(newWeight)
                         })
@@ -280,4 +292,11 @@ fun EditWkTemplateElement(
             }
         }
     }
+    LaunchedEffect(fieldSelected) {
+        if (fieldSelected != 0) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
+    }
+
 }
