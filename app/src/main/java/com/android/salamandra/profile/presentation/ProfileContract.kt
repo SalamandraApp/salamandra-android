@@ -5,6 +5,8 @@ import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
 import com.android.salamandra._core.domain.model.User
+import com.android.salamandra._core.domain.model.enums.FitnessGoal
+import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 
 
@@ -13,8 +15,12 @@ data class ProfileState(
     val error: RootError?,
     val userData: User?,
     val isSignedIn: Boolean,
+
     val newWeight: Double? = null,
-    val editWeight: Boolean = false
+    val editWeight: Boolean = false,
+    val editFitness: String = "",
+    val newFitnessGoal: FitnessGoal? = null,
+    val newFitnessLevel: FitnessLevel? = null,
 ) : State {
     companion object {
         val initial: ProfileState = ProfileState(
@@ -33,6 +39,9 @@ sealed class ProfileIntent: Intent {
     data class EditWeight(val newWeight: Double): ProfileIntent()
     data object SaveNewWeight: ProfileIntent()
     data object OpenEditWeight: ProfileIntent()
+    data class EditFitness(val parameter: String, val newLevel: FitnessLevel?, val newGoal: FitnessGoal?): ProfileIntent()
+    data class OpenEditFitness(val parameter: String): ProfileIntent()
+    data object SaveFitness: ProfileIntent()
 
     data class BottomBarClicked(val destination: DirectionDestinationSpec): ProfileIntent()
     data object GoToLogin: ProfileIntent()

@@ -27,14 +27,22 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.SentimentNeutral
 import androidx.compose.material.icons.filled.SentimentSatisfiedAlt
 import androidx.compose.material.icons.filled.SentimentVeryDissatisfied
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.outlined.SentimentDissatisfied
+import androidx.compose.material.icons.outlined.SentimentNeutral
+import androidx.compose.material.icons.outlined.SentimentSatisfiedAlt
+import androidx.compose.material.icons.outlined.SentimentVeryDissatisfied
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -84,6 +92,7 @@ import com.android.salamandra._core.presentation.components.NumberField
 import com.android.salamandra._core.presentation.components.TabRowBuilder
 import com.android.salamandra._core.util.WK_EXECUTION_EXERCISE
 import com.android.salamandra.destinations.HomeScreenDestination
+import com.android.salamandra.ui.theme.NormalTypo
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.colorConfirm
@@ -167,23 +176,21 @@ private fun ExecuteSetView(
     sendIntent: (ExecuteWkIntent) -> Unit
 ) {
 
-    if (state.finishedExecution) {
-        EndWorkoutScreen(
-            surveyState = state.survey,
-            totalExercises = state.exerciseList.size,
-            onChangeSurveyToSad = { sendIntent(ExecuteWkIntent.ChangeSurveyToSad) },
-            onChangeSurveyToNeutral = { sendIntent(ExecuteWkIntent.ChangeSurveyToNeutral) },
-            onChangeSurveyToHappy = { sendIntent(ExecuteWkIntent.ChangeSurveyToHappy) },
-            onEndWorkout = { sendIntent(ExecuteWkIntent.EndWorkout) }
-        )
-    }
-    else {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(tertiary),
-            contentAlignment = Alignment.Center
-        ) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(tertiary),
+        contentAlignment = Alignment.Center
+    ) {
+
+        if (state.finishedExecution) {
+            EndWorkoutScreen(
+                surveyState = state.survey,
+                totalExercises = state.exerciseList.size,
+                onEndWorkout = { sendIntent(ExecuteWkIntent.EndWorkout) },
+                onChangeSurvey = { sendIntent(ExecuteWkIntent.ChangeSurvey(it)) }
+            )
+        } else {
             Column(
                 modifier = Modifier.align(Alignment.TopCenter),
                 verticalArrangement = Arrangement.Top,
@@ -218,6 +225,7 @@ private fun ExecuteSetView(
                     paused = state.pausedExecution
                 )
             }
+
         }
     }
 
@@ -272,68 +280,115 @@ private fun ExecuteSetView(
 private fun EndWorkoutScreen(
     surveyState: Int?,
     totalExercises: Int,
-    onChangeSurveyToSad: () -> Unit,
-    onChangeSurveyToNeutral: () -> Unit,
-    onChangeSurveyToHappy: () -> Unit,
+    onChangeSurvey: (Int) ->Unit,
     onEndWorkout: () -> Unit,
 ) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .padding(horizontal = 50.dp)
             .background(tertiary),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Spacer(Modifier.weight(1f))
-        Text(text = "Workout Ended", color = title, fontSize = 34.sp)
-        Text(text = "How do you feel?", color = title, fontSize = 22.sp)
-        Spacer(Modifier.size(12.dp))
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val modifier = Modifier.size(40.dp)
-            IconButton(onClick = onChangeSurveyToSad) {
-                Icon(
-                    modifier = modifier,
-                    imageVector = Icons.Default.SentimentVeryDissatisfied,
-                    contentDescription = "bad",
-                    tint = surveyIconColor(typeOfIcon = 0, surveyState = surveyState)
-                )
+        Text(text = "Workout Ended", color = title, fontSize = 30.sp, style = TitleTypo)
+
+        val sliderPosition = remember { mutableFloatStateOf(surveyState?.toFloat() ?: 1f) }
+        Column (Modifier.height(250.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(Modifier.height(40.dp))
+            Text(
+                modifier = Modifier.padding(bottom = 20.dp),
+                text = "How did you feel?",
+                color = title,
+                fontSize = 25.sp,
+                style = NormalTypo
+            )
+            Spacer(Modifier.height(10.dp))
+            when (surveyState) {
+                0 -> {
+                    Row {
+                        Icon(
+                            modifier = Modifier.size(40.dp),
+                            tint = onTertiary,
+                            imageVector = Icons.Outlined.SentimentDissatisfied,
+                            contentDescription = null
+                        )
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
+                2 -> {
+                    Row {
+                        Spacer(Modifier.weight(1f))
+                        Icon(
+                            modifier = Modifier.size(40.dp),
+                            tint = onTertiary,
+                            imageVector = Icons.Outlined.SentimentSatisfiedAlt,
+                            contentDescription = null
+                        )
+                    }
+                }
+                else -> {
+                    Row {
+                        Spacer(Modifier.weight(1f))
+                        Icon(
+                            modifier = Modifier.size(40.dp),
+                            tint = onTertiary,
+                            imageVector = Icons.Outlined.SentimentNeutral,
+                            contentDescription = null
+                        )
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
             }
-            IconButton(onClick = onChangeSurveyToNeutral) {
-                Icon(
-                    modifier = modifier,
-                    imageVector = Icons.Default.SentimentNeutral,
-                    contentDescription = "neutral",
-                    tint = surveyIconColor(typeOfIcon = 1, surveyState = surveyState)
+            Spacer(Modifier.height(10.dp))
+            GradientSlider(
+                maxValue = 2,
+                steps = 1,
+                thumbColor = onTertiary,
+                sliderPosition = sliderPosition.value,
+                onChangeValue = {
+                    onChangeSurvey(it.toInt())
+                    sliderPosition.value = it.toFloat()
+                },
+                gradientColors = listOf(
+                    colorError,
+                    colorError,
+                    primaryVariant,
+                    colorConfirm,
+                    colorConfirm,
                 )
-            }
-            IconButton(onClick = onChangeSurveyToHappy) {
-                Icon(
-                    modifier = modifier,
-                    imageVector = Icons.Default.SentimentSatisfiedAlt,
-                    contentDescription = "good",
-                    tint = surveyIconColor(typeOfIcon = 2, surveyState = surveyState)
-                )
-            }
+            )
+            Spacer(Modifier.weight(1f))
         }
-        Spacer(Modifier.size(12.dp))
-        Text(text = "$totalExercises exercises", color = title, fontSize = 19.sp)
-        Spacer(Modifier.weight(1f))
-        Button(onClick = onEndWorkout) {
-            Text("End Workout", color = onPrimary)
+
+        Text(
+            modifier = Modifier.padding(bottom = 20.dp),
+            text = "$totalExercises exercises",
+            color = title,
+            fontSize = 20.sp,
+            style = NormalTypo
+        )
+        ExtendedFloatingActionButton(
+            containerColor = primaryVariant.copy(0.3f),
+            contentColor = primaryVariant,
+            elevation = FloatingActionButtonDefaults.elevation(0.dp),
+            onClick = { onEndWorkout() }) {
+            Icon(
+                imageVector = Icons.Filled.CheckCircle,
+                contentDescription = null,
+            )
+            Text(
+                text = "End Workout",
+                modifier = Modifier.padding(start = 8.dp),
+                style = TitleTypo,
+                fontSize = 22.sp
+            )
         }
+
 
     }
 }
 
-
-
-
-
-private fun surveyIconColor(typeOfIcon: Int, surveyState: Int?) =
-    if (typeOfIcon == surveyState) primary else onPrimary
 
 @Composable
 private fun ExecuteWkTabBar(
@@ -575,7 +630,7 @@ private fun ScreenExecutePreview() {
                     WK_EXECUTION_EXERCISE.copy(exerciseNumber = 3)
                 ),
                 currSet = 1,
-                finishedExecution = false,
+                finishedExecution = true,
                 survey = 1
             ),
             sendIntent = {}

@@ -30,7 +30,7 @@ fun GradientSlider(
     minValue: Int = 0,
     steps: Int = maxValue - minValue,
     sliderPosition : Float,
-    onChangeValue: (Double) -> Unit,
+    onChangeValue: (Float) -> Unit,
     gradientColors: List<Color> = listOf(colorConfirm, colorConfirm, primaryVariant, colorError, colorError),
     thumbColor: Color = Color.White
 ) {
@@ -56,8 +56,7 @@ fun GradientSlider(
         Slider(
             value = sliderPosition,
             onValueChange = {
-                Log.i("Gradient Slider", "Changing to $it from $sliderPosition")
-                onChangeValue(it.toDouble())
+                onChangeValue(it)
                             },
             steps = steps,
             valueRange = minPosition..maxPosition,

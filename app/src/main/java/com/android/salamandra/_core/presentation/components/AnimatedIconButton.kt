@@ -19,20 +19,24 @@ fun AnimatedIconButton(
     initialIcon: ImageVector,
     pressedIcon: ImageVector,
     contentDescription: String? = null,
-    tint: Color
+    tint: Color,
+    instant: Boolean = true
 ) {
     var isPressed by remember { mutableStateOf(false) }
 
     LaunchedEffect(isPressed) {
         if (isPressed) {
             delay(delayTime) // Duration to show the pressed icon
+            if (!instant) onPress()
             isPressed = false
         }
     }
 
     IconButton(
         onClick = {
-            onPress()
+            if (instant) {
+                onPress()
+            }
             isPressed = true
         },
         modifier = modifier
