@@ -1,8 +1,6 @@
 package com.android.salamandra.profile.presentation
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,13 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.MilitaryTech
-import androidx.compose.material.icons.filled.QueryStats
-import androidx.compose.material.icons.filled.Scale
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Scale
+import androidx.compose.material.icons.outlined.Pending
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -47,14 +42,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,11 +54,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
-import com.android.salamandra._core.domain.USER_WEIGHT_MAX
-import com.android.salamandra._core.domain.USER_WEIGHT_MIN
 import com.android.salamandra._core.domain.model.enums.FitnessGoal
 import com.android.salamandra._core.domain.model.enums.FitnessLevel
-import com.android.salamandra._core.presentation.components.EditWeight
+import com.android.salamandra._core.domain.model.enums.getIcon
+import com.android.salamandra._core.domain.model.enums.toFitnessLevel
+import com.android.salamandra._core.domain.model.enums.toInt
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.GradientSlider
 import com.android.salamandra._core.presentation.components.IconShimmer
@@ -77,6 +69,8 @@ import com.android.salamandra._core.presentation.components.shimmerEffect
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.SettingsScreenDestination
+import com.android.salamandra.profile.presentation.components.fitnessWdiget
+import com.android.salamandra.profile.presentation.components.weightWidget
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
@@ -155,8 +149,14 @@ private fun ScreenBody(
                 onEditWeight = { sendIntent(ProfileIntent.EditWeight(it))},
                 onSaveWeight = { sendIntent(ProfileIntent.SaveNewWeight) },
 
+                editFitness = state.editFitness,
+                onFitness = { sendIntent(ProfileIntent.OpenEditFitness(it)) },
+                onEditFitness = { it1, it2, it3 -> sendIntent(ProfileIntent.EditFitness(it1, it2, it3)) },
+                onSaveFitness = { sendIntent(ProfileIntent.SaveFitness) },
                 fitnessLevel = state.userData?.fitnessLevel,
                 fitnessGoal = state.userData?.fitnessGoal,
+                newLevel = state.newFitnessLevel,
+                newGoal = state.newFitnessGoal
             )
         }
         if(state.loading)
@@ -223,6 +223,13 @@ private fun InfoSection(
     onWeight: () -> Unit,
     onEditWeight: (Double) -> Unit,
     onSaveWeight: () -> Unit,
+    
+    editFitness: String,
+    onSaveFitness: () -> Unit,
+    onFitness: (String) -> Unit,
+    onEditFitness: (String, FitnessLevel?, FitnessGoal?) -> Unit,
+    newLevel: FitnessLevel?,
+    newGoal: FitnessGoal?,
     fitnessLevel: FitnessLevel?,
     fitnessGoal: FitnessGoal?,
 ) {
@@ -252,88 +259,6 @@ private fun InfoSection(
             )
         }
     }
-    val weightWidget = @Composable {
-        val weightAnnotatedString = buildAnnotatedString {
-            append("Weight: ")
-            withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-                append(weight?.toString() ?: "???")
-                append(" kg")
-            }
-        }
-        if (editWeight && newWeight != null) {
-            Column(
-                Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val focusRequester = remember { FocusRequester() }
-                val keyboardController = LocalSoftwareKeyboardController.current
-                val weightKg = buildAnnotatedString {
-                    append(stringResource(R.string.weight))
-                    withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
-                        append(" kg")
-                    }
-                }
-                Text(
-                    modifier = Modifier.padding(top = 10.dp),
-                    text = weightKg,
-                    color = textColor,
-                    style = SemiTypo,
-                    fontSize = 16.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(Modifier.weight(1f))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.weight(1f)) {
-                        EditWeight(
-                            modifier = Modifier.focusRequester(focusRequester),
-                            weight = newWeight,
-                            onEditWeight = onEditWeight
-                        )
-                    }
-                    LaunchedEffect(Unit) {
-                        focusRequester.requestFocus()
-                        keyboardController?.show()
-                    }
-                    FloatingActionButton(
-                        modifier = Modifier.weight(0.8f).padding(start = 10.dp),
-                        containerColor = primaryVariant.copy(0.3f),
-                        contentColor = primaryVariant,
-                        elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                        onClick = { onSaveWeight() }) {
-                        Icon(
-                            imageVector = Icons.Filled.CheckCircle,
-                            contentDescription = "Add Exercise",
-                        )
-
-                    }
-                }
-            }
-        } else {
-            Column(
-                Modifier.fillMaxSize().clickable { onWeight() },
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(60.dp),
-                    imageVector = Icons.Outlined.Scale,
-                    tint = iconColor,
-                    contentDescription = "WIP"
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    modifier = Modifier.padding(top = 10.dp),
-                    text = weightAnnotatedString,
-                    color = textColor,
-                    style = SemiTypo,
-                    fontSize = 16.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
 
     LazyColumn (
         modifier = modifier
@@ -345,14 +270,39 @@ private fun InfoSection(
             ProfileInfoRow(
                 loading = loading,
                 Modifier.height(150.dp).padding(bottom = 10.dp),
-                contents = listOf(weightWidget, wipWidget)
+                contents = listOf(
+                    {weightWidget(
+                        textColor = textColor,
+                        iconColor = iconColor,
+                        onWeight = onWeight,
+                        onEditWeight = onEditWeight,
+                        onSaveWeight = onSaveWeight,
+                        editWeight = editWeight,
+                        newWeight = newWeight,
+                        weight = weight
+                    )},
+                    wipWidget
+                )
             )
         }
         item {
             ProfileInfoRow(
                 loading = loading,
-                Modifier.height(200.dp).padding(bottom = 10.dp),
-                contents = listOf({Box(Modifier.fillMaxSize().clickable { Log.i("Clicked Widget", "Widget 1") }){}})
+                Modifier.height(if (editFitness == "") 150.dp else 180.dp).padding(bottom = 10.dp),
+                contents = listOf {
+                    fitnessWdiget(
+                        textColor = textColor,
+                        iconColor = iconColor,
+                        editFitness = editFitness,
+                        onSaveFitness = onSaveFitness,
+                        onFitness = onFitness,
+                        onEditFitness = onEditFitness,
+                        newLevel = newLevel,
+                        newGoal = newGoal,
+                        fitnessLevel = fitnessLevel,
+                        fitnessGoal = fitnessGoal
+                    )
+                }
             )
         }
     }
@@ -382,8 +332,8 @@ private fun ProfileInfoRow(
                     .padding(end = endPad)
                     .clip(RoundedCornerShape(10.dp))
                     .background(secondary)
-                    .padding(20.dp)
-                    .then(if (loading) Modifier.shimmerEffect() else Modifier),
+                    .then(if (loading) Modifier.shimmerEffect() else Modifier)
+                    .padding(20.dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (!loading) element()
@@ -404,70 +354,47 @@ private fun ProfileBanner(
 ) {
     val bannerPicWeight = 0.40f
     val bannerPfpWeight = 0.5f
-    val bannerBadgesWeight = 0.15f
+    val sideMargin = 25.dp
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
     ) {
-        if (loading)
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(bannerPfpWeight)
-                    .background(Color.Gray)
-                    .shimmerEffect()
-            )
-        else {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(bannerPicWeight)
-            ) {
-                WkTemplatePicture(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                )
-            }
-        }
 
-        val sideMargin = 25.dp
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(bannerPicWeight)
+                .then(if (loading) Modifier.shimmerEffect() else Modifier)
+        ) {
+            if (!loading)
+            WkTemplatePicture(modifier = Modifier.fillMaxSize())
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = sideMargin)
                 .weight(bannerPfpWeight),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            val pfpWeight = 0.35f
-            val usernameWeight = 0.55f
-            val buttonsWeight = 0.1f
-            if (loading)
-                Box(
-                    Modifier
-                        .fillMaxHeight()
-                        .weight(pfpWeight)
-                        .padding(start = 32.dp)
-                        .padding(vertical = 22.dp)
-                        .clip(CircleShape)
-                        .background(Color.Gray)
-                        .shimmerEffect()
-                )
-            else {
-                Column(
-                    modifier = Modifier
-                        .weight(pfpWeight)
-                        .padding(start = sideMargin - 10.dp)
-                ) {
+
+            Column(
+                modifier = Modifier
+                    .width(120.dp)
+                    .then(if (loading)
+                        Modifier.aspectRatio(1f).clip(RoundedCornerShape(50)).shimmerEffect()
+                    else Modifier)
+            ) {
+                if (!loading)
                     ProfilePicture(
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(1f),
-                        pad = 10.dp
                     )
-                }
             }
+
             val displayNameText = displayName ?: stringResource(R.string.display_name)
             val usernameText = "@${username ?: "username"}"
             val dateJoinedText =
@@ -475,101 +402,61 @@ private fun ProfileBanner(
 
             Column(
                 modifier = Modifier
-                    .weight(usernameWeight)
+                    .weight(1f)
                     .align(Alignment.CenterVertically)
-                    .padding(horizontal = 10.dp)
+                    .padding(start = 15.dp)
             ) {
-                if (loading) {
-                    Spacer(Modifier.weight(1f))
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(24.dp)
-                            .padding(end = 32.dp)
-                            .background(Color.Gray)
-                            .shimmerEffect()
-                    )
-//                    Spacer(Modifier.size(12.dp))
-                    Spacer(Modifier.weight(0.5f))
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(18.dp)
-                            .padding(end = 70.dp)
-                            .background(Color.Gray)
-                            .shimmerEffect()
-                    )
-                    Spacer(Modifier.weight(0.5f))
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(16.dp)
-                            .padding(end = 38.dp)
-                            .background(Color.Gray)
-                            .shimmerEffect()
-                    )
-                    Spacer(Modifier.weight(1f))
-                } else {
+                Row (
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
                     Text(
+                        modifier = Modifier
+                            .then(
+                                if (loading) Modifier.clip(RoundedCornerShape(40))
+                                    .shimmerEffect() else Modifier
+                            ),
                         text = displayNameText,
-                        color = title,
+                        color = if (!loading) title else Color.Transparent,
                         style = TitleTypo,
                         fontSize = 20.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Text(
-                        modifier = Modifier.padding(top = 10.dp),
-                        text = usernameText,
-                        color = onTertiary,
-                        style = SemiTypo,
-                        fontSize = 18.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        modifier = Modifier.padding(top = 10.dp),
-                        text = dateJoinedText,
-                        color = onTertiary,
-                        style = SemiTypo,
-                        fontSize = 14.sp
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .weight(buttonsWeight)
-                    .align(Alignment.CenterVertically)
-                    .padding(end = sideMargin - 10.dp)
-            ) {
-                if (loading) {
                     Spacer(Modifier.weight(1f))
-                    IconShimmer()
-                    Spacer(Modifier.weight(0.8f))
-                    IconShimmer()
-                    Spacer(Modifier.weight(1f))
-                } else {
                     IconButton(
+                        modifier = Modifier.size(35.dp),
                         onClick = { onGoToSettings() },
                     ) {
                         Icon(
-                            modifier = Modifier.size(30.dp),
+                            modifier = modifier.then(if (loading) Modifier.shimmerEffect() else Modifier),
                             imageVector = Icons.Filled.Settings,
-                            tint = onTertiary,
+                            tint = if (loading) Color.Transparent else onTertiary,
                             contentDescription = "Profile Settings"
                         )
                     }
-                    IconButton(
-                        onClick = {/*TODO*/ },
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(30.dp),
-                            imageVector = Icons.Outlined.Edit,
-                            tint = onTertiary,
-                            contentDescription = "WIP"
-                        )
-                    }
                 }
+                Text(
+                    modifier = Modifier
+                        .padding(top = 5.dp)
+                        .then(if (loading) Modifier.clip(RoundedCornerShape(40)).shimmerEffect() else Modifier),
+                    text = usernameText,
+                    color = if (!loading) onTertiary else Color.Transparent,
+                    style = SemiTypo,
+                    fontSize = 18.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .then(if (loading) Modifier.clip(RoundedCornerShape(40)).shimmerEffect() else Modifier),
+                    text = dateJoinedText,
+                    color = if (!loading) onTertiary else Color.Transparent,
+                    style = SemiTypo,
+                    fontSize = 14.sp
+                )
             }
         }
     }
@@ -578,22 +465,11 @@ private fun ProfileBanner(
 
 @Preview()
 @Composable
-private fun ScreenPreview() {
+private fun ScreenPreview1() {
     SalamandraTheme {
         ScreenBody(
-            state = ProfileState.initial.copy(isSignedIn = true, loading = false),
+            state = ProfileState.initial.copy(isSignedIn = true, loading = false, editFitness = "goal"),
             sendIntent = {}
         )
     }
 }
-
-//@Preview()
-//@Composable
-//private fun LoadingScreenPreview() {
-//    SalamandraTheme {
-//        ScreenBody(
-//            state = ProfileState.initial.copy(isSignedIn = true, loading = true),
-//            sendIntent = {}
-//        )
-//    }
-//}

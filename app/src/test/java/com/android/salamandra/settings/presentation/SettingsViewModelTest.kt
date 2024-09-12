@@ -1,6 +1,7 @@
 package com.android.salamandra.settings.presentation
 
 import androidx.lifecycle.SavedStateHandle
+import com.android.salamandra.R
 import com.android.salamandra.settings.domain.Repository
 import com.android.salamandra.util.CoroutineRule
 import io.mockk.MockKAnnotations
@@ -33,7 +34,17 @@ class SettingsViewModelTest {
     @Test
     fun `Assert initial state`() {
         val expectedState = SettingsState(
-            error = null
+            error = null,
+            sections = mapOf(
+                SettingsSection.User to Section(
+                    titleId = R.string.user_info,
+                    keywords = listOf(R.string.username, R.string.display_name, R.string.birthday)
+                ),
+                SettingsSection.Account to Section(
+                    titleId = R.string.account_settings,
+                    keywords = listOf(R.string.logout,)
+                )
+            )
         )
         assert(SettingsState.initial == expectedState)
     }

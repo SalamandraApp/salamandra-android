@@ -39,6 +39,7 @@ class ExecuteWkViewModel @Inject constructor(
 
             ExecuteWkIntent.LogAction -> logAction()
 
+            is ExecuteWkIntent.ChangeSurvey -> _state.update { it.copy(survey = intent.newValue) }
             ExecuteWkIntent.ChangeSurveyToSad -> _state.update { it.copy(survey = 0) }
             ExecuteWkIntent.ChangeSurveyToNeutral -> _state.update { it.copy(survey = 1) }
             ExecuteWkIntent.ChangeSurveyToHappy -> _state.update { it.copy(survey = 2) }

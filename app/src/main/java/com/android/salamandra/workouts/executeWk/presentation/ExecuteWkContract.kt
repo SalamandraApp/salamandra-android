@@ -50,6 +50,7 @@ sealed class ExecuteWkIntent : Intent {
 
     data object LogAction : ExecuteWkIntent()
 
+    data class ChangeSurvey(val newValue: Int): ExecuteWkIntent()
     data object ChangeSurveyToSad : ExecuteWkIntent()
     data object ChangeSurveyToNeutral : ExecuteWkIntent()
     data object ChangeSurveyToHappy : ExecuteWkIntent()
