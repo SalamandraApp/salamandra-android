@@ -11,6 +11,7 @@ import com.android.salamandra.profile.presentation.ProfileIntent
 import com.android.salamandra.R
 import com.android.salamandra.settings.presentation.components.AccountSettingsSection
 import com.android.salamandra.settings.presentation.components.UserInfoSection
+import java.time.LocalDate
 
 
 data class SettingsState(
@@ -67,8 +68,9 @@ sealed class SettingsIntent: Intent {
 
     data class ChangeCollapse(val section: SettingsSection, val state: Boolean): SettingsIntent()
     data class ChangeAllCollapse(val state: Boolean): SettingsIntent()
-    data object SaveDisplayName: SettingsIntent()
     data class ChangeSearchTerm(val newTerm: String): SettingsIntent()
+    data class SaveDisplayName(val newString: String): SettingsIntent()
+    data class SaveBirthday(val newDate: LocalDate?): SettingsIntent()
 }
 
 sealed class SettingsEvent: Event{
