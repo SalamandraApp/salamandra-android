@@ -1,9 +1,13 @@
 package com.android.salamandra.workouts.search.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra.util.CoroutineRule
+import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
 import com.android.salamandra.workouts.search.domain.Repository
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runCurrent
@@ -21,6 +25,8 @@ class SearchViewModelTest {
 
     private lateinit var searchViewModel: SearchViewModel
 
+    private lateinit var savedStateHandle: SavedStateHandle
+
     @RelaxedMockK
     private lateinit var repository: Repository
 
@@ -28,7 +34,15 @@ class SearchViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        searchViewModel = SearchViewModel(testDispatcher, repository)
+        savedStateHandle = mockk(relaxed = true)
+        val mockNavArgs = SearchNavArgs(
+           wkName = "",
+            description = null
+        )
+        every { savedStateHandle.get<String>("wkName") } returns mockNavArgs.wkName
+        every { savedStateHandle.get<String>("description") } returns mockNavArgs.description
+
+        searchViewModel = SearchViewModel(testDispatcher, repository, savedStateHandle)
     }
 
     @Test
@@ -38,7 +52,9 @@ class SearchViewModelTest {
             searchTerm = "",
             searchResultExercises = emptyList(),
             addedExercisesIds = emptyList(),
-            selectedExercise = null
+            selectedExercise = null,
+            wkName = "",
+            description = null
         )
         assert(SearchState.initial == expectedState)
     }
