@@ -39,7 +39,9 @@ class SettingsViewModel @Inject constructor(
                 }
             }
             is SettingsIntent.ChangeSearchTerm -> _state.update { it.copy(searchTerm = intent.newTerm) }
-            SettingsIntent.SaveDisplayName -> TODO()
+
+            is SettingsIntent.SaveBirthday -> TODO()
+            is SettingsIntent.SaveDisplayName -> TODO()
         }
     }
 
