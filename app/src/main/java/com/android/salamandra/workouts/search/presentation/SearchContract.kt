@@ -10,6 +10,8 @@ import com.android.salamandra._core.domain.model.Exercise
 
 data class SearchState(
     val error: RootError?,
+    val wkName: String,
+    val description: String?,
     val searchTerm: String,
     val searchResultExercises: List<Exercise>,
     val addedExercisesIds: List<String>,
@@ -18,6 +20,8 @@ data class SearchState(
     companion object {
         val initial: SearchState = SearchState(
             error = null,
+            wkName = "",
+            description = null,
             searchTerm = "",
             searchResultExercises = emptyList(),
             addedExercisesIds = emptyList(),
@@ -51,5 +55,6 @@ sealed class SearchEvent : Event {
 }
 
 data class SearchNavArgs(
-    val dummy: Int? = null
+    val wkName: String,
+    val description: String?
 ): NavArgs
