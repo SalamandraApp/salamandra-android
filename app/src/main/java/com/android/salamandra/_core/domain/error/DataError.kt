@@ -27,7 +27,8 @@ sealed interface DataError : RootError {
         WORKOUT_TEMPLATE_NOT_FOUND,
         WORKOUT_TEMPLATE_ELEMENT_NOT_FOUND,
         ERROR_INSERTING_WK_TEMPLATES,
-        EXERCISE_NOT_FOUND
+        EXERCISE_NOT_FOUND,
+        UPDATING_USER_DATA_FAILED
     }
 
     enum class Datastore: DataError{

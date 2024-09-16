@@ -1,9 +1,12 @@
 package com.android.salamandra.workouts.search.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.android.salamandra._core.boilerplate.BaseViewModel
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
+import com.android.salamandra.navArgs
+import com.android.salamandra.workouts.editWk.presentation.EditWkNavArgs
 import com.android.salamandra.workouts.search.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    private val repository: Repository
+    private val repository: Repository,
+    savedStateHandle: SavedStateHandle
 ) :
     BaseViewModel<SearchState, SearchIntent, SearchEvent>(SearchState.initial, ioDispatcher) {
 
@@ -38,6 +42,18 @@ class SearchViewModel @Inject constructor(
             SearchIntent.HideBottomSheet -> _state.update { it.copy(selectedExercise = null) }
 
             is SearchIntent.ShowBottomSheet -> _state.update { it.copy(selectedExercise = intent.exercise) }
+        }
+    }
+
+    init {
+        val navArgs: SearchNavArgs = savedStateHandle.navArgs()
+        ioLaunch {
+            _state.update {
+                it.copy(
+                    wkName = navArgs.wkName,
+                    description = navArgs.description
+                )
+            }
         }
     }
 

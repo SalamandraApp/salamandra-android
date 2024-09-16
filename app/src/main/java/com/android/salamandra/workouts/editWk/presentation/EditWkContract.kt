@@ -31,23 +31,33 @@ data class EditWkState @OptIn(ExperimentalMaterial3Api::class) constructor(
 
 sealed class EditWkIntent: Intent {
     data class Error(val error: RootError): EditWkIntent()
+
     data object CloseError: EditWkIntent()
 
     data object NavigateToHome: EditWkIntent()
+
     data object NavigateToSearch: EditWkIntent()
 
     data class ShowElementBanner(val index: Int, val field: Int = 0): EditWkIntent()
+
     data object ShowNotImplementedBanner: EditWkIntent()
+
     data object HideBottomSheet: EditWkIntent()
 
     data class ChangeWkName(val newName: String): EditWkIntent()
+
     data class ChangeWkDescription(val newDescription: String): EditWkIntent()
+
     data class ChangeSets(val newSets: Int): EditWkIntent()
+
     data class ChangeReps(val newReps: Int): EditWkIntent()
+
     data class ChangeWeight(val newWeight: Double): EditWkIntent()
+
     data class ChangeRest(val newRest: Int): EditWkIntent()
 
     data object DeleteWkElement: EditWkIntent()
+
     data object CreateWorkout: EditWkIntent()
 }
 
@@ -58,5 +68,7 @@ sealed class EditWkEvent: Event{
 }
 
 data class EditWkNavArgs(
-    val addedExercises: Array<String> = emptyArray()
+    val addedExercises: Array<String> = emptyArray(),
+    val wkName: String = "",
+    val description: String? = ""
 ): NavArgs

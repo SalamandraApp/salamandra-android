@@ -70,7 +70,7 @@ fun EditWkScreen(navigator: DestinationsNavigator, viewModel: EditWkViewModel = 
     LaunchedEffect(events) {
         when (events) {
             EditWkEvent.NavigateToHome -> navigator.navigate(HomeScreenDestination)
-            EditWkEvent.NavigateToSearch -> navigator.navigate(SearchScreenDestination())
+            EditWkEvent.NavigateToSearch -> navigator.navigate(SearchScreenDestination(wkName = state.wkTemplate.name, description = state.wkTemplate.description))
             null -> {}
         }
     }

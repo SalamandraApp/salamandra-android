@@ -1,25 +1,16 @@
 package com.android.salamandra.profile.presentation.components
 
-import android.media.Image
-import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Pending
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +26,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.salamandra._core.domain.model.enums.FitnessGoal
@@ -47,16 +37,12 @@ import com.android.salamandra._core.domain.model.enums.toInt
 import com.android.salamandra._core.presentation.components.AnimatedFloatingButton
 import com.android.salamandra._core.presentation.components.GradientSlider
 import com.android.salamandra.ui.theme.SemiTypo
-import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.colorConfirm
 import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.primaryVariant
-import com.android.salamandra.ui.theme.secondary
-import com.android.salamandra.ui.theme.tertiary
 
 @Composable
-fun fitnessWdiget (
+fun fitnessWidget (
     textColor: Color,
     iconColor: Color,
     editFitness: String,
@@ -68,7 +54,9 @@ fun fitnessWdiget (
     fitnessLevel: FitnessLevel?,
     fitnessGoal: FitnessGoal?,
 ) {
-    val weightTop = if (editFitness == "level") 1.1f else if (editFitness == "goal") 0.9f else 1f
+    val constantLEVEL = "level"
+    val constantGOAL = "goal"
+    val weightTop = if (editFitness == constantLEVEL) 1.1f else if (editFitness == constantGOAL) 0.9f else 1f
     val weightBottom = 2f - weightTop
     val level = buildAnnotatedString {
         withStyle(style = SpanStyle(fontSize = 16.sp)) {
@@ -89,7 +77,7 @@ fun fitnessWdiget (
     Column (Modifier.padding(horizontal = 10.dp)) {
         val modifierLevel = Modifier
             .weight(weightTop)
-            .then(if (editFitness != "level") Modifier.clickable { onFitness("level") } else Modifier)
+            .then(if (editFitness != constantLEVEL) Modifier.clickable { onFitness(constantLEVEL) } else Modifier)
         val editableLevel = buildAnnotatedString {
             append("Fitness Level: ")
             withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
@@ -97,7 +85,7 @@ fun fitnessWdiget (
             }
         }
         val sliderPositionLevel = remember { mutableFloatStateOf(newLevel?.toInt()?.toFloat() ?: 0f) }
-        if (editFitness == "level") {
+        if (editFitness == constantLEVEL) {
             editable(
                 modifier = Modifier,
                 verticalAlignment = Alignment.Top,
@@ -115,7 +103,7 @@ fun fitnessWdiget (
                         sliderPosition = sliderPositionLevel.value,
                         onChangeValue = {
                             sliderPositionLevel.value = it
-                            onEditFitness("level", it.toInt().toFitnessLevel(), null)
+                            onEditFitness(constantLEVEL, it.toInt().toFitnessLevel(), null)
                         }
                     )
                 }
@@ -131,7 +119,7 @@ fun fitnessWdiget (
         }
         val modifierGoal = Modifier
             .weight(weightBottom)
-            .then(if (editFitness != "goal") Modifier.clickable { onFitness("goal") } else Modifier)
+            .then(if (editFitness != constantGOAL) Modifier.clickable { onFitness(constantGOAL) } else Modifier)
         val editableGoal = buildAnnotatedString {
             append("Fitness Goal: ")
             withStyle(style = SpanStyle(color = textColor.copy(alpha = 0.5f))) {
@@ -141,7 +129,7 @@ fun fitnessWdiget (
         // Spacer(Modifier.weight(1f))
         val sliderPositionGoal =
             remember { mutableFloatStateOf(newGoal?.toInt()?.toFloat() ?: 0f) }
-        if (editFitness == "goal") {
+        if (editFitness == constantGOAL) {
             editable(
                 modifier = Modifier,
                 verticalAlignment = Alignment.Bottom,
@@ -159,7 +147,7 @@ fun fitnessWdiget (
                         sliderPosition = sliderPositionGoal.value,
                         onChangeValue = {
                             sliderPositionGoal.value = it
-                            onEditFitness("goal", null, it.toInt().toFitnessGoal())
+                            onEditFitness(constantGOAL, null, it.toInt().toFitnessGoal())
                         }
                     )
                 }

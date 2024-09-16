@@ -4,6 +4,8 @@ import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.User
+import com.android.salamandra._core.domain.model.enums.FitnessGoal
+import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import user.UserEntity
 import workout.WorkoutTemplateElementEntity
 import workout.WorkoutTemplateEntity
+import java.time.LocalDate
 
 interface LocalDbRepository {
     suspend fun isWkTemplateEntityEmpty(): Boolean
@@ -33,4 +36,11 @@ interface LocalDbRepository {
     suspend fun deleteTemplateElementById(wkTemplateId: String)
     suspend fun countWorkoutTemplateElements(): Int
     suspend fun insertWkTemplate(wkTemplate: WorkoutTemplate)
+    fun getUserByIdAsFlow(id: String): Flow<User?>
+
+    suspend fun updateDisplayName(userId: String, newName: String?)
+    suspend fun updateDateOfBirth(userId: String, newDateOfBirth: LocalDate?)
+    suspend fun updateWeight(userId: String, newWeight: Double?)
+    suspend fun updateFitnessLevel(userId: String, newFitnessLevel: FitnessLevel?)
+    suspend fun updateFitnessGoal(userId: String, newFitnessGoal: FitnessGoal?)
 }

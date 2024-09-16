@@ -21,9 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.salamandra.R
 import com.android.salamandra.ui.theme.TitleTypo
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.onTertiary
@@ -47,10 +49,18 @@ fun EditTextRow(
         modifier,
         verticalAlignment = Alignment.CenterVertically
     ){
+        Text(
+            text = stringResource(R.string.display_name) + ": ",
+            color = subtitle,
+            style = TitleTypo,
+            fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
         if (!editState.value || !editable) {
             Text(
                 text = text,
-                color = if (editable) subtitle else onSecondary,
+                color = onSecondary,
                 style = TitleTypo,
                 fontSize = 16.sp,
                 maxLines = 1,

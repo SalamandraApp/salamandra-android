@@ -1,23 +1,21 @@
 package com.android.salamandra.settings.presentation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import com.android.salamandra.R
 import com.android.salamandra._core.boilerplate.Event
 import com.android.salamandra._core.boilerplate.Intent
 import com.android.salamandra._core.boilerplate.NavArgs
 import com.android.salamandra._core.boilerplate.State
 import com.android.salamandra._core.domain.error.RootError
-import com.android.salamandra.profile.presentation.ProfileIntent
-import com.android.salamandra.R
-import com.android.salamandra.settings.presentation.components.AccountSettingsSection
-import com.android.salamandra.settings.presentation.components.UserInfoSection
 import java.time.LocalDate
 
 
 data class SettingsState(
     val error: RootError?,
     val searchTerm: String = "",
-    val sections: Map<SettingsSection, Section> = emptyMap()
+    val sections: Map<SettingsSection, Section> = emptyMap(),
+    val username: String?,
+    val displayName: String?,
+    val dateOfBirth: LocalDate?
 ) : State {
     companion object {
         val initial = SettingsState(
@@ -31,7 +29,10 @@ data class SettingsState(
                     titleId = R.string.account_settings,
                     keywords = listOf(R.string.logout,)
                 )
-            )
+            ),
+            username = null,
+            displayName = null,
+            dateOfBirth = null
         )
     }
     fun updateSectionCollapse(sectionId: SettingsSection, collapse: Boolean): SettingsState {
@@ -62,19 +63,27 @@ data class Section(
 
 sealed class SettingsIntent: Intent {
     data class Error(val error: RootError): SettingsIntent()
+
     data object CloseError: SettingsIntent()
+
     data object NavigateUp: SettingsIntent()
+
     data object Logout: SettingsIntent()
 
     data class ChangeCollapse(val section: SettingsSection, val state: Boolean): SettingsIntent()
+
     data class ChangeAllCollapse(val state: Boolean): SettingsIntent()
+
     data class ChangeSearchTerm(val newTerm: String): SettingsIntent()
-    data class SaveDisplayName(val newString: String): SettingsIntent()
-    data class SaveBirthday(val newDate: LocalDate?): SettingsIntent()
+
+    data class SaveDisplayName(val newDisplayName: String?): SettingsIntent()
+
+    data class SaveBirthday(val newDateOfBirth: LocalDate?): SettingsIntent()
 }
 
 sealed class SettingsEvent: Event{
     data object NavigateUp: SettingsEvent()
+
     data object NavigateToHome: SettingsEvent()
 }
 

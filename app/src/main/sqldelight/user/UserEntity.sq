@@ -33,3 +33,28 @@ SELECT COUNT(*) FROM UserEntity;
 
 clearDatabase:
 DELETE FROM UserEntity;
+
+updateDisplayName:
+UPDATE UserEntity
+SET displayName = :newDisplayName
+WHERE id = :userId;
+
+updateDateOfBirth:
+UPDATE UserEntity
+SET dateOfBirth = :newDateOfBirth
+WHERE id = :userId;
+
+updateWeight:
+UPDATE UserEntity
+SET weight = :newWeight
+WHERE id = :userId;
+
+updateFitnessLevel:
+UPDATE UserEntity
+SET fitnessLevel = :newFitnessLevel
+WHERE id = :userId;
+
+updateFitnessGoal:
+UPDATE UserEntity
+SET fitnessGoal = :newFitnessGoal
+WHERE id = :userId;
