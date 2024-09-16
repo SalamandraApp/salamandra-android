@@ -45,6 +45,8 @@ class EditWkViewModelTest {
             emptyArray()
         )
         every { savedStateHandle.get<Array<String>>("addedExercises") } returns mockNavArgs.addedExercises
+        every { savedStateHandle.get<String>("wkName") } returns mockNavArgs.wkName
+        every { savedStateHandle.get<String>("description") } returns mockNavArgs.description
 
         coEvery { repository.retrieveSavedWorkoutTemplateElements() } returns listOf(
             EXAMPLE_WORKOUT_TEMPLATE_ELEMENT_PUSH_UP,

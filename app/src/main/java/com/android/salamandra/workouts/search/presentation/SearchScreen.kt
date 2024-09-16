@@ -81,7 +81,7 @@ fun SearchScreen(navigator: DestinationsNavigator, viewModel: SearchViewModel = 
     val events by viewModel.events.collectAsState(initial = null)
     LaunchedEffect(events) {
         when (events) {
-            SearchEvent.NavigateToEdit -> navigator.navigate(EditWkScreenDestination(addedExercises = state.addedExercisesIds.toTypedArray()))
+            SearchEvent.NavigateToEdit -> navigator.navigate(EditWkScreenDestination(addedExercises = state.addedExercisesIds.toTypedArray(), wkName = state.wkName, description = state.description))
             null -> {}
         }
     }

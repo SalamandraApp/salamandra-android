@@ -27,10 +27,18 @@ class EditWkViewModel @Inject constructor(
     override fun reduce(intent: EditWkIntent) {
         when (intent) {
             is EditWkIntent.Error -> _state.update { it.copy(error = intent.error) }
+
             is EditWkIntent.CloseError -> _state.update { it.copy(error = null) }
 
-            is EditWkIntent.HideBottomSheet -> _state.update { it.copy(selectedElementIndex = null, notImplementedBanner = false) }
+            is EditWkIntent.HideBottomSheet -> _state.update {
+                it.copy(
+                    selectedElementIndex = null,
+                    notImplementedBanner = false
+                )
+            }
+
             is EditWkIntent.ShowNotImplementedBanner -> _state.update { it.copy(notImplementedBanner = true) }
+
             is EditWkIntent.ShowElementBanner -> _state.update {
                 it.copy(selectedElementIndex = intent.index, textFieldSelected = intent.field)
             }
@@ -42,11 +50,17 @@ class EditWkViewModel @Inject constructor(
             is EditWkIntent.NavigateToHome -> navigateToHome()
 
             is EditWkIntent.ChangeWkDescription -> changeWkDescription(intent.newDescription)
+
             is EditWkIntent.ChangeSets -> updateWkElementSets(newSets = intent.newSets)
+
             is EditWkIntent.ChangeReps -> updateWkElementReps(newReps = intent.newReps)
+
             is EditWkIntent.ChangeWeight -> updateWkElementWeight(newWeight = intent.newWeight)
-            is EditWkIntent.ChangeRest -> updateWkElementRest(newRest = intent.newRest,)
+
+            is EditWkIntent.ChangeRest -> updateWkElementRest(newRest = intent.newRest)
+
             EditWkIntent.CreateWorkout -> createWorkout()
+
             is EditWkIntent.DeleteWkElement -> deleteWkElement()
 
             is EditWkIntent.NavigateToSearch -> navigateToSearch()
@@ -57,11 +71,15 @@ class EditWkViewModel @Inject constructor(
     init {
         val navArgs: EditWkNavArgs = savedStateHandle.navArgs()
         ioLaunch {
+            val wkName =
+                navArgs.wkName.ifEmpty { state.value.wkTemplate.name + " (${repository.getWorkoutTemplateCount() + 1})" }
             _state.update {
                 it.copy(
                     wkTemplate = it.wkTemplate.copy(
-                        name = it.wkTemplate.name + " (${repository.getWorkoutTemplateCount() + 1})",
-                        elements = repository.retrieveSavedWorkoutTemplateElements().take(Short.MAX_VALUE.toInt())
+                        name = wkName,
+                        description = navArgs.description,
+                        elements = repository.retrieveSavedWorkoutTemplateElements()
+                            .take(Short.MAX_VALUE.toInt())
                     )
                 )
             }
