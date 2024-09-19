@@ -125,4 +125,5 @@
     <string name="not_implemented">Not Implemented</string>
     <string name="working_on_it">We are working on it. This feature will be available soon.</string>
     <string name="workout_preview">Workout Preview</string>
+    <string name="error_changing_user_info_locally">Error changing user info locally</string>
 </resources>

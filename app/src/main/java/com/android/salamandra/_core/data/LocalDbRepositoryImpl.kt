@@ -11,9 +11,14 @@ import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.Exercise
 import com.android.salamandra._core.domain.model.User
+import com.android.salamandra._core.domain.model.enums.FitnessGoal
+import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.domain.model.workout.template.WkTemplateElement
 import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import com.android.salamandra._core.domain.model.workout.template.WorkoutTemplate
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 
 class LocalDbRepositoryImpl @Inject constructor(
@@ -112,6 +117,23 @@ class LocalDbRepositoryImpl @Inject constructor(
 
     override suspend fun getUserByID(id: String) =
         userDataSource.getUserByID(id)
+
+    override fun getUserByIdAsFlow(id: String) = userDataSource.getUserByIdAsFlow(id)
+
+    override suspend fun updateDisplayName(userId: String, newName: String) =
+        userDataSource.updateDisplayName(newName = newName, userId = userId)
+
+    override suspend fun updateDateOfBirth(userId: String, newDateOfBirth: LocalDate?) =
+        userDataSource.updateDateOfBirth(newDateOfBirth = newDateOfBirth, userId = userId)
+
+    override suspend fun updateWeight(userId: String, newWeight: Double?) =
+        userDataSource.updateWeight(newWeight = newWeight, userId = userId)
+
+    override suspend fun updateFitnessLevel(userId: String, newFitnessLevel: FitnessLevel?) =
+        userDataSource.updateFitnessLevel(newFitnessLevel = newFitnessLevel, userId = userId)
+
+    override suspend fun updateFitnessGoal(userId: String, newFitnessGoal: FitnessGoal?) =
+        userDataSource.updateFitnessGoal(newFitnessGoal = newFitnessGoal, userId = userId)
 
     override suspend fun clearAllDatabase() {
         workoutTemplateDataSource.clearDatabase()

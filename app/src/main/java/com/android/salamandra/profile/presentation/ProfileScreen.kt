@@ -1,7 +1,6 @@
 package com.android.salamandra.profile.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,21 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Construction
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Pending
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -37,18 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,12 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
 import com.android.salamandra._core.domain.model.enums.FitnessGoal
 import com.android.salamandra._core.domain.model.enums.FitnessLevel
-import com.android.salamandra._core.domain.model.enums.getIcon
-import com.android.salamandra._core.domain.model.enums.toFitnessLevel
-import com.android.salamandra._core.domain.model.enums.toInt
 import com.android.salamandra._core.presentation.components.FadeLip
-import com.android.salamandra._core.presentation.components.GradientSlider
-import com.android.salamandra._core.presentation.components.IconShimmer
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
 import com.android.salamandra._core.presentation.components.bottomBar.MyBottomBarScaffold
@@ -69,12 +49,11 @@ import com.android.salamandra._core.presentation.components.shimmerEffect
 import com.android.salamandra.destinations.LoginScreenDestination
 import com.android.salamandra.destinations.ProfileScreenDestination
 import com.android.salamandra.destinations.SettingsScreenDestination
-import com.android.salamandra.profile.presentation.components.fitnessWdiget
+import com.android.salamandra.profile.presentation.components.fitnessWidget
 import com.android.salamandra.profile.presentation.components.weightWidget
 import com.android.salamandra.ui.theme.SalamandraTheme
 import com.android.salamandra.ui.theme.SemiTypo
 import com.android.salamandra.ui.theme.TitleTypo
-import com.android.salamandra.ui.theme.colorError
 import com.android.salamandra.ui.theme.colorMessage
 import com.android.salamandra.ui.theme.onSecondary
 import com.android.salamandra.ui.theme.onTertiary
@@ -290,7 +269,7 @@ private fun InfoSection(
                 loading = loading,
                 Modifier.height(if (editFitness == "") 150.dp else 180.dp).padding(bottom = 10.dp),
                 contents = listOf {
-                    fitnessWdiget(
+                    fitnessWidget(
                         textColor = textColor,
                         iconColor = iconColor,
                         editFitness = editFitness,

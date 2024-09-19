@@ -1,15 +1,26 @@
 package com.android.salamandra._core.data.sqlDelight.user
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOne
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import com.android.salamandra.SalamandraLocalDB
+import com.android.salamandra._core.data.sqlDelight.workoutTemplate.toWkPreview
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.User
+import com.android.salamandra._core.domain.model.enums.FitnessGoal
+import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra._core.domain.model.enums.toFitnessGoal
 import com.android.salamandra._core.domain.model.enums.toFitnessLevel
 import com.android.salamandra._core.domain.model.enums.toGender
+import com.android.salamandra._core.domain.model.workout.template.WorkoutPreview
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import user.UserEntity
+import java.time.LocalDate
 import javax.inject.Inject
 
 class UserDataSource @Inject constructor(
@@ -26,6 +37,9 @@ class UserDataSource @Inject constructor(
             else Result.Error(DataError.Local.WORKOUT_TEMPLATE_NOT_FOUND)
         }
     }
+
+    fun getUserByIdAsFlow(id: String): Flow<User?> =
+        queries.getUserById(id).asFlow().mapToOneOrNull(ioDispatcher).map { it?.toUser() }
 
     suspend fun deleteUserByID(id: String): Result<Unit, DataError.Local> {
         return withContext(ioDispatcher) {
@@ -52,6 +66,22 @@ class UserDataSource @Inject constructor(
             )
             Result.Success(Unit)
         }
+    }
+
+    suspend fun updateDisplayName(userId: String, newName: String) = withContext(ioDispatcher) {
+        queries.updateDisplayName(newDisplayName = newName, userId = userId)
+    }
+    suspend fun updateDateOfBirth(userId: String, newDateOfBirth: LocalDate?) = withContext(ioDispatcher) {
+        queries.updateDateOfBirth(newDateOfBirth = newDateOfBirth, userId = userId)
+    }
+    suspend fun updateWeight(userId: String, newWeight: Double?) = withContext(ioDispatcher) {
+        queries.updateWeight(newWeight = newWeight, userId = userId)
+    }
+    suspend fun updateFitnessLevel(userId: String, newFitnessLevel: FitnessLevel?) = withContext(ioDispatcher) {
+        queries.updateFitnessLevel(newFitnessLevel = newFitnessLevel?.ordinal, userId = userId)
+    }
+    suspend fun updateFitnessGoal(userId: String, newFitnessGoal: FitnessGoal?) = withContext(ioDispatcher) {
+        queries.updateFitnessGoal(newFitnessGoal = newFitnessGoal?.ordinal, userId = userId)
     }
 
     suspend fun countElements() = withContext(ioDispatcher) {
