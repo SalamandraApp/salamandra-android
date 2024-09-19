@@ -31,12 +31,12 @@ class RepositoryImpl(
     override suspend fun changeWeight(newWeight: Double?): Result<Unit, DataError> {
         return when (val userId = dataStoreRepository.getUidFromDatastore()) {
             is Result.Success -> {
-                localDbRepository.updateWeight(userId = userId.data, newWeight = newWeight)
                 try {
                     salamandraApiService.updateUserProfile(
                         userId = userId.data,
                         uncompletedUserData = ModifyUserDataRequest(weight = newWeight?.toFloat())
                     )
+                    localDbRepository.updateWeight(userId = userId.data, newWeight = newWeight)
                     Result.Success(Unit)
                 } catch (e: Exception) {
                     Result.Error(retrofitExceptionHandler.handleException(e))

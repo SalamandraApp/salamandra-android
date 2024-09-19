@@ -91,7 +91,10 @@ class ProfileViewModel @Inject constructor(
             return
 
         ioLaunch {
-            repository.changeWeight(state.value.newWeight)
+            when(val update = repository.changeWeight(state.value.newWeight)){
+                is Result.Success -> {}
+                is Result.Error -> _state.update { it.copy(error = update.error) }
+            }
             _state.update {
                 it.copy(
                     editWeight = false,

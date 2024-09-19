@@ -39,8 +39,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.salamandra.R
+import com.android.salamandra._core.boilerplate.template.tIntent
 import com.android.salamandra._core.domain.model.enums.FitnessGoal
 import com.android.salamandra._core.domain.model.enums.FitnessLevel
+import com.android.salamandra._core.presentation.asUiText
+import com.android.salamandra._core.presentation.components.ErrorDialog
 import com.android.salamandra._core.presentation.components.FadeLip
 import com.android.salamandra._core.presentation.components.ProfilePicture
 import com.android.salamandra._core.presentation.components.WkTemplatePicture
@@ -125,12 +128,20 @@ private fun ScreenBody(
                 editWeight = state.editWeight,
                 newWeight = state.newWeight,
                 onWeight = { sendIntent(ProfileIntent.OpenEditWeight) },
-                onEditWeight = { sendIntent(ProfileIntent.EditWeight(it))},
+                onEditWeight = { sendIntent(ProfileIntent.EditWeight(it)) },
                 onSaveWeight = { sendIntent(ProfileIntent.SaveNewWeight) },
 
                 editFitness = state.editFitness,
                 onFitness = { sendIntent(ProfileIntent.OpenEditFitness(it)) },
-                onEditFitness = { it1, it2, it3 -> sendIntent(ProfileIntent.EditFitness(it1, it2, it3)) },
+                onEditFitness = { it1, it2, it3 ->
+                    sendIntent(
+                        ProfileIntent.EditFitness(
+                            it1,
+                            it2,
+                            it3
+                        )
+                    )
+                },
                 onSaveFitness = { sendIntent(ProfileIntent.SaveFitness) },
                 fitnessLevel = state.userData?.fitnessLevel,
                 fitnessGoal = state.userData?.fitnessGoal,
@@ -138,14 +149,22 @@ private fun ScreenBody(
                 newGoal = state.newFitnessGoal
             )
         }
-        if(state.loading)
-            Box(Modifier.fillMaxSize().background(tertiary.copy(alpha = 0.9f)))
+        if (state.loading)
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(tertiary.copy(alpha = 0.9f)))
 
         if (!state.isSignedIn && !state.loading) {
             NotLoggedInCover(
                 onGoToLogin = { sendIntent(ProfileIntent.GoToLogin) }
             )
         }
+        if (state.error != null)
+            ErrorDialog(
+                error = state.error.asUiText(),
+                onDismiss = { sendIntent(ProfileIntent.CloseError) }
+            )
     }
 
 }
@@ -202,7 +221,7 @@ private fun InfoSection(
     onWeight: () -> Unit,
     onEditWeight: (Double) -> Unit,
     onSaveWeight: () -> Unit,
-    
+
     editFitness: String,
     onSaveFitness: () -> Unit,
     onFitness: (String) -> Unit,
@@ -239,7 +258,7 @@ private fun InfoSection(
         }
     }
 
-    LazyColumn (
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp)
@@ -248,18 +267,22 @@ private fun InfoSection(
         item {
             ProfileInfoRow(
                 loading = loading,
-                Modifier.height(150.dp).padding(bottom = 10.dp),
+                Modifier
+                    .height(150.dp)
+                    .padding(bottom = 10.dp),
                 contents = listOf(
-                    {weightWidget(
-                        textColor = textColor,
-                        iconColor = iconColor,
-                        onWeight = onWeight,
-                        onEditWeight = onEditWeight,
-                        onSaveWeight = onSaveWeight,
-                        editWeight = editWeight,
-                        newWeight = newWeight,
-                        weight = weight
-                    )},
+                    {
+                        weightWidget(
+                            textColor = textColor,
+                            iconColor = iconColor,
+                            onWeight = onWeight,
+                            onEditWeight = onEditWeight,
+                            onSaveWeight = onSaveWeight,
+                            editWeight = editWeight,
+                            newWeight = newWeight,
+                            weight = weight
+                        )
+                    },
                     wipWidget
                 )
             )
@@ -267,7 +290,9 @@ private fun InfoSection(
         item {
             ProfileInfoRow(
                 loading = loading,
-                Modifier.height(if (editFitness == "") 150.dp else 180.dp).padding(bottom = 10.dp),
+                Modifier
+                    .height(if (editFitness == "") 150.dp else 180.dp)
+                    .padding(bottom = 10.dp),
                 contents = listOf {
                     fitnessWidget(
                         textColor = textColor,
@@ -288,7 +313,6 @@ private fun InfoSection(
 }
 
 
-
 @Composable
 private fun ProfileInfoRow(
     loading: Boolean,
@@ -298,7 +322,7 @@ private fun ProfileInfoRow(
     if (contents.size > 3 || contents.isEmpty())
         throw IllegalArgumentException("More than 3 components is too much")
 
-    Row (
+    Row(
         modifier = modifier
             .fillMaxWidth()
     ) {
@@ -347,7 +371,7 @@ private fun ProfileBanner(
                 .then(if (loading) Modifier.shimmerEffect() else Modifier)
         ) {
             if (!loading)
-            WkTemplatePicture(modifier = Modifier.fillMaxSize())
+                WkTemplatePicture(modifier = Modifier.fillMaxSize())
         }
 
         Row(
@@ -362,9 +386,14 @@ private fun ProfileBanner(
             Column(
                 modifier = Modifier
                     .width(120.dp)
-                    .then(if (loading)
-                        Modifier.aspectRatio(1f).clip(RoundedCornerShape(50)).shimmerEffect()
-                    else Modifier)
+                    .then(
+                        if (loading)
+                            Modifier
+                                .aspectRatio(1f)
+                                .clip(RoundedCornerShape(50))
+                                .shimmerEffect()
+                        else Modifier
+                    )
             ) {
                 if (!loading)
                     ProfilePicture(
@@ -385,14 +414,15 @@ private fun ProfileBanner(
                     .align(Alignment.CenterVertically)
                     .padding(start = 15.dp)
             ) {
-                Row (
+                Row(
                     Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Text(
                         modifier = Modifier
                             .then(
-                                if (loading) Modifier.clip(RoundedCornerShape(40))
+                                if (loading) Modifier
+                                    .clip(RoundedCornerShape(40))
                                     .shimmerEffect() else Modifier
                             ),
                         text = displayNameText,
@@ -418,7 +448,11 @@ private fun ProfileBanner(
                 Text(
                     modifier = Modifier
                         .padding(top = 5.dp)
-                        .then(if (loading) Modifier.clip(RoundedCornerShape(40)).shimmerEffect() else Modifier),
+                        .then(
+                            if (loading) Modifier
+                                .clip(RoundedCornerShape(40))
+                                .shimmerEffect() else Modifier
+                        ),
                     text = usernameText,
                     color = if (!loading) onTertiary else Color.Transparent,
                     style = SemiTypo,
@@ -430,7 +464,11 @@ private fun ProfileBanner(
                 Text(
                     modifier = Modifier
                         .padding(top = 10.dp)
-                        .then(if (loading) Modifier.clip(RoundedCornerShape(40)).shimmerEffect() else Modifier),
+                        .then(
+                            if (loading) Modifier
+                                .clip(RoundedCornerShape(40))
+                                .shimmerEffect() else Modifier
+                        ),
                     text = dateJoinedText,
                     color = if (!loading) onTertiary else Color.Transparent,
                     style = SemiTypo,
@@ -447,7 +485,11 @@ private fun ProfileBanner(
 private fun ScreenPreview1() {
     SalamandraTheme {
         ScreenBody(
-            state = ProfileState.initial.copy(isSignedIn = true, loading = false, editFitness = "goal"),
+            state = ProfileState.initial.copy(
+                isSignedIn = true,
+                loading = false,
+                editFitness = "goal"
+            ),
             sendIntent = {}
         )
     }
