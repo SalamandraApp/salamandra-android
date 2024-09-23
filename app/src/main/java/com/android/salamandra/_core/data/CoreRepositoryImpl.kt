@@ -8,6 +8,7 @@ import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
 import com.android.salamandra._core.domain.model.User
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -28,6 +29,13 @@ class CoreRepositoryImpl @Inject constructor(
             }
          }
          is Result.Error -> Result.Error(userId.error)
+      }
+   }
+
+   override suspend fun getUserDataAsFlow(): Flow<User?>? {
+      return when (val userId = dataStoreRepository.getUidFromDatastore()) {
+         is Result.Success -> localDbRepository.getUserByIdAsFlow(userId.data)
+         is Result.Error -> null
       }
    }
 }

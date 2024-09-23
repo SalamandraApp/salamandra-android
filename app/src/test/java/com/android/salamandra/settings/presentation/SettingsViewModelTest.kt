@@ -2,6 +2,7 @@ package com.android.salamandra.settings.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import com.android.salamandra.R
+import com.android.salamandra._core.domain.CoreRepository
 import com.android.salamandra.settings.domain.Repository
 import com.android.salamandra.util.CoroutineRule
 import io.mockk.MockKAnnotations
@@ -23,12 +24,12 @@ class SettingsViewModelTest {
     private lateinit var repository: Repository
 
     @RelaxedMockK
-    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var coreRepository: CoreRepository
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        settingsViewModel = SettingsViewModel(testDispatcher, repository)
+        settingsViewModel = SettingsViewModel(testDispatcher, repository, coreRepository)
     }
 
     @Test
@@ -44,7 +45,10 @@ class SettingsViewModelTest {
                     titleId = R.string.account_settings,
                     keywords = listOf(R.string.logout,)
                 )
-            )
+            ),
+            username = null,
+            displayName = null,
+            dateOfBirth = null
         )
         assert(SettingsState.initial == expectedState)
     }

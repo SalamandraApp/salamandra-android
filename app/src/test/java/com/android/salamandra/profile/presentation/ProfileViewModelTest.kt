@@ -3,6 +3,7 @@ package com.android.salamandra.profile.presentation
 import com.android.salamandra._core.domain.CoreRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
+import com.android.salamandra.profile.domain.Repository
 import com.android.salamandra.util.CoroutineRule
 import com.android.salamandra.util.EXAMPLE_USER
 import io.mockk.MockKAnnotations
@@ -30,11 +31,14 @@ class ProfileViewModelTest {
     @RelaxedMockK
     private lateinit var coreRepository: CoreRepository
 
+    @RelaxedMockK
+    private lateinit var repository: Repository
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         coEvery { coreRepository.isUserLogged() } returns true
-        profileViewModel = ProfileViewModel(testDispatcher, coreRepository)
+        profileViewModel = ProfileViewModel(testDispatcher, repository, coreRepository)
     }
 
     @Test
@@ -61,7 +65,7 @@ class ProfileViewModelTest {
         coEvery { coreRepository.isUserLogged() } returns false
 
         // Act
-        profileViewModel = ProfileViewModel(testDispatcher, coreRepository)
+        profileViewModel = ProfileViewModel(testDispatcher, repository, coreRepository)
         runCurrent()
 
         // Assert
@@ -75,7 +79,7 @@ class ProfileViewModelTest {
         coEvery { coreRepository.getUserData() } returns Result.Error(DataError.Datastore.UID_NOT_FOUND)
 
         // Act
-        profileViewModel = ProfileViewModel(testDispatcher, coreRepository)
+        profileViewModel = ProfileViewModel(testDispatcher, repository, coreRepository)
         runCurrent()
 
         // Assert
@@ -88,7 +92,7 @@ class ProfileViewModelTest {
         // Arrange
         coEvery { coreRepository.getUserData() } returns Result.Success(EXAMPLE_USER)
         // Act
-        profileViewModel = ProfileViewModel(testDispatcher, coreRepository)
+        profileViewModel = ProfileViewModel(testDispatcher, repository, coreRepository)
         runCurrent()
 
         // Assert

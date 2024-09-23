@@ -46,6 +46,8 @@ fun DataError.asUiText(): UiText {
 
         DataError.Local.ERROR_INSERTING_WK_TEMPLATES -> UiText.StringResource(R.string.a_problem_occurred_while_saving_workouts_in_local)
 
+        DataError.Local.UPDATING_USER_DATA_FAILED -> UiText.StringResource(R.string.error_changing_user_info_locally)
+
         DataError.Network.NO_CONNECTION -> UiText.StringResource(R.string.you_have_no_internet_connection)
 
         DataError.Local.WORKOUT_TEMPLATE_ELEMENT_NOT_FOUND -> UiText.StringResource(R.string.workout_element_not_found)

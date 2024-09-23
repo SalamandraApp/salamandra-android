@@ -3,6 +3,7 @@ package com.android.salamandra._core.data.network
 import com.android.salamandra._core.data.network.request.CreateUserRequest
 import com.android.salamandra._core.data.network.request.CreateWorkoutExecutionRequest
 import com.android.salamandra._core.data.network.request.CreateWorkoutTemplateRequest
+import com.android.salamandra._core.data.network.request.ModifyUserDataRequest
 import com.android.salamandra._core.data.network.response.CreateWorkoutTemplateResponse
 import com.android.salamandra._core.data.network.response.UserResponse
 import com.android.salamandra._core.data.network.response.ExerciseResponse
@@ -11,6 +12,7 @@ import com.android.salamandra._core.data.network.response.WorkoutExecutionWithEl
 import com.android.salamandra._core.data.network.response.WorkoutTemplateResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -36,9 +38,21 @@ interface SalamandraApiService {
     ): WorkoutTemplateResponse
 
     @POST("users/{user_id}/workout-templates")
-    suspend fun createWkTemplate(@Path("user_id") userId: String, @Body wkTemplate: CreateWorkoutTemplateRequest): CreateWorkoutTemplateResponse
-    
+    suspend fun createWkTemplate(
+        @Path("user_id") userId: String,
+        @Body wkTemplate: CreateWorkoutTemplateRequest
+    ): CreateWorkoutTemplateResponse
+
     @POST("/users/{user_id}/workout-executions")
-    suspend fun createWkExecution(@Path("user_id") userId: String, @Body wkExecution: CreateWorkoutExecutionRequest): WorkoutExecutionWithElementsResponse
+    suspend fun createWkExecution(
+        @Path("user_id") userId: String,
+        @Body wkExecution: CreateWorkoutExecutionRequest
+    ): WorkoutExecutionWithElementsResponse
+
+    @PATCH("users/{user_id}")
+    suspend fun updateUserProfile(
+        @Path("user_id") userId: String,
+        @Body uncompletedUserData: ModifyUserDataRequest
+    ): UserResponse
 
 }
