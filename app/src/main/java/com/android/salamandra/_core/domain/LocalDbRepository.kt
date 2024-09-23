@@ -38,7 +38,7 @@ interface LocalDbRepository {
     suspend fun insertWkTemplate(wkTemplate: WorkoutTemplate)
     fun getUserByIdAsFlow(id: String): Flow<User?>
 
-    suspend fun updateDisplayName(userId: String, newName: String)
+    suspend fun updateDisplayName(userId: String, newName: String?)
     suspend fun updateDateOfBirth(userId: String, newDateOfBirth: LocalDate?)
     suspend fun updateWeight(userId: String, newWeight: Double?)
     suspend fun updateFitnessLevel(userId: String, newFitnessLevel: FitnessLevel?)

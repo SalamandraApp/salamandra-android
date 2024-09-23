@@ -120,7 +120,7 @@ class LocalDbRepositoryImpl @Inject constructor(
 
     override fun getUserByIdAsFlow(id: String) = userDataSource.getUserByIdAsFlow(id)
 
-    override suspend fun updateDisplayName(userId: String, newName: String) =
+    override suspend fun updateDisplayName(userId: String, newName: String?) =
         userDataSource.updateDisplayName(newName = newName, userId = userId)
 
     override suspend fun updateDateOfBirth(userId: String, newDateOfBirth: LocalDate?) =

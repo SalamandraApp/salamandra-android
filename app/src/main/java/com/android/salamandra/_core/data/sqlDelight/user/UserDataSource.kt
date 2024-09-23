@@ -68,7 +68,7 @@ class UserDataSource @Inject constructor(
         }
     }
 
-    suspend fun updateDisplayName(userId: String, newName: String) = withContext(ioDispatcher) {
+    suspend fun updateDisplayName(userId: String, newName: String?) = withContext(ioDispatcher) {
         queries.updateDisplayName(newDisplayName = newName, userId = userId)
     }
     suspend fun updateDateOfBirth(userId: String, newDateOfBirth: LocalDate?) = withContext(ioDispatcher) {

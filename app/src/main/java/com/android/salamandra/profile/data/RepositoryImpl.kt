@@ -1,19 +1,15 @@
 package com.android.salamandra.profile.data
 
-import com.android.salamandra._core.data.cognito.CognitoService
 import com.android.salamandra._core.data.network.RetrofitExceptionHandler
 import com.android.salamandra._core.data.network.SalamandraApiService
 import com.android.salamandra._core.data.network.request.ModifyUserDataRequest
-import com.android.salamandra._core.data.sqlDelight.user.toUser
 import com.android.salamandra._core.domain.DataStoreRepository
 import com.android.salamandra._core.domain.LocalDbRepository
 import com.android.salamandra._core.domain.error.DataError
 import com.android.salamandra._core.domain.error.Result
-import com.android.salamandra._core.domain.model.User
 import com.android.salamandra._core.domain.model.enums.FitnessGoal
 import com.android.salamandra._core.domain.model.enums.FitnessLevel
 import com.android.salamandra.profile.domain.Repository
-import kotlinx.coroutines.flow.Flow
 
 class RepositoryImpl(
     private val dataStoreRepository: DataStoreRepository,
@@ -21,13 +17,6 @@ class RepositoryImpl(
     private val retrofitExceptionHandler: RetrofitExceptionHandler,
     private val salamandraApiService: SalamandraApiService
 ) : Repository {
-    override suspend fun getUserDataAsFlow(): Flow<User?>? {
-        return when (val userId = dataStoreRepository.getUidFromDatastore()) {
-            is Result.Success -> localDbRepository.getUserByIdAsFlow(userId.data)
-            is Result.Error -> null
-        }
-    }
-
     override suspend fun changeWeight(newWeight: Double?): Result<Unit, DataError> {
         return when (val userId = dataStoreRepository.getUidFromDatastore()) {
             is Result.Success -> {

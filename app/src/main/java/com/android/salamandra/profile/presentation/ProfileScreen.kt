@@ -113,7 +113,7 @@ private fun ScreenBody(
             ProfileBanner(
                 modifier = Modifier.weight(bannerWeight),
                 loading = state.loading,
-                username = state.userData?.displayName,
+                username = state.userData?.username,
                 displayName = state.userData?.displayName,
                 dateJoined = state.userData?.dateJoined,
                 onGoToSettings = { sendIntent(ProfileIntent.GoToSettings) }

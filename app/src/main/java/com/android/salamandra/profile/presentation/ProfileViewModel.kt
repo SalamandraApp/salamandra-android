@@ -78,7 +78,7 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
 
-                repository.getUserDataAsFlow()?.collect { newUserData ->
+                coreRepository.getUserDataAsFlow()?.collect { newUserData ->
                     _state.update { it.copy(userData = newUserData) }
                 }
             } else _state.update { it.copy(loading = false) }
